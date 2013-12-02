@@ -1,7 +1,6 @@
 .DS_Store
 .gradle
 .settings
-.classpath
 libs
 assets
 bin
@@ -10,3 +9,4 @@ build
 gradle.properties
 AndroidManifest.xml
 *.keystore
+*.swp

@@ -243,7 +243,7 @@ public final class MainActivity extends Activity {
         startActivity(openLeaderboard);
     }
 
-    public void onClick_ViewMap(View v) throws RemoteException {
+    /*public void onClick_ViewMap(View v) throws RemoteException {
         // We are starting Wi-Fi scanning because we want the the APs for our
         // geolocation request whose results we want to display on the map.
         if (mConnectionRemote != null) {
@@ -253,7 +253,7 @@ public final class MainActivity extends Activity {
         Log.d(LOGTAG, "onClick_ViewMap");
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

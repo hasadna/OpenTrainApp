@@ -122,6 +122,7 @@ public class WifiScanner extends BroadcastReceiver {
   }
 
   private static boolean shouldLog(ScanResult scanResult) {
+	  // TODO: hasadna filter by railways ssid
     if (BSSIDBlockList.contains(scanResult)) {
       Log.w(LOGTAG, "Blocked BSSID: " + scanResult);
       return false;

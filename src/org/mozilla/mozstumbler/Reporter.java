@@ -24,7 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 class Reporter extends BroadcastReceiver {
-    private static final String LOGTAG          = Reporter.class.getName();
+    private static final String LOGTAG          = Reporter.class.getName(); //TODO: this should contain our own url
     private static final String LOCATION_URL    = "https://location.services.mozilla.com/v1/submit";
     private static final String NICKNAME_HEADER = "X-Nickname";
     private static final String USER_AGENT_HEADER = "User-Agent";
@@ -38,7 +38,7 @@ class Reporter extends BroadcastReceiver {
     private final Prefs         mPrefs;
     private JSONArray           mReports;
     private long                mLastUploadTime;
-    private URL                 mURL;
+    private URL                 mURL; 
 
     private String mWifiData;
     private long   mWifiDataTime;
@@ -179,7 +179,7 @@ class Reporter extends BroadcastReceiver {
             public void run() {
                 try {
                     Log.d(LOGTAG, "sending results...");
-
+                    
                     HttpURLConnection urlConnection = (HttpURLConnection) mURL.openConnection();
                     try {
                         urlConnection.setDoOutput(true);

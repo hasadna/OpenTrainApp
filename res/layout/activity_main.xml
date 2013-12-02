@@ -60,6 +60,7 @@
            android:layout_alignParentLeft="true"
            android:layout_below="@+id/reports_sent"
            android:onClick="onClick_ViewLeaderboard"
+           android:visibility="gone"
            android:text="@string/view_leaderboard" />
 
        <Button
@@ -69,6 +70,7 @@
            android:layout_alignParentLeft="true"
            android:layout_below="@+id/view_leaderboard"
            android:onClick="onClick_ViewMap"
+           android:visibility="gone"
            android:text="@string/view_map" />
 
        <Button
