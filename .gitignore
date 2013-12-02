@@ -1,6 +1,8 @@
 .DS_Store
 .gradle
 .settings
+.classpath
+libs
 assets
 bin
 gen
