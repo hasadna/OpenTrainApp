@@ -82,14 +82,16 @@ public class WifiScanner extends BroadcastReceiver {
 
   public void onReceive(Context c, Intent intent) {
     Collection<ScanResult> scanResults = getWifiManager().getScanResults();
-
+    boolean isTrainIndication = false;
     JSONArray wifiInfo = new JSONArray();
     for (ScanResult scanResult : scanResults) {
       scanResult.BSSID = BSSIDBlockList.canonicalizeBSSID(scanResult.BSSID);
       if (!shouldLog(scanResult)) {
         continue;
       }
-
+      if (isTrainIndication(scanResult)) {
+    	  isTrainIndication = true;
+      }
       try {
         JSONObject obj = new JSONObject();
         obj.put("SSID", scanResult.SSID);
@@ -115,6 +117,9 @@ public class WifiScanner extends BroadcastReceiver {
     i.putExtra(Intent.EXTRA_SUBJECT, "WifiScanner");
     i.putExtra("data", wifiInfo.toString());
     i.putExtra("time", System.currentTimeMillis());
+    if (isTrainIndication) {
+        i.putExtra("TrainIndication", true);
+    }
     mContext.sendBroadcast(i);
   }
 
@@ -123,7 +128,6 @@ public class WifiScanner extends BroadcastReceiver {
   }
 
   private static boolean shouldLog(ScanResult scanResult) {
-	  // TODO: hasadna filter by railways ssid
     if (BSSIDBlockList.contains(scanResult)) {
       Log.w(LOGTAG, "Blocked BSSID: " + scanResult);
       return false;
@@ -134,6 +138,14 @@ public class WifiScanner extends BroadcastReceiver {
     }
     return true;
   }
+  
+	private static boolean isTrainIndication(ScanResult scanResult) {
+		if (SSIDBlockList.trainIndicatorsContain(scanResult)) {
+			Log.w(LOGTAG, "Train SSID: " + scanResult);
+			return true;
+		}
+		return false;
+	}
 
   private WifiManager getWifiManager() {
     return (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);

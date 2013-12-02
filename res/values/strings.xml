@@ -6,7 +6,7 @@
     <string name="action_preferences">Settings</string>
     <string name="mozilla_title">Mozilla</string>
     <string name="start_scanning">Report If There Is Nearby Train Traffic</string>
-    <string name="stop_scanning">Don't Report Anything</string>
+    <string name="stop_scanning">Don\'t Report Anything</string>
     <string name="view_leaderboard">View Leaderboard</string>
     <string name="view_map">Test Mozilla Location Service</string>
     <string name="service_name">Mozilla Stumbler</string>

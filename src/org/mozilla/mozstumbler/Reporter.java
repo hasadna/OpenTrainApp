@@ -29,7 +29,7 @@ class Reporter extends BroadcastReceiver {
     private static final String NICKNAME_HEADER = "X-Nickname";
     private static final String USER_AGENT_HEADER = "User-Agent";
     private static final int RECORD_BATCH_SIZE  = 20;
-    private static final int REPORTER_WINDOW  = 3000; //ms
+    private static final long TRAIN_INDICATION_TTL = 1 * 60 * 60 * 1000;
 
     private static String       MOZSTUMBLER_USER_AGENT_STRING;
     private static String       MOZSTUMBLER_API_KEY_STRING;
@@ -40,23 +40,16 @@ class Reporter extends BroadcastReceiver {
     private long                mLastUploadTime;
     private URL                 mURL; 
 
-    private String mWifiData;
-    private long   mWifiDataTime;
-
-    private String mCellData;
-    private long   mCellDataTime;
-
-    private long   mGPSDataTime;
-    private String mGPSData;
-
-    private String mRadioType;
     private long mReportsSent;
+    
+    private long mLastTrainIndicationTime;
 
     Reporter(Context context, Prefs prefs) {
     	
         mContext = context;
         mPrefs = prefs;
-
+        mLastTrainIndicationTime = 0;
+        
         MOZSTUMBLER_USER_AGENT_STRING = NetworkUtils.getUserAgentString(mContext);
 
         String storedReports = mPrefs.getReports();
@@ -73,24 +66,12 @@ class Reporter extends BroadcastReceiver {
             throw new IllegalArgumentException(e);
         }
 
-        resetData();
         mContext.registerReceiver(this, new IntentFilter(ScannerService.MESSAGE_TOPIC));
-    }
-
-    private void resetData() {
-        mWifiData = "";
-        mCellData = "";
-        mRadioType = "";
-        mGPSData = "";
-        mWifiDataTime = 0;
-        mCellDataTime = 0;
-        mGPSDataTime = 0;
     }
 
     void shutdown() {
         Log.d(LOGTAG, "shutdown");
 
-        resetData();
         // Attempt to write out mReports
         mPrefs.setReports(mReports.toString());
         mContext.unregisterReceiver(this);
@@ -104,50 +85,46 @@ class Reporter extends BroadcastReceiver {
             Log.e(LOGTAG, "Received an unknown intent");
             return;
         }
-
+        // We should only consider reporting if we are in a train context
         long time = intent.getLongExtra("time", 0);
+        boolean isTrainIndication = intent.getBooleanExtra("TrainIndication", false);
+        if (isTrainIndication) {
+        	mLastTrainIndicationTime = time;
+        }
+        
+        if (System.currentTimeMillis() - mLastTrainIndicationTime > TRAIN_INDICATION_TTL) {
+        	// We are not in train context. Don't report.
+        	return;
+        }
+        
         String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
         String data = intent.getStringExtra("data");
+        
         if (data!=null) Log.d(LOGTAG, "" + subject + " : " + data);
 
-        if (mWifiDataTime - time > REPORTER_WINDOW) {
-          mWifiData = "";
-          mWifiDataTime = 0;
-        }
-
-        if (mCellDataTime - time > REPORTER_WINDOW) {
-          mCellData = "";
-          mCellDataTime = 0;
-        }
-
-        if (mGPSDataTime - time > REPORTER_WINDOW) {
-          mGPSData = "";
-          mGPSDataTime = 0;
-        }
-
+        String wifiData = "";
+        String cellData = "";
+        String radioType = "";
+        String GPSData = "";
         if (subject.equals("WifiScanner")) {
-            mWifiData = data;
-            mWifiDataTime = time;
+        	wifiData = data;
+            Log.d(LOGTAG, "Reporter data: WiFi: "+wifiData.length());
         } else if (subject.equals("CellScanner")) {
-            mCellData = data;
-            mRadioType = intent.getStringExtra("radioType");
-            mCellDataTime = time;
+        	cellData = data;
+        	radioType = intent.getStringExtra("radioType");
+            Log.d(LOGTAG, "Reporter data: Cell: "+cellData.length()+" ("+radioType+")");
         } else if (subject.equals("GPSScanner")) {
-            mGPSData = data;
-            mGPSDataTime = time;
+        	GPSData = data;
+            Log.d(LOGTAG, "Reporter data: GPS: "+GPSData.length());
         }
         else {
             Log.d(LOGTAG, "Intent ignored with Subject: " + subject);
             return; // Intent not aimed at the Reporter (it is possibly for UI instead)
         }
-
-        // Record recent Wi-Fi and/or cell scan results for the current GPS position.
-        Log.d(LOGTAG, "Reporter data: GPS: "+mGPSData.length()+", WiFi: "+mWifiData.length()+", Cell: "+mCellData.length()+" ("+mRadioType+")");
         
         // HASADNA: removed the following condition because we want to send data even when no gps is available.
         //if (mGPSData.length() > 0 && (mWifiData.length() > 0 || mCellData.length() > 0)) {
-        reportLocation(mGPSData, mWifiData, mRadioType, mCellData);
-        resetData();
+        reportLocation(time, GPSData, wifiData, radioType, cellData);
         //}
     }
 
@@ -237,7 +214,7 @@ class Reporter extends BroadcastReceiver {
         }).start();
     }
 
-    void reportLocation(String location, String wifiInfo, String radioType, String cellInfo) {
+    void reportLocation(long time, String location, String wifiInfo, String radioType, String cellInfo) {
         // HASADNA: added this to enable debugging:
         android.os.Debug.waitForDebugger();
     	Log.d(LOGTAG, "reportLocation called");
@@ -251,7 +228,9 @@ class Reporter extends BroadcastReceiver {
         	} else { 
         		locInfo = new JSONObject( );
             }
-
+        	
+            locInfo.put("time", time);
+            
             if (cellInfo.length()>0) {
                 cellJSON=new JSONArray(cellInfo);
                 locInfo.put("cell", cellJSON);
@@ -285,6 +264,10 @@ class Reporter extends BroadcastReceiver {
 
     public long getReportsSent() {
         return mReportsSent;
+    }
+    
+    public long getLastTrainIndicationTime() {
+        return mLastTrainIndicationTime;
     }
 
     private void sendUpdateIntent() {

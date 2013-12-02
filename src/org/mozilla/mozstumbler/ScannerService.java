@@ -133,6 +133,11 @@ public final class ScannerService extends Service {
         public long getReportsSent () throws RemoteException {
             return mReporter.getReportsSent();
         }
+        
+        @Override
+        public long getLastTrainIndicationTime () throws RemoteException {
+            return mReporter.getLastTrainIndicationTime();
+        }
     };
 
     private final class LooperThread extends Thread {

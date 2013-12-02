@@ -51,6 +51,13 @@ final class SSIDBlockList {
         "Omni-WiFi", // Omnibus transportation services (Israel)*/
     };
 
+    private static final String[] TRAIN_INDICATORS = {
+        // Transportation Wi-Fi
+        "ISRAEL-RAILWAYS",
+        "S-ISRAEL-RAILWAYS",
+        "CampusGuest" //TODO: Remove before launch!
+    };
+
     private static final String[] SUFFIX_LIST = {
         // Mobile devices
         "iPhone",
@@ -93,5 +100,18 @@ final class SSIDBlockList {
         }
 
         return false; // OK
+    }
+    
+    static boolean trainIndicatorsContain(ScanResult scanResult) {
+        String SSID = scanResult.SSID;
+        if (SSID == null) {
+            return false; // no SSID?
+        }
+        for (String prefix : TRAIN_INDICATORS) {
+            if (SSID.startsWith(prefix)) {
+                return true; // Train indicator!
+            }
+        }
+        return false; // Not train indicator
     }
 }

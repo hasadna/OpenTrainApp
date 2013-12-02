@@ -84,6 +84,10 @@ public final class MainActivity extends Activity {
                 updateUI();
                 Log.d(LOGTAG, "Received a scanner intent...");
                 return;
+            } else if (intent.getBooleanExtra("TrainIndication", false)) {
+                updateUI();
+                Log.d(LOGTAG, "Received train indication...");
+                return;
             }
         }
     }
@@ -200,26 +204,28 @@ public final class MainActivity extends Activity {
         int APs = 0;
         long lastUploadTime = 0;
         long reportsSent = 0;
-        long timeWhenLastOnTrain = 0; // TODO: should have time when we were last on train
+        long lastTrainIndicationTime = 0; // TODO: should have time when we were last on train
         try {
             locationsScanned = mConnectionRemote.getLocationCount();
             APs = mConnectionRemote.getAPCount();
             lastUploadTime = mConnectionRemote.getLastUploadTime();
             reportsSent = mConnectionRemote.getReportsSent();
+            lastTrainIndicationTime = mConnectionRemote.getLastTrainIndicationTime();
         } catch (RemoteException e) {
             Log.e(LOGTAG, "", e);
         }
 
-        String lastUploadTimeString = (lastUploadTime > 0)
-                                      ? DateTimeUtils.formatTimeForLocale(lastUploadTime)
-                                      : "-";
+		String lastUploadTimeString = (lastUploadTime > 0) ? DateTimeUtils
+				.formatTimeForLocale(lastUploadTime) : "-";
+		String lastTrainIndicationTimeString = (lastTrainIndicationTime > 0) ? DateTimeUtils
+				.formatTimeForLocale(lastTrainIndicationTime) : "-";
 
         formatTextView(R.id.gps_satellites, R.string.gps_satellites, mGpsFixes);
         formatTextView(R.id.wifi_access_points, R.string.wifi_access_points, APs);
         formatTextView(R.id.locations_scanned, R.string.locations_scanned, locationsScanned);
         formatTextView(R.id.last_upload_time, R.string.last_upload_time, lastUploadTimeString);
         formatTextView(R.id.reports_sent, R.string.reports_sent, reportsSent);
-        formatTextView(R.id.last_train, R.string.last_train, timeWhenLastOnTrain);
+        formatTextView(R.id.last_train, R.string.last_train, lastTrainIndicationTimeString);
     }
 
     public void onClick_ToggleScanning(View v) throws RemoteException {
