@@ -33,7 +33,7 @@ final class SSIDBlockList {
         "FirefoxHotspot",
 
         // Transportation Wi-Fi
-        "ac_transit_wifi_bus",
+        /*"ac_transit_wifi_bus",
         "AmtrakConnect",
         "Amtrak_",
         "amtrak_",
@@ -48,7 +48,7 @@ final class SSIDBlockList {
         "egged.co.il", // Egged transportation services (Israel)
         "gb-tours.com", // GB Tours transportation services (Israel)
         "ISRAEL-RAILWAYS",
-        "Omni-WiFi", // Omnibus transportation services (Israel)
+        "Omni-WiFi", // Omnibus transportation services (Israel)*/
     };
 
     private static final String[] SUFFIX_LIST = {
