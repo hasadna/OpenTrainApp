@@ -92,6 +92,7 @@ public class WifiScanner extends BroadcastReceiver {
 
       try {
         JSONObject obj = new JSONObject();
+        obj.put("SSID", scanResult.SSID);
         obj.put("key", scanResult.BSSID);
         obj.put("frequency", scanResult.frequency);
         obj.put("signal", scanResult.level);

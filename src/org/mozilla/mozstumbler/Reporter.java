@@ -24,8 +24,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 class Reporter extends BroadcastReceiver {
-    private static final String LOGTAG          = Reporter.class.getName(); //TODO: this should contain our own url
-    private static final String LOCATION_URL    = "https://location.services.mozilla.com/v1/submit";
+    private static final String LOGTAG          = Reporter.class.getName(); 
+    private static final String LOCATION_URL    = "http://54.221.246.54/reports/add/";//"https://location.services.mozilla.com/v1/submit"; //TODO: hasadna this should contain our own url
     private static final String NICKNAME_HEADER = "X-Nickname";
     private static final String USER_AGENT_HEADER = "User-Agent";
     private static final int RECORD_BATCH_SIZE  = 20;
@@ -53,6 +53,7 @@ class Reporter extends BroadcastReceiver {
     private long mReportsSent;
 
     Reporter(Context context, Prefs prefs) {
+    	
         mContext = context;
         mPrefs = prefs;
 
@@ -142,10 +143,12 @@ class Reporter extends BroadcastReceiver {
 
         // Record recent Wi-Fi and/or cell scan results for the current GPS position.
         Log.d(LOGTAG, "Reporter data: GPS: "+mGPSData.length()+", WiFi: "+mWifiData.length()+", Cell: "+mCellData.length()+" ("+mRadioType+")");
-        if (mGPSData.length() > 0 && (mWifiData.length() > 0 || mCellData.length() > 0)) {
-          reportLocation(mGPSData, mWifiData, mRadioType, mCellData);
-          resetData();
-        }
+        
+        // HASADNA: removed the following condition because we want to send data even when no gps is available.
+        //if (mGPSData.length() > 0 && (mWifiData.length() > 0 || mCellData.length() > 0)) {
+        reportLocation(mGPSData, mWifiData, mRadioType, mCellData);
+        resetData();
+        //}
     }
 
     void sendReports(boolean force) {
@@ -171,6 +174,7 @@ class Reporter extends BroadcastReceiver {
         mReports = new JSONArray();
 
         String nickname = mPrefs.getNickname();
+        
         spawnReporterThread(reports, nickname);
     }
 
@@ -234,25 +238,31 @@ class Reporter extends BroadcastReceiver {
     }
 
     void reportLocation(String location, String wifiInfo, String radioType, String cellInfo) {
-        Log.d(LOGTAG, "reportLocation called");
+        // HASADNA: added this to enable debugging:
+        android.os.Debug.waitForDebugger();
+    	Log.d(LOGTAG, "reportLocation called");
         JSONObject locInfo = null;
         JSONArray cellJSON = null
                 ,wifiJSON = null;
 
         try {
-            locInfo = new JSONObject( location );
+        	if (location.length()>0) {
+                locInfo = new JSONObject( location );
+        	} else { 
+        		locInfo = new JSONObject( );
+            }
 
             if (cellInfo.length()>0) {
                 cellJSON=new JSONArray(cellInfo);
                 locInfo.put("cell", cellJSON);
                 locInfo.put("radio", radioType);
             }
-
+            
             if (wifiInfo.length()>0) {
                 wifiJSON=new JSONArray(wifiInfo);
                 locInfo.put("wifi", wifiJSON);
             }
-
+            
             // At least one cell or wifi entry is required
             // as per: https://mozilla-ichnaea.readthedocs.org/en/latest/api/submit.html
             if (cellJSON == null && wifiJSON == null) {
