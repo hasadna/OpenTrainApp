@@ -200,6 +200,7 @@ public final class MainActivity extends Activity {
         int APs = 0;
         long lastUploadTime = 0;
         long reportsSent = 0;
+        long timeWhenLastOnTrain = 0; // TODO: should have time when we were last on train
         try {
             locationsScanned = mConnectionRemote.getLocationCount();
             APs = mConnectionRemote.getAPCount();
@@ -218,6 +219,7 @@ public final class MainActivity extends Activity {
         formatTextView(R.id.locations_scanned, R.string.locations_scanned, locationsScanned);
         formatTextView(R.id.last_upload_time, R.string.last_upload_time, lastUploadTimeString);
         formatTextView(R.id.reports_sent, R.string.reports_sent, reportsSent);
+        formatTextView(R.id.last_train, R.string.last_train, timeWhenLastOnTrain);
     }
 
     public void onClick_ToggleScanning(View v) throws RemoteException {
@@ -230,9 +232,13 @@ public final class MainActivity extends Activity {
 
         Button b = (Button) v;
         if (scanning) {
+            unbindService(mConnection);
             mConnectionRemote.stopScanning();
             b.setText(R.string.start_scanning);
         } else {
+            Intent intent = new Intent(this, ScannerService.class);
+            startService(intent);
+            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
             mConnectionRemote.startScanning();
             b.setText(R.string.stop_scanning);
         }
@@ -242,7 +248,7 @@ public final class MainActivity extends Activity {
         Intent openLeaderboard = new Intent(Intent.ACTION_VIEW, Uri.parse(LEADERBOARD_URL));
         startActivity(openLeaderboard);
     }
-
+    
     /*public void onClick_ViewMap(View v) throws RemoteException {
         // We are starting Wi-Fi scanning because we want the the APs for our
         // geolocation request whose results we want to display on the map.
