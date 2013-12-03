@@ -307,6 +307,7 @@ public final class MainActivity extends Activity {
     private void formatTextView(int textViewId, int stringId, Object... args) {
         TextView textView = (TextView) findViewById(textViewId);
         String str = getResources().getString(stringId);
+        Log.d("hebrew","str = " + str + " args = " + args);
         str = String.format(str, args);
         textView.setText(str);
     }
