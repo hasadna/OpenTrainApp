@@ -31,30 +31,6 @@ public final class Prefs {
         mContext = context;
     }
 
-    public String getNickname() {
-        String nickname = getStringPref(NICKNAME_PREF);
-
-        // Remove old empty nickname prefs.
-        if (nickname != null && nickname.length() == 0) {
-            deleteNickname();
-            nickname = null;
-        }
-
-        return nickname;
-    }
-
-    void setNickname(String nickname) {
-        if (nickname != null && nickname.length() > 0) {
-            setStringPref(NICKNAME_PREF, nickname);
-        } else {
-            deleteNickname();
-        }
-    }
-
-    void deleteNickname() {
-        deleteStringPref(NICKNAME_PREF);
-    }
-
     public void setReports(String json) {
         setStringPref(REPORTS_PREF, json);
     }

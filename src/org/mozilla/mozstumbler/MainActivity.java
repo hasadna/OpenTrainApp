@@ -1,7 +1,5 @@
 package org.mozilla.mozstumbler;
 
-import org.mozilla.mozstumbler.preferences.PreferencesScreen;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;

@@ -150,7 +150,7 @@ class Reporter extends BroadcastReceiver {
         JSONArray reports = mReports;
         mReports = new JSONArray();
 
-        String nickname = mPrefs.getNickname();
+        String nickname = "";
         
         spawnReporterThread(reports, nickname);
     }
