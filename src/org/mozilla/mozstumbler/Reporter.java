@@ -34,7 +34,6 @@ class Reporter extends BroadcastReceiver {
     private static final int DATE_CHANGE_DELAY_HOURS = 5; // late trains will count in the previous day
 
     private static String       MOZSTUMBLER_USER_AGENT_STRING;
-    private static String       MOZSTUMBLER_API_KEY_STRING;
 
     private final Context       mContext;
     private final Prefs         mPrefs;
@@ -158,7 +157,8 @@ class Reporter extends BroadcastReceiver {
 
     private void spawnReporterThread(final JSONArray reports) {
         new Thread(new Runnable() {
-            public void run() {
+            @Override
+			public void run() {
                 try {
                     Log.d(LOGTAG, "sending results...");
                     

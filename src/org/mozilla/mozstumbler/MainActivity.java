@@ -63,7 +63,7 @@ public final class MainActivity extends Activity {
 
             if (subject.equals("Notification")) {
                 String text = intent.getStringExtra(Intent.EXTRA_TEXT);
-                Toast.makeText(getApplicationContext(), (CharSequence) text, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
                 Log.d(LOGTAG, "Received a notification intent and showing: " + text);
                 return;
             } else if (subject.equals("Reporter")) {
@@ -137,13 +137,15 @@ public final class MainActivity extends Activity {
         mReceiver.register();
 
         mConnection = new ServiceConnection() {
-            public void onServiceConnected(ComponentName className, IBinder binder) {
+            @Override
+			public void onServiceConnected(ComponentName className, IBinder binder) {
                 mConnectionRemote = ScannerServiceInterface.Stub.asInterface(binder);
                 Log.d(LOGTAG, "Service connected");
                 updateUI();
             }
 
-            public void onServiceDisconnected(ComponentName className) {
+            @Override
+			public void onServiceDisconnected(ComponentName className) {
                 mConnectionRemote = null;
                 Log.d(LOGTAG, "Service disconnected", new Exception());
             }
@@ -185,10 +187,13 @@ public final class MainActivity extends Activity {
         }
 
         Button scanningBtn = (Button) findViewById(R.id.toggle_scanning);
+        TextView status = (TextView) findViewById(R.id.status_text);
         if (scanning) {
-            scanningBtn.setText(R.string.stop_scanning);
+            status.setText(R.string.status_on);
+            scanningBtn.setBackgroundResource(R.drawable.red_button);
         } else {
-            scanningBtn.setText(R.string.start_scanning);
+            status.setText(R.string.status_off);
+            scanningBtn.setBackgroundResource(R.drawable.green_button);
         }
 
         int locationsScanned = 0;
@@ -227,17 +232,20 @@ public final class MainActivity extends Activity {
         boolean scanning = mConnectionRemote.isScanning();
         Log.d(LOGTAG, "Connection remote return: isScanning() = " + scanning);
 
-        Button b = (Button) v;
+        Button scanningBtn = (Button) v;
+        TextView status = (TextView) findViewById(R.id.status_text);
         if (scanning) {
             unbindService(mConnection);
             mConnectionRemote.stopScanning();
-            b.setText(R.string.start_scanning);
+            status.setText(R.string.status_on);
+            scanningBtn.setBackgroundResource(R.drawable.red_button);
         } else {
             Intent intent = new Intent(this, ScannerService.class);
             startService(intent);
             bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
             mConnectionRemote.startScanning();
-            b.setText(R.string.stop_scanning);
+            status.setText(R.string.status_off);
+            scanningBtn.setBackgroundResource(R.drawable.green_button);
         }
     }
 

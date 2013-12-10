@@ -78,7 +78,8 @@ public class WifiScanner extends BroadcastReceiver {
     mStarted = false;
   }
 
-  public void onReceive(Context c, Intent intent) {
+  @Override
+public void onReceive(Context c, Intent intent) {
     Collection<ScanResult> scanResults = getWifiManager().getScanResults();
     boolean isTrainIndication = false;
     JSONArray wifiInfo = new JSONArray();
