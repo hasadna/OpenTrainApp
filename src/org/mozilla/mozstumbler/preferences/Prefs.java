@@ -1,19 +1,16 @@
 package org.mozilla.mozstumbler.preferences;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build.VERSION;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.util.Log;
-
-import java.util.UUID;
 
 public final class Prefs {
     private static final String     LOGTAG        = Prefs.class.getName();
     private static final String     PREFS_FILE    = Prefs.class.getName();
-    private static final String     NICKNAME_PREF = "nickname";
     private static final String     REPORTS_PREF  = "reports";
 
     private int mCurrentVersion;
@@ -49,13 +46,8 @@ public final class Prefs {
         apply(editor);
     }
 
-    private void deleteStringPref(String key) {
-        SharedPreferences.Editor editor = getPrefs().edit();
-        editor.remove(key);
-        apply(editor);
-    }
-
-    private static void apply(SharedPreferences.Editor editor) {
+    @SuppressLint("NewApi")
+	private static void apply(SharedPreferences.Editor editor) {
         if (VERSION.SDK_INT >= 9) {
             editor.apply();
         } else if (!editor.commit()) {

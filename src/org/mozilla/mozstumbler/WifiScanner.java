@@ -18,8 +18,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class WifiScanner extends BroadcastReceiver {
   private static final String LOGTAG              = Scanner.class.getName();
