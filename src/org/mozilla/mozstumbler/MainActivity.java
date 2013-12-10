@@ -267,26 +267,6 @@ public final class MainActivity extends Activity {
         startActivity(intent);
     }*/
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_about) {
-        	startActivity(new Intent(getApplication(), AboutActivity.class));
-            return true;
-        } else if (item.getItemId() == R.id.action_preferences) {
-        	startActivity(new Intent(getApplication(), PreferencesScreen.class));
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @TargetApi(9)
     private void enableStrictMode() {
         if (VERSION.SDK_INT < 9) {
