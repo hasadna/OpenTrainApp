@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MozStumbler</string>
+    <string name="app_name">Open Trains</string>
     <string name="action_about">About MozStumbler</string>
     <string name="action_preferences">Settings</string>
     <string name="mozilla_title">Mozilla</string>
     <string name="view_leaderboard">View Leaderboard</string>
     <string name="view_map">Test Mozilla Location Service</string>
-    <string name="service_name">Mozilla Stumbler</string>
+    <string name="service_name">Open Trains</string>
     
-    <string name="last_train">Last Time Using Train: %1$s</string>
+    <string name="last_train">Last on Train: %1$s</string>
     <string name="wifi_access_points">Wi-Fi Access Points Scanned: %1$d</string>
     <string name="gps_satellites">GPS Satellites Visible: %1$d</string>
     <string name="locations_scanned">Locations Scanned: %1$d</string>
-    <string name="last_upload_time">Last Report Sent On: %1$s</string>
+    <string name="last_upload_time">Last Report: %1$s</string>
     <string name="reports_sent">Reports Sent: %1$d</string>
-    <string name="service_scanning">Will report when rail Wi-Fi hot spots encountered</string>
+    <string name="service_scanning">Open Trains Online</string>
     
     <string name="enter_nickname">Enter Nickname (optional)</string>
     <string name="enter_nickname_title">Nickname: </string>

@@ -89,7 +89,7 @@ public final class MainActivity extends Activity {
         enableStrictMode();
         setContentView(R.layout.activity_main);
 
-        Updater.checkForUpdates(this);
+        //Updater.checkForUpdates(this);
 
         Log.d(LOGTAG, "onCreate");
     }
@@ -159,15 +159,19 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        unbindService(mConnection);
-        mConnection = null;
-        mConnectionRemote = null;
-        mReceiver.unregister();
-        mReceiver = null;
-        Log.d(LOGTAG, "onStop");
-    }
+	protected void onStop() {
+		super.onStop();
+		try {
+			unbindService(mConnection);
+			mConnection = null;
+			mConnectionRemote = null;
+		} catch (Exception ex) {
+			//Service was already unbound.
+		}
+		mReceiver.unregister();
+		mReceiver = null;
+		Log.d(LOGTAG, "onStop");
+	}
 
     protected void updateUI() {
         // TODO time this to make sure we're not blocking too long on mConnectionRemote
