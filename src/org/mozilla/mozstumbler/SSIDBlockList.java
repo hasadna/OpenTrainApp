@@ -55,6 +55,7 @@ final class SSIDBlockList {
         // Transportation Wi-Fi
         "ISRAEL-RAILWAYS",
         "S-ISRAEL-RAILWAYS",
+        "keydars", // TODO: Remove before launch!
         "CampusGuest" //TODO: Remove before launch!
     };
 
