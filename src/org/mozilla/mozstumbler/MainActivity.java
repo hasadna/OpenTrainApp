@@ -1,7 +1,5 @@
 package org.mozilla.mozstumbler;
 
-import org.mozilla.mozstumbler.preferences.PreferencesScreen;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,16 +18,9 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.StrictMode;
 import android.provider.Settings;
-import android.text.Editable;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,7 +63,7 @@ public final class MainActivity extends Activity {
 
             if (subject.equals("Notification")) {
                 String text = intent.getStringExtra(Intent.EXTRA_TEXT);
-                Toast.makeText(getApplicationContext(), (CharSequence) text, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
                 Log.d(LOGTAG, "Received a notification intent and showing: " + text);
                 return;
             } else if (subject.equals("Reporter")) {
@@ -84,6 +75,10 @@ public final class MainActivity extends Activity {
                 updateUI();
                 Log.d(LOGTAG, "Received a scanner intent...");
                 return;
+            } else if (intent.getBooleanExtra("TrainIndication", false)) {
+                updateUI();
+                Log.d(LOGTAG, "Received train indication...");
+                return;
             }
         }
     }
@@ -94,7 +89,7 @@ public final class MainActivity extends Activity {
         enableStrictMode();
         setContentView(R.layout.activity_main);
 
-        Updater.checkForUpdates(this);
+        //Updater.checkForUpdates(this);
 
         Log.d(LOGTAG, "onCreate");
     }
@@ -142,13 +137,15 @@ public final class MainActivity extends Activity {
         mReceiver.register();
 
         mConnection = new ServiceConnection() {
-            public void onServiceConnected(ComponentName className, IBinder binder) {
+            @Override
+			public void onServiceConnected(ComponentName className, IBinder binder) {
                 mConnectionRemote = ScannerServiceInterface.Stub.asInterface(binder);
                 Log.d(LOGTAG, "Service connected");
                 updateUI();
             }
 
-            public void onServiceDisconnected(ComponentName className) {
+            @Override
+			public void onServiceDisconnected(ComponentName className) {
                 mConnectionRemote = null;
                 Log.d(LOGTAG, "Service disconnected", new Exception());
             }
@@ -162,15 +159,19 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        unbindService(mConnection);
-        mConnection = null;
-        mConnectionRemote = null;
-        mReceiver.unregister();
-        mReceiver = null;
-        Log.d(LOGTAG, "onStop");
-    }
+	protected void onStop() {
+		super.onStop();
+		try {
+			unbindService(mConnection);
+			mConnection = null;
+			mConnectionRemote = null;
+		} catch (Exception ex) {
+			//Service was already unbound.
+		}
+		mReceiver.unregister();
+		mReceiver = null;
+		Log.d(LOGTAG, "onStop");
+	}
 
     protected void updateUI() {
         // TODO time this to make sure we're not blocking too long on mConnectionRemote
@@ -190,36 +191,41 @@ public final class MainActivity extends Activity {
         }
 
         Button scanningBtn = (Button) findViewById(R.id.toggle_scanning);
+        TextView status = (TextView) findViewById(R.id.status_text);
         if (scanning) {
-            scanningBtn.setText(R.string.stop_scanning);
+            status.setText(R.string.status_on);
+            scanningBtn.setBackgroundResource(R.drawable.red_button);
         } else {
-            scanningBtn.setText(R.string.start_scanning);
+            status.setText(R.string.status_off);
+            scanningBtn.setBackgroundResource(R.drawable.green_button);
         }
 
         int locationsScanned = 0;
         int APs = 0;
         long lastUploadTime = 0;
         long reportsSent = 0;
-        long timeWhenLastOnTrain = 0; // TODO: should have time when we were last on train
+        long lastTrainIndicationTime = 0; // TODO: should have time when we were last on train
         try {
             locationsScanned = mConnectionRemote.getLocationCount();
             APs = mConnectionRemote.getAPCount();
             lastUploadTime = mConnectionRemote.getLastUploadTime();
             reportsSent = mConnectionRemote.getReportsSent();
+            lastTrainIndicationTime = mConnectionRemote.getLastTrainIndicationTime();
         } catch (RemoteException e) {
             Log.e(LOGTAG, "", e);
         }
 
-        String lastUploadTimeString = (lastUploadTime > 0)
-                                      ? DateTimeUtils.formatTimeForLocale(lastUploadTime)
-                                      : "-";
+		String lastUploadTimeString = (lastUploadTime > 0) ? DateTimeUtils
+				.formatTimeForLocale(lastUploadTime) : "-";
+		String lastTrainIndicationTimeString = (lastTrainIndicationTime > 0) ? DateTimeUtils
+				.formatTimeForLocale(lastTrainIndicationTime) : "-";
 
         formatTextView(R.id.gps_satellites, R.string.gps_satellites, mGpsFixes);
         formatTextView(R.id.wifi_access_points, R.string.wifi_access_points, APs);
         formatTextView(R.id.locations_scanned, R.string.locations_scanned, locationsScanned);
         formatTextView(R.id.last_upload_time, R.string.last_upload_time, lastUploadTimeString);
         formatTextView(R.id.reports_sent, R.string.reports_sent, reportsSent);
-        formatTextView(R.id.last_train, R.string.last_train, timeWhenLastOnTrain);
+        formatTextView(R.id.last_train, R.string.last_train, lastTrainIndicationTimeString);
     }
 
     public void onClick_ToggleScanning(View v) throws RemoteException {
@@ -230,17 +236,20 @@ public final class MainActivity extends Activity {
         boolean scanning = mConnectionRemote.isScanning();
         Log.d(LOGTAG, "Connection remote return: isScanning() = " + scanning);
 
-        Button b = (Button) v;
+        Button scanningBtn = (Button) v;
+        TextView status = (TextView) findViewById(R.id.status_text);
         if (scanning) {
             unbindService(mConnection);
             mConnectionRemote.stopScanning();
-            b.setText(R.string.start_scanning);
+            status.setText(R.string.status_on);
+            scanningBtn.setBackgroundResource(R.drawable.red_button);
         } else {
             Intent intent = new Intent(this, ScannerService.class);
             startService(intent);
             bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
             mConnectionRemote.startScanning();
-            b.setText(R.string.stop_scanning);
+            status.setText(R.string.status_off);
+            scanningBtn.setBackgroundResource(R.drawable.green_button);
         }
     }
 
@@ -260,26 +269,6 @@ public final class MainActivity extends Activity {
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }*/
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_about) {
-        	startActivity(new Intent(getApplication(), AboutActivity.class));
-            return true;
-        } else if (item.getItemId() == R.id.action_preferences) {
-        	startActivity(new Intent(getApplication(), PreferencesScreen.class));
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @TargetApi(9)
     private void enableStrictMode() {
@@ -301,6 +290,7 @@ public final class MainActivity extends Activity {
     private void formatTextView(int textViewId, int stringId, Object... args) {
         TextView textView = (TextView) findViewById(textViewId);
         String str = getResources().getString(stringId);
+        Log.d("hebrew","str = " + str + " args = " + args);
         str = String.format(str, args);
         textView.setText(str);
     }

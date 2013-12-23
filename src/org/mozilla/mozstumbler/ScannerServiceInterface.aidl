@@ -9,4 +9,5 @@ interface ScannerServiceInterface {
     int getAPCount();
     long getLastUploadTime();
     long getReportsSent();
+    long getLastTrainIndicationTime();
 }

@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.util.Log;
+import android.provider.Settings.Secure;
 
 import org.mozilla.mozstumbler.preferences.Prefs;
 
@@ -22,40 +22,36 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.util.Calendar;
 
 class Reporter extends BroadcastReceiver {
     private static final String LOGTAG          = Reporter.class.getName(); 
     private static final String LOCATION_URL    = "http://54.221.246.54/reports/add/";//"https://location.services.mozilla.com/v1/submit"; //TODO: hasadna this should contain our own url
-    private static final String NICKNAME_HEADER = "X-Nickname";
     private static final String USER_AGENT_HEADER = "User-Agent";
     private static final int RECORD_BATCH_SIZE  = 20;
-    private static final int REPORTER_WINDOW  = 3000; //ms
+    private static final long TRAIN_INDICATION_TTL = 1 * 60 * 60 * 1000;
+    private static final int DATE_CHANGE_DELAY_HOURS = 5; // late trains will count in the previous day
 
     private static String       MOZSTUMBLER_USER_AGENT_STRING;
-    private static String       MOZSTUMBLER_API_KEY_STRING;
 
     private final Context       mContext;
     private final Prefs         mPrefs;
     private JSONArray           mReports;
     private long                mLastUploadTime;
     private URL                 mURL; 
-
-    private String mWifiData;
-    private long   mWifiDataTime;
-
-    private String mCellData;
-    private long   mCellDataTime;
-
-    private long   mGPSDataTime;
-    private String mGPSData;
-
-    private String mRadioType;
+    private String 				mDeviceId;
     private long mReportsSent;
+    
+    private long mLastTrainIndicationTime;
 
     Reporter(Context context, Prefs prefs) {
     	
         mContext = context;
         mPrefs = prefs;
+        mLastTrainIndicationTime = 0;
+        mDeviceId = Secure.getString(mContext.getContentResolver(),
+                Secure.ANDROID_ID); 
 
         MOZSTUMBLER_USER_AGENT_STRING = NetworkUtils.getUserAgentString(mContext);
 
@@ -73,24 +69,12 @@ class Reporter extends BroadcastReceiver {
             throw new IllegalArgumentException(e);
         }
 
-        resetData();
         mContext.registerReceiver(this, new IntentFilter(ScannerService.MESSAGE_TOPIC));
-    }
-
-    private void resetData() {
-        mWifiData = "";
-        mCellData = "";
-        mRadioType = "";
-        mGPSData = "";
-        mWifiDataTime = 0;
-        mCellDataTime = 0;
-        mGPSDataTime = 0;
     }
 
     void shutdown() {
         Log.d(LOGTAG, "shutdown");
 
-        resetData();
         // Attempt to write out mReports
         mPrefs.setReports(mReports.toString());
         mContext.unregisterReceiver(this);
@@ -104,50 +88,46 @@ class Reporter extends BroadcastReceiver {
             Log.e(LOGTAG, "Received an unknown intent");
             return;
         }
-
+        // We should only consider reporting if we are in a train context
         long time = intent.getLongExtra("time", 0);
+        boolean isTrainIndication = intent.getBooleanExtra("TrainIndication", false);
+        if (isTrainIndication) {
+        	mLastTrainIndicationTime = time;
+        }
+        
+        if (System.currentTimeMillis() - mLastTrainIndicationTime > TRAIN_INDICATION_TTL) {
+        	// We are not in train context. Don't report.
+        	return;
+        }
+        
         String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
         String data = intent.getStringExtra("data");
+        
         if (data!=null) Log.d(LOGTAG, "" + subject + " : " + data);
 
-        if (mWifiDataTime - time > REPORTER_WINDOW) {
-          mWifiData = "";
-          mWifiDataTime = 0;
-        }
-
-        if (mCellDataTime - time > REPORTER_WINDOW) {
-          mCellData = "";
-          mCellDataTime = 0;
-        }
-
-        if (mGPSDataTime - time > REPORTER_WINDOW) {
-          mGPSData = "";
-          mGPSDataTime = 0;
-        }
-
+        String wifiData = "";
+        String cellData = "";
+        String radioType = "";
+        String GPSData = "";
         if (subject.equals("WifiScanner")) {
-            mWifiData = data;
-            mWifiDataTime = time;
+        	wifiData = data;
+            Log.d(LOGTAG, "Reporter data: WiFi: "+wifiData.length());
         } else if (subject.equals("CellScanner")) {
-            mCellData = data;
-            mRadioType = intent.getStringExtra("radioType");
-            mCellDataTime = time;
+        	cellData = data;
+        	radioType = intent.getStringExtra("radioType");
+            Log.d(LOGTAG, "Reporter data: Cell: "+cellData.length()+" ("+radioType+")");
         } else if (subject.equals("GPSScanner")) {
-            mGPSData = data;
-            mGPSDataTime = time;
+        	GPSData = data;
+            Log.d(LOGTAG, "Reporter data: GPS: "+GPSData.length());
         }
         else {
             Log.d(LOGTAG, "Intent ignored with Subject: " + subject);
             return; // Intent not aimed at the Reporter (it is possibly for UI instead)
         }
-
-        // Record recent Wi-Fi and/or cell scan results for the current GPS position.
-        Log.d(LOGTAG, "Reporter data: GPS: "+mGPSData.length()+", WiFi: "+mWifiData.length()+", Cell: "+mCellData.length()+" ("+mRadioType+")");
         
         // HASADNA: removed the following condition because we want to send data even when no gps is available.
         //if (mGPSData.length() > 0 && (mWifiData.length() > 0 || mCellData.length() > 0)) {
-        reportLocation(mGPSData, mWifiData, mRadioType, mCellData);
-        resetData();
+        reportLocation(time, GPSData, wifiData, radioType, cellData);
         //}
     }
 
@@ -172,15 +152,13 @@ class Reporter extends BroadcastReceiver {
 
         JSONArray reports = mReports;
         mReports = new JSONArray();
-
-        String nickname = mPrefs.getNickname();
-        
-        spawnReporterThread(reports, nickname);
+        spawnReporterThread(reports);
     }
 
-    private void spawnReporterThread(final JSONArray reports, final String nickname) {
+    private void spawnReporterThread(final JSONArray reports) {
         new Thread(new Runnable() {
-            public void run() {
+            @Override
+			public void run() {
                 try {
                     Log.d(LOGTAG, "sending results...");
                     
@@ -188,10 +166,6 @@ class Reporter extends BroadcastReceiver {
                     try {
                         urlConnection.setDoOutput(true);
                         urlConnection.setRequestProperty(USER_AGENT_HEADER, MOZSTUMBLER_USER_AGENT_STRING);
-
-                        if (nickname != null) {
-                            urlConnection.setRequestProperty(NICKNAME_HEADER, nickname);
-                        }
 
                         JSONObject wrapper = new JSONObject();
                         wrapper.put("items", reports);
@@ -237,7 +211,7 @@ class Reporter extends BroadcastReceiver {
         }).start();
     }
 
-    void reportLocation(String location, String wifiInfo, String radioType, String cellInfo) {
+    void reportLocation(long time, String location, String wifiInfo, String radioType, String cellInfo) {
         // HASADNA: added this to enable debugging:
         android.os.Debug.waitForDebugger();
     	Log.d(LOGTAG, "reportLocation called");
@@ -245,13 +219,30 @@ class Reporter extends BroadcastReceiver {
         JSONArray cellJSON = null
                 ,wifiJSON = null;
 
+        // Prepare the device id to be sent along with the report
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.HOUR_OF_DAY, - DATE_CHANGE_DELAY_HOURS);
+        String device_id_date = mDeviceId + now.get(Calendar.YEAR) + now.get(Calendar.DAY_OF_YEAR);
+        String hashed_device_id;
         try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-1");      
+            hashed_device_id = digest.digest(device_id_date.getBytes()).toString();
+        } catch (Exception ex) {
+        	Log.w(LOGTAG, "Unable to hash device ID, using plain device ID with date:" + ex);
+        	hashed_device_id = device_id_date;
+        } 
+
+        
+        try {        	
         	if (location.length()>0) {
                 locInfo = new JSONObject( location );
         	} else { 
         		locInfo = new JSONObject( );
             }
-
+        	
+            locInfo.put("time", time);
+            locInfo.put("device_id", hashed_device_id);
+            
             if (cellInfo.length()>0) {
                 cellJSON=new JSONArray(cellInfo);
                 locInfo.put("cell", cellJSON);
@@ -285,6 +276,10 @@ class Reporter extends BroadcastReceiver {
 
     public long getReportsSent() {
         return mReportsSent;
+    }
+    
+    public long getLastTrainIndicationTime() {
+        return mLastTrainIndicationTime;
     }
 
     private void sendUpdateIntent() {

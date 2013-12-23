@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/black"
     android:focusableInTouchMode="true"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -15,7 +16,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:text="@string/last_train"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white" />
 
     <TextView
         android:id="@+id/gps_satellites"
@@ -25,6 +27,7 @@
         android:layout_below="@+id/last_train"
         android:text="@string/gps_satellites"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white"
         android:visibility="gone" />
 
     <TextView
@@ -35,6 +38,7 @@
         android:layout_below="@+id/gps_satellites"
         android:text="@string/locations_scanned"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white"
         android:visibility="gone" />
 
     <TextView
@@ -45,6 +49,7 @@
         android:layout_below="@+id/locations_scanned"
         android:text="@string/wifi_access_points"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white"
         android:visibility="gone" />
 
     <TextView
@@ -54,7 +59,8 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/wifi_access_points"
         android:text="@string/last_upload_time"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white" />
 
     <TextView
         android:id="@+id/reports_sent"
@@ -63,14 +69,28 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/last_upload_time"
         android:text="@string/reports_sent"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/status_text"
+        android:layout_width="wrap_content"
+        android:layout_height="128dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/reports_sent"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:paddingTop="32dp"
+        android:text="@string/status_off"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white" />
 
     <Button
         android:id="@+id/view_leaderboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/reports_sent"
+        android:layout_below="@+id/status_text"
         android:onClick="onClick_ViewLeaderboard"
         android:text="@string/view_leaderboard"
         android:visibility="gone" />
@@ -85,17 +105,30 @@
         android:text="@string/view_map"
         android:visibility="gone" />
 
-    <Button
-        android:id="@+id/toggle_scanning"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/view_map"
-        android:gravity="center"
-        android:onClick="onClick_ToggleScanning"
-        android:text="@string/start_scanning"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/status_text" >
+
+        <ImageView
+            android:id="@+id/radar_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_alignParentBottom="true"
+            android:contentDescription="@string/radar_image_desc"
+            android:src="@drawable/radar" />
+
+        <Button
+            android:id="@+id/toggle_scanning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/green_button"
+            android:onClick="onClick_ToggleScanning"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </RelativeLayout>
 
 </RelativeLayout>

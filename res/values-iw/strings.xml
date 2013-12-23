@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MozStumbler</string>
+    <string name="app_name">Open Trains</string>
     <string name="action_about">על אודות MozStumbler</string>
     <string name="action_preferences">הגדרות</string>
     <string name="mozilla_title">Mozilla</string>
-    <string name="start_scanning">דווח כאשר יש תנועת רכבות בסביבתך</string>
-    <string name="stop_scanning">הפסק דיווחים</string>
     <string name="view_leaderboard">צפייה בלוח המובילים</string>
     <string name="view_map">בדיקת שירות האיכון של Mozilla</string>
-    <string name="service_name">Mozilla Stumbler</string>
+    <string name="service_name">Open Trains</string>
     <string name="wifi_access_points">נקודות גישה מסוג Wi-Fi שנסרקו: %1$d</string>
     <string name="gps_satellites">לווייני GPS גלויים: %1$d</string>
     <string name="locations_scanned">מיקומים שנסרקו: %1$d</string>
     <string name="last_upload_time">מועד ההעלאה האחרון: %1$s</string>
     <string name="reports_sent">דיווחים שנשלחו: %1$d</string>
-    <string name="service_scanning">מתבצעת סריקה לאיתור רשתות סלולריות ו־Wi-Fi</string>
+    <string name="service_scanning">מדווח על רכבות</string>
     <string name="last_train">זמן אחרון ברכבת: %1$d</string>
     
     <string name="enter_nickname">הזנת שם המשתמש (רשות)</string>
@@ -36,6 +34,5 @@
     <string name="no">לא</string>
 
     <string name="about_version">גרסה %1$s</string>
-    <string name="about_more">פרטים נוספים...</string>
-
+<string name="status_off">כאשר האפליקציה במצב פעיל, ורק אם המכשיר גילה נקודות ווי-פיי של רכבת ישראל, המכשיר ידווח על כל רשתות הווי-פיי שהוא רואה.</string>
 </resources>

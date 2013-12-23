@@ -4,7 +4,6 @@ import java.util.Calendar;
 
 import org.mozilla.mozstumbler.preferences.Prefs;
 
-import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -14,7 +13,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -132,6 +130,11 @@ public final class ScannerService extends Service {
         @Override
         public long getReportsSent () throws RemoteException {
             return mReporter.getReportsSent();
+        }
+        
+        @Override
+        public long getLastTrainIndicationTime () throws RemoteException {
+            return mReporter.getLastTrainIndicationTime();
         }
     };
 

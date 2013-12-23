@@ -1,22 +1,17 @@
 package org.mozilla.mozstumbler;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.os.Bundle;
 import android.util.Log;
-
-import java.util.Collection;
 
 public class GPSScanner implements LocationListener {
     private static final String   LOGTAG                  = Scanner.class.getName();
@@ -40,7 +35,8 @@ public class GPSScanner implements LocationListener {
                                                             this);
 
         mGPSListener = new GpsStatus.Listener() {
-                public void onGpsStatusChanged(int event) {
+                @Override
+				public void onGpsStatusChanged(int event) {
                     if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS) {
 
                         GpsStatus status = getLocationManager().getGpsStatus(null);
