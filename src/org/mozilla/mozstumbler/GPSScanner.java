@@ -98,6 +98,7 @@ public class GPSScanner implements LocationListener {
             locInfo.put("lat", location.getLatitude());
             locInfo.put("accuracy", (int) location.getAccuracy());
             locInfo.put("altitude", (int) location.getAltitude());
+            locInfo.put("debug_gps", 0);
         } catch (JSONException jsonex) {
             Log.e(LOGTAG, "", jsonex);
         }

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
+import android.location.Location;
+import android.os.Bundle;
 import android.provider.Settings.Secure;
 
 import org.mozilla.mozstumbler.preferences.Prefs;
@@ -12,6 +14,8 @@ import org.mozilla.mozstumbler.preferences.Prefs;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.google.android.gms.location.LocationClient;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -25,7 +29,13 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.util.Calendar;
 
-class Reporter extends BroadcastReceiver {
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
+
+class Reporter extends BroadcastReceiver implements 
+		GooglePlayServicesClient.ConnectionCallbacks, 
+		GooglePlayServicesClient.OnConnectionFailedListener {
     private static final String LOGTAG          = Reporter.class.getName(); 
     private static final String LOCATION_URL    = "http://54.221.246.54/reports/add/";//"https://location.services.mozilla.com/v1/submit"; //TODO: hasadna this should contain our own url
     private static final String USER_AGENT_HEADER = "User-Agent";
@@ -44,6 +54,8 @@ class Reporter extends BroadcastReceiver {
     private long mReportsSent;
     
     private long mLastTrainIndicationTime;
+    
+    private LocationClient mLocationClient;    
 
     Reporter(Context context, Prefs prefs) {
     	
@@ -70,6 +82,10 @@ class Reporter extends BroadcastReceiver {
         }
 
         mContext.registerReceiver(this, new IntentFilter(ScannerService.MESSAGE_TOPIC));
+        mLocationClient = new LocationClient(context, this, this);
+        mLocationClient.connect();
+        
+
     }
 
     void shutdown() {
@@ -124,10 +140,13 @@ class Reporter extends BroadcastReceiver {
             Log.d(LOGTAG, "Intent ignored with Subject: " + subject);
             return; // Intent not aimed at the Reporter (it is possibly for UI instead)
         }
-        
+        Location location = null;
+        if (mLocationClient.isConnected()) {
+        	location = mLocationClient.getLastLocation();
+        }
         // HASADNA: removed the following condition because we want to send data even when no gps is available.
         //if (mGPSData.length() > 0 && (mWifiData.length() > 0 || mCellData.length() > 0)) {
-        reportLocation(time, GPSData, wifiData, radioType, cellData);
+        reportLocation(time, GPSData, wifiData, radioType, cellData, location);
         //}
     }
 
@@ -211,9 +230,9 @@ class Reporter extends BroadcastReceiver {
         }).start();
     }
 
-    void reportLocation(long time, String location, String wifiInfo, String radioType, String cellInfo) {
+    void reportLocation(long time, String gpsLocation, String wifiInfo, String radioType, String cellInfo, Location location) {
         // HASADNA: added this to enable debugging:
-        android.os.Debug.waitForDebugger();
+        //android.os.Debug.waitForDebugger();
     	Log.d(LOGTAG, "reportLocation called");
         JSONObject locInfo = null;
         JSONArray cellJSON = null
@@ -231,14 +250,33 @@ class Reporter extends BroadcastReceiver {
         	Log.w(LOGTAG, "Unable to hash device ID, using plain device ID with date:" + ex);
         	hashed_device_id = device_id_date;
         } 
+        
+        
 
         
         try {        	
-        	if (location.length()>0) {
-                locInfo = new JSONObject( location );
+        	if (gpsLocation.length()>0) {
+                locInfo = new JSONObject( gpsLocation );
         	} else { 
         		locInfo = new JSONObject( );
             }
+        	
+        	locInfo.put("time", time);
+        	if (location != null) {
+	        	JSONObject locAPIInfo = new JSONObject(  );
+	        	locAPIInfo.put("time", location.getTime());
+	        	locAPIInfo.put("long", location.getLongitude());
+	        	locAPIInfo.put("lat", location.getLatitude());
+	        	locAPIInfo.put("provider", location.getProvider());
+	        	locAPIInfo.put("accuracy", location.hasAccuracy() ? location.getAccuracy() : null);
+	        	locAPIInfo.put("altitude", location.hasAltitude() ? location.getAltitude() : null);
+	        	locAPIInfo.put("bearing", location.hasBearing() ? location.getBearing() : null);
+	        	locAPIInfo.put("speed", location.hasSpeed() ? location.getSpeed() : null);
+	        	locInfo.put("location_api", locAPIInfo);
+        	}
+        	else {
+        		locInfo.put("location_api", null);
+        	}
         	
             locInfo.put("time", time);
             locInfo.put("device_id", hashed_device_id);
@@ -287,4 +325,22 @@ class Reporter extends BroadcastReceiver {
         i.putExtra(Intent.EXTRA_SUBJECT, "Reporter");
         mContext.sendBroadcast(i);
     }
+
+	@Override
+	public void onConnected(Bundle arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDisconnected() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }

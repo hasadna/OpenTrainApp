@@ -2,12 +2,12 @@ package org.mozilla.mozstumbler;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
-//import com.google.android.gms.location.LocationClient;
 
 import org.mozilla.mozstumbler.cellscanner.CellScanner;
 
-class Scanner {
+class Scanner{
   private static final String LOGTAG = Scanner.class.getName();
 
   private final Context  mContext;
@@ -16,13 +16,13 @@ class Scanner {
   private GPSScanner     mGPSScanner;
   private WifiScanner    mWifiScanner;
   private CellScanner    mCellScanner;
-  //private LocationClient mLocationClient;
 
   Scanner(Context context) {
     mContext = context;
     mGPSScanner  = new GPSScanner(context);
     mWifiScanner = new WifiScanner(context);
     mCellScanner = new CellScanner(context);
+
   }
 
   void startScanning() {
