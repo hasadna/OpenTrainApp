@@ -1,4 +1,4 @@
-package org.mozilla.mozstumbler;
+package il.org.hasadna.opentrain;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -12,7 +12,7 @@ final class PackageUtils {
     static String getAppVersion(Context context) {
         PackageManager pm = context.getPackageManager();
         try {
-            return pm.getPackageInfo("org.mozilla.mozstumbler", 0).versionName;
+            return pm.getPackageInfo("il.org.hasadna.opentrain", 0).versionName;
         } catch (NameNotFoundException e) {
             throw new IllegalArgumentException(e);
         }

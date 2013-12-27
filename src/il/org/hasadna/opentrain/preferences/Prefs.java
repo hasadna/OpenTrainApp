@@ -1,4 +1,4 @@
-package org.mozilla.mozstumbler.preferences;
+package il.org.hasadna.opentrain.preferences;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

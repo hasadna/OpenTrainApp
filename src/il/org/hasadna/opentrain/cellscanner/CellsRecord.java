@@ -1,4 +1,4 @@
-package org.mozilla.mozstumbler.cellscanner;
+package il.org.hasadna.opentrain.cellscanner;
 
 import android.os.Build;
 import android.telephony.CellLocation;

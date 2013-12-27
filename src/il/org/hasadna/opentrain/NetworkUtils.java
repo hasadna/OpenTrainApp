@@ -1,4 +1,4 @@
-package org.mozilla.mozstumbler;
+package il.org.hasadna.opentrain;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

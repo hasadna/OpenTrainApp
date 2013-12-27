@@ -1,4 +1,4 @@
-package org.mozilla.mozstumbler;
+package il.org.hasadna.opentrain;
 
 import android.location.Location;
 import android.util.Log;

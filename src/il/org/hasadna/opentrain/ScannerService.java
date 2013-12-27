@@ -1,8 +1,8 @@
-package org.mozilla.mozstumbler;
+package il.org.hasadna.opentrain;
 
 import java.util.Calendar;
 
-import org.mozilla.mozstumbler.preferences.Prefs;
+import il.org.hasadna.opentrain.preferences.Prefs;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -20,7 +20,7 @@ import android.os.RemoteException;
 import android.util.Log;
 
 public final class ScannerService extends Service {
-    public static final String  MESSAGE_TOPIC   = "org.mozilla.mozstumbler.serviceMessage";
+    public static final String  MESSAGE_TOPIC   = "il.org.hasadna.opentrain.serviceMessage";
 
     private static final String LOGTAG          = ScannerService.class.getName();
     private static final int    NOTIFICATION_ID = 1;

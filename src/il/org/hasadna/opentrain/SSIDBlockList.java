@@ -1,4 +1,4 @@
-package org.mozilla.mozstumbler;
+package il.org.hasadna.opentrain;
 
 import android.net.wifi.ScanResult;
 

@@ -1,11 +1,11 @@
-package org.mozilla.mozstumbler;
+package il.org.hasadna.opentrain;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import org.mozilla.mozstumbler.cellscanner.CellScanner;
+import il.org.hasadna.opentrain.cellscanner.CellScanner;
 
 class Scanner{
   private static final String LOGTAG = Scanner.class.getName();

@@ -1,4 +1,4 @@
-package org.mozilla.mozstumbler;
+package il.org.hasadna.opentrain;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 
-import org.mozilla.mozstumbler.preferences.Prefs;
+import il.org.hasadna.opentrain.preferences.Prefs;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -74,7 +74,7 @@ class Reporter extends BroadcastReceiver implements
             mReports = new JSONArray();
         }
 
-        String apiKey = PackageUtils.getMetaDataString(context, "org.mozilla.mozstumbler.API_KEY");
+        String apiKey = PackageUtils.getMetaDataString(context, "il.org.hasadna.opentrain.API_KEY");
         try {
             mURL = new URL(LOCATION_URL + "?key=" + apiKey);
         } catch (MalformedURLException e) {
