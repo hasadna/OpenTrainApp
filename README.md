@@ -1,5 +1,7 @@
-MozStumbler
-[![Build Status](https://travis-ci.org/dougt/MozStumbler.png)](https://travis-ci.org/dougt/MozStumbler.png)
+OpenTrainApp
+This is the android app for the Open Train project of the Public Information Workshop.
+For more information, please visit:
+http://wiki.hasadna.org.il/index.php?title=%D7%A8%D7%9B%D7%91%D7%AA_%D7%A4%D7%AA%D7%95%D7%97%D7%94
 
 # Building #
 
