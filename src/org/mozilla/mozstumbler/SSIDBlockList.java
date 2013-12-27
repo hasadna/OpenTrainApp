@@ -56,6 +56,7 @@ final class SSIDBlockList {
         "ISRAEL-RAILWAYS",
         "S-ISRAEL-RAILWAYS",
         "keydars", // TODO: Remove before launch!
+        "Bartals", // TODO: Remove before launch!
         "CampusGuest" //TODO: Remove before launch!
     };
 
@@ -104,6 +105,7 @@ final class SSIDBlockList {
     }
     
     static boolean trainIndicatorsContain(ScanResult scanResult) {
+    	//android.os.Debug.waitForDebugger();
         String SSID = scanResult.SSID;
         if (SSID == null) {
             return false; // no SSID?
