@@ -40,7 +40,7 @@ class Reporter extends BroadcastReceiver implements
     private static final String LOCATION_URL    = "http://54.221.246.54/reports/add/";//"https://location.services.mozilla.com/v1/submit"; //TODO: hasadna this should contain our own url
     private static final String USER_AGENT_HEADER = "User-Agent";
     private static final int RECORD_BATCH_SIZE  = 20;
-    private static final long TRAIN_INDICATION_TTL = 1 * 60 * 60 * 1000;
+    private static final long TRAIN_INDICATION_TTL = 1 * 5 * 60 * 1000;
     private static final int DATE_CHANGE_DELAY_HOURS = 5; // late trains will count in the previous day
 
     private static String       MOZSTUMBLER_USER_AGENT_STRING;
