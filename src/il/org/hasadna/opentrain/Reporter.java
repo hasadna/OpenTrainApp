@@ -246,13 +246,10 @@ class Reporter extends BroadcastReceiver implements
         String device_id_date = mDeviceId + now.get(Calendar.YEAR) + now.get(Calendar.DAY_OF_YEAR);
         String hashed_device_id;
         try {
-            //MessageDigest digest = MessageDigest.getInstance("SHA-1");     
-            //digest.reset();
-            //hashed_device_id = digest.digest(device_id_date.getBytes()).toString();
-        	// TODO: fix SHA-1 hashcode generation to generate the same hashcode every time
-        	hashed_device_id = ((Integer)device_id_date.hashCode()).toString();
-            
-            
+            MessageDigest digest = MessageDigest.getInstance("SHA-1");     
+            digest.reset();
+            digest.update(device_id_date.getBytes("UTF-8"));
+            hashed_device_id = new String(digest.digest());    
         } catch (Exception ex) {
         	Log.w(LOGTAG, "Unable to hash device ID, using plain device ID with date:" + ex);
         	hashed_device_id = device_id_date;
