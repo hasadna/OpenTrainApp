@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 import android.location.Location;
 import android.os.Bundle;
@@ -282,6 +284,20 @@ class Reporter extends BroadcastReceiver implements
         	
             locInfo.put("time", time);
             locInfo.put("device_id", hashed_device_id);
+            
+            // TODO: add version name to report
+            //String versionName = Context.this.getApplicationContext().getPackageManager()
+            //	    .getPackageInfo(context.getPackageName(), 0).versionName;
+            
+            //PackageManager manager = this.getPackageManager();
+            //PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
+            //Toast.makeText(this,
+            //     "PackageName = " + info.packageName + "\nVersionCode = "
+            //       + info.versionCode + "\nVersionName = "
+            //       + info.versionName + "\nPermissions = " + info.permissions, Toast.LENGTH_SHORT).show();
+            
+            locInfo.put("app_version", hashed_device_id);
+            
             
             if (cellInfo.length()>0) {
                 cellJSON=new JSONArray(cellInfo);
