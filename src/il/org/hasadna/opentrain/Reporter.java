@@ -4,12 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.util.Log;
 import android.location.Location;
 import android.os.Bundle;
-import android.provider.Settings.Secure;
 
 import il.org.hasadna.opentrain.preferences.Prefs;
 
@@ -28,12 +25,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.MessageDigest;
-import java.util.Calendar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.location.LocationClient;
 
 class Reporter extends BroadcastReceiver implements 
 		GooglePlayServicesClient.ConnectionCallbacks, 
@@ -43,7 +37,6 @@ class Reporter extends BroadcastReceiver implements
     private static final String USER_AGENT_HEADER = "User-Agent";
     private static final int RECORD_BATCH_SIZE  = 20;
     private static final long TRAIN_INDICATION_TTL = 1 * 5 * 60 * 1000;
-    private static final int DATE_CHANGE_DELAY_HOURS = 5; // late trains will count in the previous day
 
     private static String       MOZSTUMBLER_USER_AGENT_STRING;
 
@@ -52,10 +45,8 @@ class Reporter extends BroadcastReceiver implements
     private JSONArray           mReports;
     private long                mLastUploadTime;
     private URL                 mURL; 
-    private String 				mDeviceId;
-    private long mReportsSent;
-    
-    private long mLastTrainIndicationTime;
+    private long 				mReportsSent;
+    private long 				mLastTrainIndicationTime;
     
     private LocationClient mLocationClient;    
 
@@ -64,8 +55,6 @@ class Reporter extends BroadcastReceiver implements
         mContext = context;
         mPrefs = prefs;
         mLastTrainIndicationTime = 0;
-        mDeviceId = Secure.getString(mContext.getContentResolver(),
-                Secure.ANDROID_ID); 
 
         MOZSTUMBLER_USER_AGENT_STRING = NetworkUtils.getUserAgentString(mContext);
 
@@ -241,19 +230,7 @@ class Reporter extends BroadcastReceiver implements
                 ,wifiJSON = null;
 
         // Prepare the device id to be sent along with the report
-        Calendar now = Calendar.getInstance();
-        now.add(Calendar.HOUR_OF_DAY, - DATE_CHANGE_DELAY_HOURS);
-        String device_id_date = mDeviceId + now.get(Calendar.YEAR) + now.get(Calendar.DAY_OF_YEAR);
-        String hashed_device_id;
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-1");     
-            digest.reset();
-            digest.update(device_id_date.getBytes("UTF-8"));
-            hashed_device_id = new String(digest.digest());    
-        } catch (Exception ex) {
-        	Log.w(LOGTAG, "Unable to hash device ID, using plain device ID with date:" + ex);
-        	hashed_device_id = device_id_date;
-        } 
+        String hashed_device_id = mPrefs.getDailyID();
         
         try {        	
         	if (gpsLocation.length()>0) {

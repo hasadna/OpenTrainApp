@@ -10,4 +10,5 @@ gradle.properties
 *.keystore
 *.swp
 *.md~
+project.properties
 .gitignore~
