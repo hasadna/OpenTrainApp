@@ -131,7 +131,10 @@ public final class MainActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
-        checkGps();
+        // Reason for commenting out checkGps() :
+        // We are currently working under the assumption that we don't need GPS accuracy 
+        // and it's better to use Location API and save battery
+        //checkGps();
 
         mReceiver = new ServiceBroadcastReceiver();
         mReceiver.register();
