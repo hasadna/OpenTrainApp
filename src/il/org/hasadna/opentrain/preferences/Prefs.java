@@ -53,7 +53,6 @@ public final class Prefs {
 	}
 
 	public String getDailyID() {
-		android.os.Debug.waitForDebugger();
 		// Prepare a string consisting of the year and day. This string will not
 		// change at midnight, but rather in the early morning.
 		Calendar now = Calendar.getInstance();
