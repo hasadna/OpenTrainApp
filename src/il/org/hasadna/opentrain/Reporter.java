@@ -261,22 +261,21 @@ class Reporter extends BroadcastReceiver implements
             
             locInfo.put("app_version_code", mPrefs.VERSION_CODE);
             locInfo.put("app_version_name", mPrefs.VERSION_NAME);
-            
-            if (cellInfo.length()>0) {
-                cellJSON=new JSONArray(cellInfo);
-                locInfo.put("cell", cellJSON);
-                locInfo.put("radio", radioType);
-            }
+          
+            // commenting out all CellScanner usage for now:            
+//            if (cellInfo.length()>0) {
+//                cellJSON=new JSONArray(cellInfo);
+//                locInfo.put("cell", cellJSON);
+//                locInfo.put("radio", radioType);
+//            }
             
             if (wifiInfo.length()>0) {
                 wifiJSON=new JSONArray(wifiInfo);
                 locInfo.put("wifi", wifiJSON);
             }
             
-            // At least one cell or wifi entry is required
-            // as per: https://mozilla-ichnaea.readthedocs.org/en/latest/api/submit.html
-            if (cellJSON == null && wifiJSON == null) {
-                Log.w(LOGTAG, "Invalid report: at least one cell/wifi entry is required");
+            if (wifiJSON == null) {
+                Log.w(LOGTAG, "Invalid report: wifi entry is required");
                 return;
             }
 

@@ -33,7 +33,8 @@ class Scanner{
 
     mGPSScanner.start();
     mWifiScanner.start();
-    mCellScanner.start();
+    // commenting out all CellScanner usage for now:    
+    //mCellScanner.start();
 
     mIsScanning = true;
 
@@ -57,7 +58,8 @@ class Scanner{
 
     mGPSScanner.stop();
     mWifiScanner.stop();
-    mCellScanner.stop();
+    // commenting out all CellScanner usage for now:
+    //mCellScanner.stop();
 
     mIsScanning = false;
 

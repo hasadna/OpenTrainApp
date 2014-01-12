@@ -90,21 +90,22 @@ public void onReceive(Context c, Intent intent) {
       }
       if (isTrainIndication(scanResult)) {
     	  isTrainIndication = true;
+      
+	      try {
+	        JSONObject obj = new JSONObject();
+	        obj.put("SSID", scanResult.SSID);
+	        obj.put("key", scanResult.BSSID);
+	        obj.put("frequency", scanResult.frequency);
+	        obj.put("signal", scanResult.level);
+	        wifiInfo.put(obj);
+	      } catch (JSONException jsonex) {
+	        Log.e(LOGTAG, "", jsonex);
+	      }
+	
+	      mAPs.add(scanResult.BSSID);
+	
+	      Log.v(LOGTAG, "BSSID=" + scanResult.BSSID + ", SSID=\"" + scanResult.SSID + "\", Signal=" + scanResult.level);
       }
-      try {
-        JSONObject obj = new JSONObject();
-        obj.put("SSID", scanResult.SSID);
-        obj.put("key", scanResult.BSSID);
-        obj.put("frequency", scanResult.frequency);
-        obj.put("signal", scanResult.level);
-        wifiInfo.put(obj);
-      } catch (JSONException jsonex) {
-        Log.e(LOGTAG, "", jsonex);
-      }
-
-      mAPs.add(scanResult.BSSID);
-
-      Log.v(LOGTAG, "BSSID=" + scanResult.BSSID + ", SSID=\"" + scanResult.SSID + "\", Signal=" + scanResult.level);
     }
 
     // No scan results to report.
