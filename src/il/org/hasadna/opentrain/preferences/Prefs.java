@@ -1,9 +1,7 @@
 package il.org.hasadna.opentrain.preferences;
 
-
-import java.security.MessageDigest;
 import java.util.Calendar;
-import java.util.Random;
+import 	java.security.SecureRandom;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -48,6 +46,7 @@ public final class Prefs {
 	}
 
 	public String getDailyID() {
+		android.os.Debug.waitForDebugger();
 		// Prepare a string consisting of the year and day. This string will not
 		// change at midnight, but rather in the early morning.
 		Calendar now = Calendar.getInstance();
@@ -58,36 +57,30 @@ public final class Prefs {
 
 		// Create a new seed if current one is out of date
 		if (existingSeedDate == null || !existingSeedDate.equals(nowDate)) {
+			
 			Log.d(LOGTAG, "Creating new daily random ID...");
-			Random r = new Random();
-			String new_id;
-			try {
-				MessageDigest digest = MessageDigest.getInstance("SHA-1");
-				byte[] byteArray = new byte[digest.getDigestLength()];
-				r.nextBytes(byteArray);
-				digest.reset();
-				{
-					digest.update(byteArray);
-					// Digest more stuff here.
-				}
-				new_id = bytesToHex(digest.digest());
-			} catch (Exception ex) {
-				Log.w(LOGTAG,
-						"Unable to hash device ID, using random long only:"
-								+ ex);
-				byte[] byteArray = new byte[20];
-				r.nextBytes(byteArray);
-				new_id = bytesToHex(byteArray);
-			}
-
+			SecureRandom sr = new SecureRandom();
+			// take 4 bytes -> 32 bits -> over 4 billion id options 
+			byte[] randomIdByteArray = new byte[4];
+			sr.nextBytes(randomIdByteArray);
+			String randomId = byteArrayToString(randomIdByteArray);
+			
 			SharedPreferences.Editor editor = getPrefs().edit();
-			editor.putString(DAILY_SEED, new_id);
+			editor.putString(DAILY_SEED, randomId);
 			editor.putString(SEED_CREATED_ON, nowDate);
 			apply(editor);
-			Log.d(LOGTAG, "New daily random ID is: " + new_id);
+			Log.d(LOGTAG, "New daily random ID is: " + randomId);
 		}
 		return getPrefs().getString(DAILY_SEED, "");
 	}
+	
+	private static String byteArrayToString(byte[] ba)
+	{
+	  StringBuilder hex = new StringBuilder(ba.length * 2);
+	  for (byte b : ba)
+	    hex.append(String.format("%02x", b));
+	  return hex.toString();
+	}	
 
 	private String getStringPref(String key) {
 		return getPrefs().getString(key, null);
@@ -108,6 +101,7 @@ public final class Prefs {
 		}
 	}
 
+	@SuppressLint("InlinedApi")
 	private SharedPreferences getPrefs() {
 		return mContext.getSharedPreferences(PREFS_FILE,
 				Context.MODE_MULTI_PROCESS | Context.MODE_PRIVATE);
