@@ -21,13 +21,15 @@ import java.util.TimerTask;
 
 public class WifiScanner extends BroadcastReceiver {
   private static final String LOGTAG              = Scanner.class.getName();
-  private static final long WIFI_MIN_UPDATE_TIME  = 1000; // milliseconds
+  private static final long WIFI_MIN_UPDATE_TIME  = 1000; // milliseconds, update at least every WIFI_MIN_UPDATE_TIME milliseconds
+  private static final long WIFI_MAX_UPDATE_PERIOD = 1000; // milliseconds, update at most every WIFI_MAX_UPDATE_PERIOD milliseconds
 
   private boolean                mStarted;
   private final Context          mContext;
   private WifiLock               mWifiLock;
   private Timer                  mWifiScanTimer;
   private final Set<String>      mAPs = new HashSet<String>();
+  private long                mLastUpdateTime;
 
   WifiScanner(Context c) {
     mContext = c;
@@ -90,21 +92,21 @@ public void onReceive(Context c, Intent intent) {
       }
       if (isTrainIndication(scanResult)) {
     	  isTrainIndication = true;
-      
-	      try {
-	        JSONObject obj = new JSONObject();
-	        obj.put("SSID", scanResult.SSID);
-	        obj.put("key", scanResult.BSSID);
-	        obj.put("frequency", scanResult.frequency);
-	        obj.put("signal", scanResult.level);
-	        wifiInfo.put(obj);
-	      } catch (JSONException jsonex) {
-	        Log.e(LOGTAG, "", jsonex);
-	      }
-	
-	      mAPs.add(scanResult.BSSID);
-	
-	      Log.v(LOGTAG, "BSSID=" + scanResult.BSSID + ", SSID=\"" + scanResult.SSID + "\", Signal=" + scanResult.level);
+
+    	  try {
+    		  JSONObject obj = new JSONObject();
+    		  obj.put("SSID", scanResult.SSID);
+    		  obj.put("key", scanResult.BSSID);
+    		  obj.put("frequency", scanResult.frequency);
+    		  obj.put("signal", scanResult.level);
+    		  wifiInfo.put(obj);
+    	  } catch (JSONException jsonex) {
+    		  Log.e(LOGTAG, "", jsonex);
+    	  }
+
+    	  mAPs.add(scanResult.BSSID);
+
+    	  Log.v(LOGTAG, "BSSID=" + scanResult.BSSID + ", SSID=\"" + scanResult.SSID + "\", Signal=" + scanResult.level);
       }
     }
 
@@ -112,15 +114,19 @@ public void onReceive(Context c, Intent intent) {
     if (wifiInfo.length() == 0) {
       return;
     }
-
-    Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
-    i.putExtra(Intent.EXTRA_SUBJECT, "WifiScanner");
-    i.putExtra("data", wifiInfo.toString());
-    i.putExtra("time", System.currentTimeMillis());
-    if (isTrainIndication) {
-        i.putExtra("TrainIndication", true);
+    long currentTime = System.currentTimeMillis();
+    long timeDelta = currentTime - mLastUpdateTime;
+    if (timeDelta > WifiScanner.WIFI_MAX_UPDATE_PERIOD) {
+    	mLastUpdateTime = currentTime; 
+	    Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
+	    i.putExtra(Intent.EXTRA_SUBJECT, "WifiScanner");
+	    i.putExtra("data", wifiInfo.toString());
+	    i.putExtra("time", currentTime);
+	    if (isTrainIndication) {
+	        i.putExtra("TrainIndication", true);
+	    }
+	    mContext.sendBroadcast(i);
     }
-    mContext.sendBroadcast(i);
   }
 
   public int getAPCount() {
