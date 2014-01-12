@@ -22,18 +22,25 @@ public final class Prefs {
 															// count in the
 															// previous day
 
-	private int mCurrentVersion;
+	public final int VERSION_CODE;
+	public final String VERSION_NAME;
 	private Context mContext;
 
 	public Prefs(Context context) {
+		int versionCode;
+		String versionName;
 		try {
 			PackageInfo pi = context.getPackageManager().getPackageInfo(
 					context.getPackageName(), PackageManager.GET_ACTIVITIES);
-			mCurrentVersion = pi.versionCode;
+			versionCode = pi.versionCode;
+			versionName = pi.versionName;
 		} catch (PackageManager.NameNotFoundException exception) {
 			Log.e(LOGTAG, "getPackageInfo failed", exception);
-			mCurrentVersion = 0;
+			versionCode = 0;
+			versionName = "";			
 		}
+		VERSION_CODE = versionCode;
+		VERSION_NAME = versionName;
 		mContext = context;
 	}
 
