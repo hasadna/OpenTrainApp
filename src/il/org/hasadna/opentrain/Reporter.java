@@ -310,13 +310,13 @@ class Reporter extends BroadcastReceiver implements
 
 	@Override
 	public void onConnected(Bundle arg0) {
-		android.os.Debug.waitForDebugger();
+		//android.os.Debug.waitForDebugger();
 		LocationRequest req = new LocationRequest();
         // TODO: check if this is not too much of a battery drain
         req.setInterval(LOCATION_API_UPDATE_INTERVAL);
         // TODO: check if this is not too much of a battery drain
         req.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        android.os.Debug.waitForDebugger();
+        
         try {
         	mLocationClient.requestLocationUpdates(req, this);
         } catch (Exception ex){
