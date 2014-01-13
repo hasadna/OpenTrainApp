@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationRequest;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -31,12 +32,14 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 
 class Reporter extends BroadcastReceiver implements 
 		GooglePlayServicesClient.ConnectionCallbacks, 
-		GooglePlayServicesClient.OnConnectionFailedListener {
+		GooglePlayServicesClient.OnConnectionFailedListener,
+		com.google.android.gms.location.LocationListener {
     private static final String LOGTAG          = Reporter.class.getName(); 
-    private static final String LOCATION_URL    = "http://54.221.246.54/reports/add/";//"https://location.services.mozilla.com/v1/submit"; //TODO: hasadna this should contain our own url
+    private static final String LOCATION_URL    = "http://192.241.154.128/reports/add/";//"http://54.221.246.54/reports/add/";//"https://location.services.mozilla.com/v1/submit"; //TODO: hasadna this should contain our own url
     private static final String USER_AGENT_HEADER = "User-Agent";
     private static final int RECORD_BATCH_SIZE  = 5;
     private static final long TRAIN_INDICATION_TTL = 1 * 5 * 60 * 1000;
+    private static final long LOCATION_API_UPDATE_INTERVAL = 3 * 1000; // milliseconds, require new location every LOCATION_UPDATE_INTERVAL milliseconds
 
     private static String       MOZSTUMBLER_USER_AGENT_STRING;
 
@@ -48,7 +51,7 @@ class Reporter extends BroadcastReceiver implements
     private long 				mReportsSent;
     private long 				mLastTrainIndicationTime;
     
-    private LocationClient mLocationClient;    
+    private LocationClient mLocationClient;
 
     Reporter(Context context, Prefs prefs) {
     	
@@ -76,7 +79,6 @@ class Reporter extends BroadcastReceiver implements
         mLocationClient = new LocationClient(context, this, this);
         mLocationClient.connect();
         
-
     }
 
     void shutdown() {
@@ -274,8 +276,8 @@ class Reporter extends BroadcastReceiver implements
                 locInfo.put("wifi", wifiJSON);
             }
             
-            if (wifiJSON == null) {
-                Log.w(LOGTAG, "Invalid report: wifi entry is required");
+            if (wifiJSON == null && gpsLocation.length() == 0) {
+                Log.w(LOGTAG, "Invalid report: wifi or GPS entry is required");
                 return;
             }
 
@@ -308,7 +310,18 @@ class Reporter extends BroadcastReceiver implements
 
 	@Override
 	public void onConnected(Bundle arg0) {
-		// TODO Auto-generated method stub
+		android.os.Debug.waitForDebugger();
+		LocationRequest req = new LocationRequest();
+        // TODO: check if this is not too much of a battery drain
+        req.setInterval(LOCATION_API_UPDATE_INTERVAL);
+        // TODO: check if this is not too much of a battery drain
+        req.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        android.os.Debug.waitForDebugger();
+        try {
+        	mLocationClient.requestLocationUpdates(req, this);
+        } catch (Exception ex){
+        	Log.e(LOGTAG, "error in requestLocationUpdates()", ex);
+        }
 		
 	}
 
@@ -320,6 +333,12 @@ class Reporter extends BroadcastReceiver implements
 
 	@Override
 	public void onConnectionFailed(ConnectionResult arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onLocationChanged(Location arg0) {
 		// TODO Auto-generated method stub
 		
 	}
