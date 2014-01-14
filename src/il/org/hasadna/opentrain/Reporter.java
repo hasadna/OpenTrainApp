@@ -38,8 +38,8 @@ class Reporter extends BroadcastReceiver implements
     private static final String LOCATION_URL    = "http://192.241.154.128/reports/add/";//"http://54.221.246.54/reports/add/";//"https://location.services.mozilla.com/v1/submit"; //TODO: hasadna this should contain our own url
     private static final String USER_AGENT_HEADER = "User-Agent";
     private static final int RECORD_BATCH_SIZE  = 5;
-    private static final long TRAIN_INDICATION_TTL = 1 * 5 * 60 * 1000;
-    private static final long LOCATION_API_UPDATE_INTERVAL = 3 * 1000; // milliseconds, require new location every LOCATION_UPDATE_INTERVAL milliseconds
+    private static final long TRAIN_INDICATION_TTL = 1 * 1 * 30 * 1000;
+    private static final long LOCATION_API_UPDATE_INTERVAL = 5 * 1000; // milliseconds, require new location every LOCATION_UPDATE_INTERVAL milliseconds
 
     private static String       MOZSTUMBLER_USER_AGENT_STRING;
 
@@ -106,6 +106,7 @@ class Reporter extends BroadcastReceiver implements
         
         if (System.currentTimeMillis() - mLastTrainIndicationTime > TRAIN_INDICATION_TTL) {
         	// We are not in train context. Don't report.
+        	// TODO: turn off location API to save battery, add it back on when we're in a train context
         	return;
         }
         
@@ -315,7 +316,7 @@ class Reporter extends BroadcastReceiver implements
         // TODO: check if this is not too much of a battery drain
         req.setInterval(LOCATION_API_UPDATE_INTERVAL);
         // TODO: check if this is not too much of a battery drain
-        req.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        req.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         
         try {
         	mLocationClient.requestLocationUpdates(req, this);
