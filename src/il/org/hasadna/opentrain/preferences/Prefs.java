@@ -21,6 +21,7 @@ public final class Prefs {
 	private static final int DATE_CHANGE_DELAY_HOURS = 5; // late trains will
 															// count in the
 															// previous day
+	private static final int DEVICE_ID_BYTE_LENGTH = 8;
 
 	public final int VERSION_CODE;
 	public final String VERSION_NAME;
@@ -66,8 +67,9 @@ public final class Prefs {
 			
 			Log.d(LOGTAG, "Creating new daily random ID...");
 			SecureRandom sr = new SecureRandom();
-			// take 4 bytes -> 32 bits -> over 4 billion id options 
-			byte[] randomIdByteArray = new byte[4];
+			// take 8 bytes -> 10^-9 chance of collision for 190,000 device_ids,
+			// according to http://en.wikipedia.org/wiki/Birthday_problem#Probability_table
+			byte[] randomIdByteArray = new byte[DEVICE_ID_BYTE_LENGTH];
 			sr.nextBytes(randomIdByteArray);
 			String randomId = byteArrayToString(randomIdByteArray);
 			

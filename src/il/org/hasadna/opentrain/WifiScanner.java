@@ -22,7 +22,7 @@ import java.util.TimerTask;
 public class WifiScanner extends BroadcastReceiver {
   private static final String LOGTAG              = Scanner.class.getName();
   private static final long WIFI_MIN_UPDATE_TIME  = 1000; // milliseconds, update at least every WIFI_MIN_UPDATE_TIME milliseconds
-  private static final long WIFI_MAX_UPDATE_PERIOD = 1000; // milliseconds, update at most every WIFI_MAX_UPDATE_PERIOD milliseconds
+  private static final long WIFI_MAX_UPDATE_PERIOD = WIFI_MIN_UPDATE_TIME; // milliseconds, update at most every WIFI_MAX_UPDATE_PERIOD milliseconds
 
   private boolean                mStarted;
   private final Context          mContext;
