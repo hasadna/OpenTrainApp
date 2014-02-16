@@ -15,14 +15,14 @@ class Scanner{
 
   private GPSScanner     mGPSScanner;
   private WifiScanner    mWifiScanner;
-  private CellScanner    mCellScanner;
+  //private CellScanner    mCellScanner;
 
   Scanner(Context context) {
     mContext = context;
     mGPSScanner  = new GPSScanner(context);
     mWifiScanner = new WifiScanner(context);
-    mCellScanner = new CellScanner(context);
-
+    mWifiScanner.setGPSScanner(mGPSScanner);
+    //mCellScanner = new CellScanner(context);
   }
 
   void startScanning() {
@@ -31,7 +31,7 @@ class Scanner{
     }
     Log.d(LOGTAG, "Scanning started...");
 
-    mGPSScanner.start();
+    //mGPSScanner.start();
     mWifiScanner.start();
     // commenting out all CellScanner usage for now:    
     //mCellScanner.start();

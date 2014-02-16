@@ -20,10 +20,17 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class WifiScanner extends BroadcastReceiver {
-  private static final String LOGTAG              = Scanner.class.getName();
+  private static final String LOGTAG              = WifiScanner.class.getName();
   private static final long WIFI_MIN_UPDATE_TIME  = 1000; // milliseconds, update at least every WIFI_MIN_UPDATE_TIME milliseconds
   private static final long WIFI_MAX_UPDATE_PERIOD = WIFI_MIN_UPDATE_TIME; // milliseconds, update at most every WIFI_MAX_UPDATE_PERIOD milliseconds
 
+  private static final int MODE_TRAIN_WIFI_SCANNIG = 1;
+  private static final int MODE_TRAIN_WIFI_FOUND = 2;
+  private int mode = MODE_TRAIN_WIFI_SCANNIG;
+  private static final int MODE_TRAIN_WIFI_FOUND_PERIOD = 1*15*1000;
+  private static final int MODE_TRAIN_WIFI_SCANNIG_PERIOD = 5*60*1000;
+  private GPSScanner mGPSScanner;
+  
   private boolean                mStarted;
   private final Context          mContext;
   private WifiLock               mWifiLock;
@@ -46,23 +53,12 @@ public class WifiScanner extends BroadcastReceiver {
     mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_SCAN_ONLY,
                                   "MozStumbler");
     mWifiLock.acquire();
-    
-    if (!wm.isWifiEnabled()) {
-      wm.setWifiEnabled(true);
-    }
 
     IntentFilter i = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
     mContext.registerReceiver(this, i);
 
     // Ensure that we are constantly scanning for new access points.
-    mWifiScanTimer = new Timer();
-    mWifiScanTimer.schedule(new TimerTask() {
-        @Override
-        public void run() {
-          Log.d(LOGTAG, "WiFi Scanning Timer fired");
-          getWifiManager().startScan();
-        }
-      }, 0, WIFI_MIN_UPDATE_TIME);
+    setMode(MODE_TRAIN_WIFI_SCANNIG);
   }
 
   public void stop() {
@@ -110,6 +106,8 @@ public void onReceive(Context c, Intent intent) {
       }
     }
 
+    checkForStateChange(isTrainIndication);
+    
     // No scan results to report.
     if (wifiInfo.length() == 0) {
       return;
@@ -156,4 +154,48 @@ public void onReceive(Context c, Intent intent) {
   private WifiManager getWifiManager() {
     return (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
   }
+  
+  private void setMode(int mode) {
+		this.mode = mode;
+		if (MODE_TRAIN_WIFI_SCANNIG == mode) {
+			schedulemWifiScanTimer(MODE_TRAIN_WIFI_SCANNIG_PERIOD);
+			if (mGPSScanner != null)
+				mGPSScanner.stop();
+		} else if (MODE_TRAIN_WIFI_FOUND == mode) {
+			schedulemWifiScanTimer(MODE_TRAIN_WIFI_FOUND_PERIOD);
+			if (mGPSScanner != null)
+				mGPSScanner.start();
+		}
+	}
+
+	private void schedulemWifiScanTimer(long period) {
+		if(mWifiScanTimer!=null){
+			mWifiScanTimer.cancel();
+		}
+		mWifiScanTimer = new Timer();
+		mWifiScanTimer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				Log.d(LOGTAG, "WiFi Scanning Timer fired");
+				WifiManager wm = getWifiManager();
+				boolean enable = wm.isWifiEnabled();
+				if (!enable) {
+					wm.setWifiEnabled(true);
+				}
+				getWifiManager().startScan();
+			}
+		}, 0, period);
+	}
+
+	private void checkForStateChange(boolean isTrainIndication) {
+		int newMode = isTrainIndication ? MODE_TRAIN_WIFI_FOUND
+				: MODE_TRAIN_WIFI_SCANNIG;
+		if (mode != newMode) {
+			setMode(newMode);
+		}
+	}
+
+	public void setGPSScanner(GPSScanner mGPSScanner) {
+		this.mGPSScanner=mGPSScanner;
+	}
 }

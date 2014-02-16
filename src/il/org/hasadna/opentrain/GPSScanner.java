@@ -14,7 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class GPSScanner implements LocationListener {
-    private static final String   LOGTAG                  = Scanner.class.getName();
+    private static final String   LOGTAG                  = GPSScanner.class.getName();
     private static final long     GEO_MIN_UPDATE_TIME     = 1000;
     private static final float    GEO_MIN_UPDATE_DISTANCE = 10;
 
