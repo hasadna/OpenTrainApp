@@ -294,7 +294,11 @@ public final class MainActivity extends Activity {
         TextView textView = (TextView) findViewById(textViewId);
         String str = getResources().getString(stringId);
         Log.d("hebrew","str = " + str + " args = " + args);
-        str = String.format(str, args);
+        try {
+			str = String.format(str, args);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
         textView.setText(str);
     }
 }
