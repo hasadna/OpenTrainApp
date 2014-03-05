@@ -1,7 +1,7 @@
 package il.org.hasadna.opentrain;
 
+import il.org.hasadna.opentrain.fragment.ExtendedDialogFragment;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -18,150 +18,165 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.StrictMode;
 import android.provider.Settings;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public final class MainActivity extends Activity {
-    private static final String LOGTAG = MainActivity.class.getName();
-    private static final String LEADERBOARD_URL = "https://location.services.mozilla.com/leaders";
+public final class MainActivity extends FragmentActivity {
+	private static final String LOGTAG = MainActivity.class.getName();
+	private static final String LEADERBOARD_URL = "https://location.services.mozilla.com/leaders";
 
-    private ScannerServiceInterface  mConnectionRemote;
-    private ServiceConnection        mConnection;
-    private ServiceBroadcastReceiver mReceiver;
-    private int                      mGpsFixes;
+	private ScannerServiceInterface mConnectionRemote;
+	private ServiceConnection mConnection;
+	private ServiceBroadcastReceiver mReceiver;
+	private int mGpsFixes;
 
-    private class ServiceBroadcastReceiver extends BroadcastReceiver {
-        private boolean mReceiverIsRegistered;
+	private class ServiceBroadcastReceiver extends BroadcastReceiver {
+		private boolean mReceiverIsRegistered;
 
-        public void register() {
-            if (!mReceiverIsRegistered) {
-                registerReceiver(this, new IntentFilter(ScannerService.MESSAGE_TOPIC));
-                mReceiverIsRegistered = true;
-            }
-        }
+		public void register() {
+			if (!mReceiverIsRegistered) {
+				registerReceiver(this, new IntentFilter(
+						ScannerService.MESSAGE_TOPIC));
+				mReceiverIsRegistered = true;
+			}
+		}
 
-        public void unregister() {
-            if (mReceiverIsRegistered) {
-                unregisterReceiver(this);
-                mReceiverIsRegistered = false;
-            }
-        }
+		public void unregister() {
+			if (mReceiverIsRegistered) {
+				unregisterReceiver(this);
+				mReceiverIsRegistered = false;
+			}
+		}
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
 
-            if (!action.equals(ScannerService.MESSAGE_TOPIC)) {
-                Log.e(LOGTAG, "Received an unknown intent");
-                return;
-            }
+			if (!action.equals(ScannerService.MESSAGE_TOPIC)) {
+				Log.e(LOGTAG, "Received an unknown intent");
+				return;
+			}
 
-            String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
+			String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
 
-            if (subject.equals("Notification")) {
-                String text = intent.getStringExtra(Intent.EXTRA_TEXT);
-                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
-                Log.d(LOGTAG, "Received a notification intent and showing: " + text);
-                return;
-            } else if (subject.equals("Reporter")) {
-                updateUI();
-                Log.d(LOGTAG, "Received a reporter intent...");
-                return;
-            } else if (subject.equals("Scanner")) {
-                mGpsFixes = intent.getIntExtra("fixes", 0);
-                updateUI();
-                Log.d(LOGTAG, "Received a scanner intent...");
-                return;
-            } else if (intent.getBooleanExtra("TrainIndication", false)) {
-                updateUI();
-                Log.d(LOGTAG, "Received train indication...");
-                return;
-            }
-        }
-    }
+			if (subject.equals("Notification")) {
+				String text = intent.getStringExtra(Intent.EXTRA_TEXT);
+				Toast.makeText(getApplicationContext(), text,
+						Toast.LENGTH_SHORT).show();
+				Log.d(LOGTAG, "Received a notification intent and showing: "
+						+ text);
+				return;
+			} else if (subject.equals("Reporter")) {
+				updateUI();
+				Log.d(LOGTAG, "Received a reporter intent...");
+				return;
+			} else if (subject.equals("Scanner")) {
+				mGpsFixes = intent.getIntExtra("fixes", 0);
+				updateUI();
+				Log.d(LOGTAG, "Received a scanner intent...");
+				return;
+			} else if (intent.getBooleanExtra("TrainIndication", false)) {
+				updateUI();
+				Log.d(LOGTAG, "Received train indication...");
+				return;
+			} else if (subject.equals(ScannerService.ACTION_CLOSE)) {
+				finish();
+				return;
+			}
+		}
+	}
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        enableStrictMode();
-        setContentView(R.layout.activity_main);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		enableStrictMode();
+		setContentView(R.layout.activity_main);
 
-        //Updater.checkForUpdates(this);
+		// Updater.checkForUpdates(this);
 
-        Log.d(LOGTAG, "onCreate");
-    }
+		Log.d(LOGTAG, "onCreate");
+	}
 
-    private void checkGps() {
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+	private void checkGps() {
+		LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            new AlertDialog.Builder(this)
-                .setCancelable(false)
-                .setTitle(R.string.app_name)
-                .setMessage(R.string.gps_alert_msg)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .show();
-        }
-    }
+		if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+			new AlertDialog.Builder(this)
+					.setCancelable(false)
+					.setTitle(R.string.app_name)
+					.setMessage(R.string.gps_alert_msg)
+					.setPositiveButton(R.string.yes,
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									startActivity(new Intent(
+											Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+								}
+							})
+					.setNegativeButton(R.string.no,
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									dialog.dismiss();
+								}
+							}).show();
+		}
+	}
 
-    private boolean isGoogleApiKeyValid() {
-        String apiKey = PackageUtils.getMetaDataString(this, "com.google.android.maps.v2.API_KEY");
-        if ("FAKE_GOOGLE_API_KEY".equals(apiKey)) {
-            Log.w(LOGTAG, "Fake Google API Key found.");
-            return false;
-        }
-        return true;
-    }
+	private boolean isGoogleApiKeyValid() {
+		String apiKey = PackageUtils.getMetaDataString(this,
+				"com.google.android.maps.v2.API_KEY");
+		if ("FAKE_GOOGLE_API_KEY".equals(apiKey)) {
+			Log.w(LOGTAG, "Fake Google API Key found.");
+			return false;
+		}
+		return true;
+	}
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+	@Override
+	protected void onStart() {
+		super.onStart();
 
-        // Reason for commenting out checkGps() :
-        // We are currently working under the assumption that we don't need GPS accuracy 
-        // and it's better to use Location API and save battery
-        //checkGps();
+		// Reason for commenting out checkGps() :
+		// We are currently working under the assumption that we don't need GPS
+		// accuracy
+		// and it's better to use Location API and save battery
+		// checkGps();
 
-        mReceiver = new ServiceBroadcastReceiver();
-        mReceiver.register();
+		mReceiver = new ServiceBroadcastReceiver();
+		mReceiver.register();
 
-        mConnection = new ServiceConnection() {
-            @Override
-			public void onServiceConnected(ComponentName className, IBinder binder) {
-                mConnectionRemote = ScannerServiceInterface.Stub.asInterface(binder);
-                Log.d(LOGTAG, "Service connected");
-                updateUI();
-            }
+		mConnection = new ServiceConnection() {
+			@Override
+			public void onServiceConnected(ComponentName className,
+					IBinder binder) {
+				mConnectionRemote = ScannerServiceInterface.Stub
+						.asInterface(binder);
+				Log.d(LOGTAG, "Service connected");
+				updateUI();
+			}
 
-            @Override
+			@Override
 			public void onServiceDisconnected(ComponentName className) {
-                mConnectionRemote = null;
-                Log.d(LOGTAG, "Service disconnected", new Exception());
-            }
-        };
+				mConnectionRemote = null;
+				Log.d(LOGTAG, "Service disconnected", new Exception());
+			}
+		};
 
-        Intent intent = new Intent(this, ScannerService.class);
-        startService(intent);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+		Intent intent = new Intent(this, ScannerService.class);
+		startService(intent);
+		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
-        Log.d(LOGTAG, "onStart");
-    }
+		Log.d(LOGTAG, "onStart");
+	}
 
-    @Override
+	@Override
 	protected void onStop() {
 		super.onStop();
 		try {
@@ -169,136 +184,178 @@ public final class MainActivity extends Activity {
 			mConnection = null;
 			mConnectionRemote = null;
 		} catch (Exception ex) {
-			//Service was already unbound.
+			// Service was already unbound.
 		}
 		mReceiver.unregister();
 		mReceiver = null;
 		Log.d(LOGTAG, "onStop");
 	}
 
-    protected void updateUI() {
-        // TODO time this to make sure we're not blocking too long on mConnectionRemote
-        // if we care, we can bundle this into one call -- or use android to remember
-        // the state before the rotation.
+	protected void updateUI() {
+		// TODO time this to make sure we're not blocking too long on
+		// mConnectionRemote
+		// if we care, we can bundle this into one call -- or use android to
+		// remember
+		// the state before the rotation.
 
-        if (mConnectionRemote == null) {
-            return;
-        }
+		if (mConnectionRemote == null) {
+			return;
+		}
 
-        Log.d(LOGTAG, "Updating UI");
-        boolean scanning = false;
-        try {
-            scanning = mConnectionRemote.isScanning();
-        } catch (RemoteException e) {
-            Log.e(LOGTAG, "", e);
-        }
+		Log.d(LOGTAG, "Updating UI");
+		boolean scanning = false;
+		try {
+			scanning = mConnectionRemote.isScanning();
+		} catch (RemoteException e) {
+			Log.e(LOGTAG, "", e);
+		}
 
-        Button scanningBtn = (Button) findViewById(R.id.toggle_scanning);
-        TextView status = (TextView) findViewById(R.id.status_text);
-        if (scanning) {
-            status.setText(R.string.status_on);
-            scanningBtn.setBackgroundResource(R.drawable.red_button);
-        } else {
-            status.setText(R.string.status_off);
-            scanningBtn.setBackgroundResource(R.drawable.green_button);
-        }
+		Button scanningBtn = (Button) findViewById(R.id.toggle_scanning);
+		TextView status = (TextView) findViewById(R.id.status_text);
+		if (scanning) {
+			status.setText(R.string.status_on);
+			scanningBtn.setBackgroundResource(R.drawable.red_button);
+		} else {
+			status.setText(R.string.status_off);
+			scanningBtn.setBackgroundResource(R.drawable.green_button);
+		}
 
-        int locationsScanned = 0;
-        int APs = 0;
-        long lastUploadTime = 0;
-        long reportsSent = 0;
-        long lastTrainIndicationTime = 0; // TODO: should have time when we were last on train
-        try {
-            locationsScanned = mConnectionRemote.getLocationCount();
-            APs = mConnectionRemote.getAPCount();
-            lastUploadTime = mConnectionRemote.getLastUploadTime();
-            reportsSent = mConnectionRemote.getReportsSent();
-            lastTrainIndicationTime = mConnectionRemote.getLastTrainIndicationTime();
-        } catch (RemoteException e) {
-            Log.e(LOGTAG, "", e);
-        }
+		int locationsScanned = 0;
+		int APs = 0;
+		long lastUploadTime = 0;
+		long reportsSent = 0;
+		long lastTrainIndicationTime = 0; // TODO: should have time when we were
+											// last on train
+		try {
+			locationsScanned = mConnectionRemote.getLocationCount();
+			APs = mConnectionRemote.getAPCount();
+			lastUploadTime = mConnectionRemote.getLastUploadTime();
+			reportsSent = mConnectionRemote.getReportsSent();
+			lastTrainIndicationTime = mConnectionRemote
+					.getLastTrainIndicationTime();
+		} catch (RemoteException e) {
+			Log.e(LOGTAG, "", e);
+		}
 
 		String lastUploadTimeString = (lastUploadTime > 0) ? DateTimeUtils
 				.formatTimeForLocale(lastUploadTime) : "-";
 		String lastTrainIndicationTimeString = (lastTrainIndicationTime > 0) ? DateTimeUtils
 				.formatTimeForLocale(lastTrainIndicationTime) : "-";
 
-        formatTextView(R.id.gps_satellites, R.string.gps_satellites, mGpsFixes);
-        formatTextView(R.id.wifi_access_points, R.string.wifi_access_points, APs);
-        formatTextView(R.id.locations_scanned, R.string.locations_scanned, locationsScanned);
-        formatTextView(R.id.last_upload_time, R.string.last_upload_time, lastUploadTimeString);
-        formatTextView(R.id.reports_sent, R.string.reports_sent, reportsSent);
-        formatTextView(R.id.last_train, R.string.last_train, lastTrainIndicationTimeString);
-    }
+		formatTextView(R.id.gps_satellites, R.string.gps_satellites, mGpsFixes);
+		formatTextView(R.id.wifi_access_points, R.string.wifi_access_points,
+				APs);
+		formatTextView(R.id.locations_scanned, R.string.locations_scanned,
+				locationsScanned);
+		formatTextView(R.id.last_upload_time, R.string.last_upload_time,
+				lastUploadTimeString);
+		formatTextView(R.id.reports_sent, R.string.reports_sent, reportsSent);
+		formatTextView(R.id.last_train, R.string.last_train,
+				lastTrainIndicationTimeString);
+	}
 
-    public void onClick_ToggleScanning(View v) throws RemoteException {
-        if (mConnectionRemote == null) {
-            return;
-        }
+	public void onClick_ToggleScanning(View v) throws RemoteException {
+		if (mConnectionRemote == null) {
+			return;
+		}
 
-        boolean scanning = mConnectionRemote.isScanning();
-        Log.d(LOGTAG, "Connection remote return: isScanning() = " + scanning);
+		boolean scanning = mConnectionRemote.isScanning();
+		Log.d(LOGTAG, "Connection remote return: isScanning() = " + scanning);
 
-        Button scanningBtn = (Button) v;
-        TextView status = (TextView) findViewById(R.id.status_text);
-        if (scanning) {
-            unbindService(mConnection);
-            mConnectionRemote.stopScanning();
-            status.setText(R.string.status_on);
-            scanningBtn.setBackgroundResource(R.drawable.red_button);
-        } else {
-            Intent intent = new Intent(this, ScannerService.class);
-            startService(intent);
-            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-            mConnectionRemote.startScanning();
-            status.setText(R.string.status_off);
-            scanningBtn.setBackgroundResource(R.drawable.green_button);
-        }
-    }
+		Button scanningBtn = (Button) v;
+		TextView status = (TextView) findViewById(R.id.status_text);
+		if (scanning) {
+			unbindService(mConnection);
+			mConnectionRemote.stopScanning();
+			status.setText(R.string.status_on);
+			scanningBtn.setBackgroundResource(R.drawable.red_button);
+		} else {
+			Intent intent = new Intent(this, ScannerService.class);
+			startService(intent);
+			bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+			mConnectionRemote.startScanning();
+			status.setText(R.string.status_off);
+			scanningBtn.setBackgroundResource(R.drawable.green_button);
+		}
+	}
 
-    public void onClick_ViewLeaderboard(View v) {
-        Intent openLeaderboard = new Intent(Intent.ACTION_VIEW, Uri.parse(LEADERBOARD_URL));
-        startActivity(openLeaderboard);
-    }
-    
-    /*public void onClick_ViewMap(View v) throws RemoteException {
-        // We are starting Wi-Fi scanning because we want the the APs for our
-        // geolocation request whose results we want to display on the map.
-        if (mConnectionRemote != null) {
-            mConnectionRemote.startScanning();
-        }
+	public void onClick_ViewLeaderboard(View v) {
+		Intent openLeaderboard = new Intent(Intent.ACTION_VIEW,
+				Uri.parse(LEADERBOARD_URL));
+		startActivity(openLeaderboard);
+	}
 
-        Log.d(LOGTAG, "onClick_ViewMap");
-        Intent intent = new Intent(this, MapActivity.class);
-        startActivity(intent);
-    }*/
+	/*
+	 * public void onClick_ViewMap(View v) throws RemoteException { // We are
+	 * starting Wi-Fi scanning because we want the the APs for our //
+	 * geolocation request whose results we want to display on the map. if
+	 * (mConnectionRemote != null) { mConnectionRemote.startScanning(); }
+	 * 
+	 * Log.d(LOGTAG, "onClick_ViewMap"); Intent intent = new Intent(this,
+	 * MapActivity.class); startActivity(intent); }
+	 */
 
-    @TargetApi(9)
-    private void enableStrictMode() {
-        if (VERSION.SDK_INT < 9) {
-            return;
-        }
+	@TargetApi(9)
+	private void enableStrictMode() {
+		if (VERSION.SDK_INT < 9) {
+			return;
+		}
 
-        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                                                              .detectAll()
-                                                              .permitDiskReads()
-                                                              .permitDiskWrites()
-                                                              .penaltyLog().build());
+		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+				.detectAll().permitDiskReads().permitDiskWrites().penaltyLog()
+				.build());
 
-        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                                                      .detectAll()
-                                                      .penaltyLog().build());
-    }
+		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
+				.penaltyLog().build());
+	}
 
-    private void formatTextView(int textViewId, int stringId, Object... args) {
-        TextView textView = (TextView) findViewById(textViewId);
-        String str = getResources().getString(stringId);
-        Log.d("hebrew","str = " + str + " args = " + args);
-        try {
+	private void formatTextView(int textViewId, int stringId, Object... args) {
+		TextView textView = (TextView) findViewById(textViewId);
+		String str = getResources().getString(stringId);
+		Log.d("hebrew", "str = " + str + " args = " + args);
+		try {
 			str = String.format(str, args);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-        textView.setText(str);
-    }
+		textView.setText(str);
+	}
+
+	@Override
+	public void onBackPressed() {
+		try {
+			boolean scanning = mConnectionRemote.isScanning();
+			if (!scanning) {
+				super.onBackPressed();
+				return;
+			}
+		} catch (Exception e) {
+
+		}
+		showDialog();
+	}
+
+	void showDialog() {
+		ExtendedDialogFragment extendedDialogFragment = ExtendedDialogFragment
+				.newInstance();
+		extendedDialogFragment.setDialogClicksListener(dialogListener);
+		extendedDialogFragment.show(getSupportFragmentManager(), "dialog");
+	}
+
+	private DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
+
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			if (which == DialogInterface.BUTTON_NEGATIVE) {
+
+			} else if (which == DialogInterface.BUTTON_POSITIVE) {
+				try {
+					mConnectionRemote.stopScanning();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				finish();
+			}
+		}
+	};
 }

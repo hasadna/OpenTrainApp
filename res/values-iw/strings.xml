@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Open Trains</string>
+    <string name="app_name">רכבת פתוחה</string>
     <string name="action_about">על אודות MozStumbler</string>
     <string name="action_preferences">הגדרות</string>
     <string name="mozilla_title">Mozilla</string>
     <string name="view_leaderboard">צפייה בלוח המובילים</string>
     <string name="view_map">בדיקת שירות האיכון של Mozilla</string>
-    <string name="service_name">Open Trains</string>
+    <string name="service_name">רכבת פתוחה</string>
     <string name="wifi_access_points">נקודות גישה מסוג Wi-Fi שנסרקו: %1$d</string>
     <string name="gps_satellites">לווייני GPS גלויים: %1$d</string>
     <string name="locations_scanned">מיקומים שנסרקו: %1$d</string>
@@ -34,5 +34,10 @@
     <string name="no">לא</string>
 
     <string name="about_version">גרסה %1$s</string>
-<string name="status_off">כאשר האפליקציה במצב פעיל, ורק אם המכשיר גילה נקודות ווי-פיי של רכבת ישראל, המכשיר ידווח על כל רשתות הווי-פיי שהוא רואה.</string>
+	<string name="status_off">לחץ על הכפתור להפעלה.</string>
+    <string name="status_on">מופעל. דיווחים ישלחו רק בזמן שהות ברכבת ובתחנות.</string>
+    <string name="close">סגור את רכבת פתוחה</string>
+    <string name="alert_dialog_confirm_exit">לסגור את רכבת פתוחה?</string>
+    <string name="alert_dialog_ok">אישור</string>
+    <string name="alert_dialog_cancel">ביטול</string>
 </resources>
