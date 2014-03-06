@@ -4,18 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 import android.location.Location;
-import android.os.Bundle;
-
-import il.org.hasadna.opentrain.preferences.Prefs;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.location.LocationRequest;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -27,34 +21,30 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
+import il.org.hasadna.opentrain.preferences.Prefs;
 
-class Reporter extends BroadcastReceiver implements 
-		GooglePlayServicesClient.ConnectionCallbacks, 
-		GooglePlayServicesClient.OnConnectionFailedListener,
-		com.google.android.gms.location.LocationListener {
-    private static final String LOGTAG          = Reporter.class.getName(); 
-    private static final String LOCATION_URL    = "http://192.241.154.128/reports/add/";//"http://54.221.246.54/reports/add/";//"https://location.services.mozilla.com/v1/submit"; //TODO: hasadna this should contain our own url
+class Reporter extends BroadcastReceiver {
+    private static final String LOGTAG = Reporter.class.getName();
+    private static final String LOCATION_URL = "http://192.241.154.128/reports/add/";//"http://54.221.246.54/reports/add/";//"https://location.services.mozilla.com/v1/submit"; //TODO: hasadna this should contain our own url
     private static final String USER_AGENT_HEADER = "User-Agent";
-    private static final int RECORD_BATCH_SIZE  = 5;
+    private static final int RECORD_BATCH_SIZE = 5;
     private static final long TRAIN_INDICATION_TTL = 1 * 1 * 30 * 1000;
     private static final long LOCATION_API_UPDATE_INTERVAL = 5 * 1000; // milliseconds, require new location every LOCATION_UPDATE_INTERVAL milliseconds
 
-    private static String       MOZSTUMBLER_USER_AGENT_STRING;
+    private static String MOZSTUMBLER_USER_AGENT_STRING;
 
-    private final Context       mContext;
-    private final Prefs         mPrefs;
-    private JSONArray           mReports;
-    private long                mLastUploadTime;
-    private URL                 mURL; 
-    private long 				mReportsSent;
-    private long 				mLastTrainIndicationTime;
-    
-    private LocationClient mLocationClient;
+    private final Context mContext;
+    private final Prefs mPrefs;
+    private JSONArray mReports;
+    private long mLastUploadTime;
+    private URL mURL;
+    private long mReportsSent;
+    private long mLastTrainIndicationTime;
+
+    private Location location = null;
 
     Reporter(Context context, Prefs prefs) {
-    	
+
         mContext = context;
         mPrefs = prefs;
         mLastTrainIndicationTime = 0;
@@ -76,9 +66,7 @@ class Reporter extends BroadcastReceiver implements
         }
 
         mContext.registerReceiver(this, new IntentFilter(ScannerService.MESSAGE_TOPIC));
-        mLocationClient = new LocationClient(context, this, this);
-        mLocationClient.connect();
-        
+
     }
 
     void shutdown() {
@@ -101,43 +89,42 @@ class Reporter extends BroadcastReceiver implements
         long time = intent.getLongExtra("time", 0);
         boolean isTrainIndication = intent.getBooleanExtra("TrainIndication", false);
         if (isTrainIndication) {
-        	mLastTrainIndicationTime = time;
+            mLastTrainIndicationTime = time;
         }
-        
+
         if (System.currentTimeMillis() - mLastTrainIndicationTime > TRAIN_INDICATION_TTL) {
-        	// We are not in train context. Don't report.
-        	// TODO: turn off location API to save battery, add it back on when we're in a train context
-        	return;
+            // We are not in train context. Don't report.
+            // TODO: turn off location API to save battery, add it back on when we're in a train context
+            return;
         }
-        
+
         String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
         String data = intent.getStringExtra("data");
-        
-        if (data!=null) Log.d(LOGTAG, "" + subject + " : " + data);
+
+        if (data != null) Log.d(LOGTAG, "" + subject + " : " + data);
 
         String wifiData = "";
         String cellData = "";
         String radioType = "";
         String GPSData = "";
         if (subject.equals("WifiScanner")) {
-        	wifiData = data;
-            Log.d(LOGTAG, "Reporter data: WiFi: "+wifiData.length());
+            wifiData = data;
+            Log.d(LOGTAG, "Reporter data: WiFi: " + wifiData.length());
         } else if (subject.equals("CellScanner")) {
-        	cellData = data;
-        	radioType = intent.getStringExtra("radioType");
-            Log.d(LOGTAG, "Reporter data: Cell: "+cellData.length()+" ("+radioType+")");
+            cellData = data;
+            radioType = intent.getStringExtra("radioType");
+            Log.d(LOGTAG, "Reporter data: Cell: " + cellData.length() + " (" + radioType + ")");
         } else if (subject.equals("GPSScanner")) {
-        	GPSData = data;
-            Log.d(LOGTAG, "Reporter data: GPS: "+GPSData.length());
-        }
-        else {
+            GPSData = data;
+            Log.d(LOGTAG, "Reporter data: GPS: " + GPSData.length());
+        } else if (subject.equals(LocationScanner.LOCATION_SCANNER_EXTRA_SUBJECT)) {
+            location = intent.getParcelableExtra(LocationScanner.LOCATION_SCANNER_ARG_LOCATION);
+            Log.d(LOGTAG, "Reporter data: Location: " + location);
+        } else {
             Log.d(LOGTAG, "Intent ignored with Subject: " + subject);
             return; // Intent not aimed at the Reporter (it is possibly for UI instead)
         }
-        Location location = null;
-        if (mLocationClient.isConnected()) {
-        	location = mLocationClient.getLastLocation();
-        }
+
         // HASADNA: removed the following condition because we want to send data even when no gps is available.
         //if (mGPSData.length() > 0 && (mWifiData.length() > 0 || mCellData.length() > 0)) {
         reportLocation(time, GPSData, wifiData, radioType, cellData, location);
@@ -171,10 +158,10 @@ class Reporter extends BroadcastReceiver implements
     private void spawnReporterThread(final JSONArray reports) {
         new Thread(new Runnable() {
             @Override
-			public void run() {
+            public void run() {
                 try {
                     Log.d(LOGTAG, "sending results...");
-                    
+
                     HttpURLConnection urlConnection = (HttpURLConnection) mURL.openConnection();
                     try {
                         urlConnection.setDoOutput(true);
@@ -202,7 +189,7 @@ class Reporter extends BroadcastReceiver implements
                         StringBuilder total = new StringBuilder(in.available());
                         String line;
                         while ((line = r.readLine()) != null) {
-                          total.append(line);
+                            total.append(line);
                         }
                         r.close();
 
@@ -227,56 +214,54 @@ class Reporter extends BroadcastReceiver implements
     void reportLocation(long time, String gpsLocation, String wifiInfo, String radioType, String cellInfo, Location location) {
         // HASADNA: added this to enable debugging:
         //android.os.Debug.waitForDebugger();
-    	Log.d(LOGTAG, "reportLocation called");
+        Log.d(LOGTAG, "reportLocation called");
         JSONObject locInfo = null;
-        JSONArray cellJSON = null
-                ,wifiJSON = null;
+        JSONArray cellJSON = null, wifiJSON = null;
 
         // Prepare the device id to be sent along with the report
         String hashed_device_id = mPrefs.getDailyID();
-        
-        try {        	
-        	if (gpsLocation.length()>0) {
-                locInfo = new JSONObject( gpsLocation );
-        	} else { 
-        		locInfo = new JSONObject( );
+
+        try {
+            if (gpsLocation.length() > 0) {
+                locInfo = new JSONObject(gpsLocation);
+            } else {
+                locInfo = new JSONObject();
             }
-        	
-        	locInfo.put("time", time);
-        	if (location != null) {
-	        	JSONObject locAPIInfo = new JSONObject(  );
-	        	locAPIInfo.put("time", location.getTime());
-	        	locAPIInfo.put("long", location.getLongitude());
-	        	locAPIInfo.put("lat", location.getLatitude());
-	        	locAPIInfo.put("provider", location.getProvider());
-	        	locAPIInfo.put("accuracy", location.hasAccuracy() ? location.getAccuracy() : null);
-	        	locAPIInfo.put("altitude", location.hasAltitude() ? location.getAltitude() : null);
-	        	locAPIInfo.put("bearing", location.hasBearing() ? location.getBearing() : null);
-	        	locAPIInfo.put("speed", location.hasSpeed() ? location.getSpeed() : null);
-	        	locInfo.put("location_api", locAPIInfo);
-        	}
-        	else {
-        		locInfo.put("location_api", null);
-        	}
-        	
+
+            locInfo.put("time", time);
+            if (location != null) {
+                JSONObject locAPIInfo = new JSONObject();
+                locAPIInfo.put("time", location.getTime());
+                locAPIInfo.put("long", location.getLongitude());
+                locAPIInfo.put("lat", location.getLatitude());
+                locAPIInfo.put("provider", location.getProvider());
+                locAPIInfo.put("accuracy", location.hasAccuracy() ? location.getAccuracy() : null);
+                locAPIInfo.put("altitude", location.hasAltitude() ? location.getAltitude() : null);
+                locAPIInfo.put("bearing", location.hasBearing() ? location.getBearing() : null);
+                locAPIInfo.put("speed", location.hasSpeed() ? location.getSpeed() : null);
+                locInfo.put("location_api", locAPIInfo);
+            } else {
+                locInfo.put("location_api", null);
+            }
+
             locInfo.put("time", time);
             locInfo.put("device_id", hashed_device_id);
-            
+
             locInfo.put("app_version_code", mPrefs.VERSION_CODE);
             locInfo.put("app_version_name", mPrefs.VERSION_NAME);
-          
+
             // commenting out all CellScanner usage for now:            
 //            if (cellInfo.length()>0) {
 //                cellJSON=new JSONArray(cellInfo);
 //                locInfo.put("cell", cellJSON);
 //                locInfo.put("radio", radioType);
 //            }
-            
-            if (wifiInfo.length()>0) {
-                wifiJSON=new JSONArray(wifiInfo);
+
+            if (wifiInfo.length() > 0) {
+                wifiJSON = new JSONArray(wifiInfo);
                 locInfo.put("wifi", wifiJSON);
             }
-            
+
             if (wifiJSON == null && gpsLocation.length() == 0) {
                 Log.w(LOGTAG, "Invalid report: wifi or GPS entry is required");
                 return;
@@ -298,7 +283,7 @@ class Reporter extends BroadcastReceiver implements
     public long getReportsSent() {
         return mReportsSent;
     }
-    
+
     public long getLastTrainIndicationTime() {
         return mLastTrainIndicationTime;
     }
@@ -308,39 +293,4 @@ class Reporter extends BroadcastReceiver implements
         i.putExtra(Intent.EXTRA_SUBJECT, "Reporter");
         mContext.sendBroadcast(i);
     }
-
-	@Override
-	public void onConnected(Bundle arg0) {
-		//android.os.Debug.waitForDebugger();
-		LocationRequest req = new LocationRequest();
-        // TODO: check if this is not too much of a battery drain
-        req.setInterval(LOCATION_API_UPDATE_INTERVAL);
-        // TODO: check if this is not too much of a battery drain
-        req.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        
-        try {
-        	mLocationClient.requestLocationUpdates(req, this);
-        } catch (Exception ex){
-        	Log.e(LOGTAG, "error in requestLocationUpdates()", ex);
-        }
-		
-	}
-
-	@Override
-	public void onDisconnected() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onConnectionFailed(ConnectionResult arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onLocationChanged(Location arg0) {
-		// TODO Auto-generated method stub
-		
-	}
 }

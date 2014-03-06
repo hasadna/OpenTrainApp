@@ -29,7 +29,7 @@ public class WifiScanner extends BroadcastReceiver {
   private int mode = MODE_TRAIN_WIFI_SCANNIG;
   private static final int MODE_TRAIN_WIFI_FOUND_PERIOD = 1*15*1000;
   private static final int MODE_TRAIN_WIFI_SCANNIG_PERIOD = 5*60*1000;
-  private GPSScanner mGPSScanner;
+  private LocationScanner locationScanner;
   
   private boolean                mStarted;
   private final Context          mContext;
@@ -159,12 +159,12 @@ public void onReceive(Context c, Intent intent) {
 		this.mode = mode;
 		if (MODE_TRAIN_WIFI_SCANNIG == mode) {
 			schedulemWifiScanTimer(MODE_TRAIN_WIFI_SCANNIG_PERIOD);
-			if (mGPSScanner != null)
-				mGPSScanner.stop();
+			if (locationScanner != null)
+                locationScanner.stop();
 		} else if (MODE_TRAIN_WIFI_FOUND == mode) {
 			schedulemWifiScanTimer(MODE_TRAIN_WIFI_FOUND_PERIOD);
-			if (mGPSScanner != null)
-				mGPSScanner.start();
+			if (locationScanner != null)
+                locationScanner.start();
 		}
 	}
 
@@ -195,7 +195,7 @@ public void onReceive(Context c, Intent intent) {
 		}
 	}
 
-	public void setGPSScanner(GPSScanner mGPSScanner) {
-		this.mGPSScanner=mGPSScanner;
+	public void setLocationScanner(LocationScanner locationScanner) {
+		this.locationScanner=locationScanner;
 	}
 }

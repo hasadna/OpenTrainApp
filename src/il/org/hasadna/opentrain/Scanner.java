@@ -2,83 +2,86 @@ package il.org.hasadna.opentrain;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
-import il.org.hasadna.opentrain.cellscanner.CellScanner;
+class Scanner {
+    private static final String LOGTAG = Scanner.class.getName();
 
-class Scanner{
-  private static final String LOGTAG = Scanner.class.getName();
+    private final Context mContext;
+    private boolean mIsScanning;
 
-  private final Context  mContext;
-  private boolean        mIsScanning;
+    //private GPSScanner     mGPSScanner;
+    //private CellScanner    mCellScanner;
+    private WifiScanner mWifiScanner;
+    private LocationScanner mLocationScanner;
 
-  private GPSScanner     mGPSScanner;
-  private WifiScanner    mWifiScanner;
-  //private CellScanner    mCellScanner;
+    Scanner(Context context) {
+        mContext = context;
 
-  Scanner(Context context) {
-    mContext = context;
-    mGPSScanner  = new GPSScanner(context);
-    mWifiScanner = new WifiScanner(context);
-    mWifiScanner.setGPSScanner(mGPSScanner);
-    //mCellScanner = new CellScanner(context);
-  }
-
-  void startScanning() {
-    if (mIsScanning) {
-      return;
-    }
-    Log.d(LOGTAG, "Scanning started...");
-
-    //mGPSScanner.start();
-    mWifiScanner.start();
-    // commenting out all CellScanner usage for now:    
-    //mCellScanner.start();
-
-    mIsScanning = true;
-
-    // FIXME convey "start" event here?
-    // for now all we want is to update the UI anyway
-    Intent startIntent = new Intent(ScannerService.MESSAGE_TOPIC);
-    startIntent.putExtra(Intent.EXTRA_SUBJECT, "Scanner");
-    mContext.sendBroadcast(startIntent);
-  }
-
-  void startWifiOnly() {
-    mWifiScanner.start();
-  }
-
-  void stopScanning() {
-    if (!mIsScanning) {
-      return;
+        mWifiScanner = new WifiScanner(context);
+        mLocationScanner=new LocationScanner(context);
+        mWifiScanner.setLocationScanner(mLocationScanner);
+        //mCellScanner = new CellScanner(context);
+        // mGPSScanner  = new GPSScanner(context);
     }
 
-    Log.d(LOGTAG, "Scanning stopped");
+    void startScanning() {
+        if (mIsScanning) {
+            return;
+        }
+        Log.d(LOGTAG, "Scanning started...");
 
-    mGPSScanner.stop();
-    mWifiScanner.stop();
-    // commenting out all CellScanner usage for now:
-    //mCellScanner.stop();
+        mWifiScanner.start();
+        // commenting out all CellScanner usage for now:
+        //mCellScanner.start();
+        //mGPSScanner.start();
 
-    mIsScanning = false;
+        mIsScanning = true;
 
-    // FIXME convey "stop" event here?
-    // for now all we want is to update the UI anyway
-    Intent stopIntent = new Intent(ScannerService.MESSAGE_TOPIC);
-    stopIntent.putExtra(Intent.EXTRA_SUBJECT, "Scanner");
-    mContext.sendBroadcast(stopIntent);
-  }
+        // FIXME convey "start" event here?
+        // for now all we want is to update the UI anyway
+        Intent startIntent = new Intent(ScannerService.MESSAGE_TOPIC);
+        startIntent.putExtra(Intent.EXTRA_SUBJECT, "Scanner");
+        mContext.sendBroadcast(startIntent);
+    }
 
-  boolean isScanning() {
-    return mIsScanning;
-  }
+    void startWifiOnly() {
+        mWifiScanner.start();
+    }
 
-  int getAPCount() {
-     return mWifiScanner.getAPCount();
-  }
+    void stopScanning() {
+        if (!mIsScanning) {
+            return;
+        }
 
-  int getLocationCount() {
-     return mGPSScanner.getLocationCount();
-  }
+        Log.d(LOGTAG, "Scanning stopped");
+
+
+        mWifiScanner.stop();
+        mLocationScanner.stop();
+        // commenting out all CellScanner usage for now:
+        //mCellScanner.stop();
+        //mGPSScanner.stop();
+
+        mIsScanning = false;
+
+        // FIXME convey "stop" event here?
+        // for now all we want is to update the UI anyway
+        Intent stopIntent = new Intent(ScannerService.MESSAGE_TOPIC);
+        stopIntent.putExtra(Intent.EXTRA_SUBJECT, "Scanner");
+        mContext.sendBroadcast(stopIntent);
+    }
+
+    boolean isScanning() {
+        return mIsScanning;
+    }
+
+    int getAPCount() {
+        return mWifiScanner.getAPCount();
+    }
+
+    int getLocationCount() {
+        //return mGPSScanner.getLocationCount();
+        return mLocationScanner.getLocationCount();
+    }
 }
