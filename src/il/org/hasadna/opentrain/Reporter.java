@@ -27,10 +27,7 @@ class Reporter extends BroadcastReceiver {
     private static final String LOGTAG = Reporter.class.getName();
     private static final String LOCATION_URL = "http://192.241.154.128/reports/add/";//"http://54.221.246.54/reports/add/";//"https://location.services.mozilla.com/v1/submit"; //TODO: hasadna this should contain our own url
     private static final String USER_AGENT_HEADER = "User-Agent";
-    private static final int RECORD_BATCH_SIZE = 5;
-    private static final long TRAIN_INDICATION_TTL = 1 * 1 * 30 * 1000;
-    private static final long LOCATION_API_UPDATE_INTERVAL = 5 * 1000; // milliseconds, require new location every LOCATION_UPDATE_INTERVAL milliseconds
-
+    
     private static String MOZSTUMBLER_USER_AGENT_STRING;
 
     private final Context mContext;
@@ -43,10 +40,10 @@ class Reporter extends BroadcastReceiver {
 
     private Location location = null;
 
-    Reporter(Context context, Prefs prefs) {
+    Reporter(Context context) {
 
         mContext = context;
-        mPrefs = prefs;
+        mPrefs = Prefs.getInstance(context);
         mLastTrainIndicationTime = 0;
 
         MOZSTUMBLER_USER_AGENT_STRING = NetworkUtils.getUserAgentString(mContext);
@@ -92,7 +89,7 @@ class Reporter extends BroadcastReceiver {
             mLastTrainIndicationTime = time;
         }
 
-        if (System.currentTimeMillis() - mLastTrainIndicationTime > TRAIN_INDICATION_TTL) {
+        if (System.currentTimeMillis() - mLastTrainIndicationTime > mPrefs.TRAIN_INDICATION_TTL) {
             // We are not in train context. Don't report.
             // TODO: turn off location API to save battery, add it back on when we're in a train context
             return;
@@ -140,7 +137,7 @@ class Reporter extends BroadcastReceiver {
             return;
         }
 
-        if (count < RECORD_BATCH_SIZE && !force && mLastUploadTime > 0) {
+        if (count < mPrefs.RECORD_BATCH_SIZE && !force && mLastUploadTime > 0) {
             Log.d(LOGTAG, "batch count not reached, and !force");
             return;
         }
@@ -182,7 +179,7 @@ class Reporter extends BroadcastReceiver {
                         if (code >= 200 && code <= 299) {
                             mReportsSent = mReportsSent + reports.length();
                         }
-                        Log.e(LOGTAG, "urlConnection returned " + code);
+                        Log.i(LOGTAG, "urlConnection returned " + code);
 
                         InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                         BufferedReader r = new BufferedReader(new InputStreamReader(in));

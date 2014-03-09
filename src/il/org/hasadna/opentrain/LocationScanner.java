@@ -1,5 +1,6 @@
 package il.org.hasadna.opentrain;
 
+import il.org.hasadna.opentrain.preferences.Prefs;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -21,24 +22,24 @@ public class LocationScanner {
 
     public static final String LOCATION_SCANNER_EXTRA_SUBJECT = "LocationScanner";
     public static final String LOCATION_SCANNER_ARG_LOCATION = "il.org.hasadna.opentrain.LocationScanner.location";
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
-    private static final long FAST_INTERVAL_CEILING_IN_MILLISECONDS = 1000;
 
     private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
     private Context mContext;
 
+    private Prefs mPrefs;
+    
     LocationScanner(Context context) {
         init(context);
     }
 
     public void init(Context context) {
         this.mContext = context;
+        mPrefs = Prefs.getInstance(context);
         mLocationRequest = LocationRequest.create();
-        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setInterval(mPrefs.LOCATION_API_UPDATE_INTERVAL);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setFastestInterval(FAST_INTERVAL_CEILING_IN_MILLISECONDS);
-
+        mLocationRequest.setFastestInterval(mPrefs.LOCATION_API_FAST_CEILING_INTERVAL);
         mLocationClient = new LocationClient(context, connectionCallbacks, onConnectionFailedListener);
     }
 

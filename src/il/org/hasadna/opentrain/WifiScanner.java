@@ -13,6 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import il.org.hasadna.opentrain.preferences.Prefs;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,14 +23,11 @@ import java.util.TimerTask;
 
 public class WifiScanner extends BroadcastReceiver {
   private static final String LOGTAG              = WifiScanner.class.getName();
-  private static final long WIFI_MIN_UPDATE_TIME  = 1000; // milliseconds, update at least every WIFI_MIN_UPDATE_TIME milliseconds
-  private static final long WIFI_MAX_UPDATE_PERIOD = WIFI_MIN_UPDATE_TIME; // milliseconds, update at most every WIFI_MAX_UPDATE_PERIOD milliseconds
-
+ 
   private static final int MODE_TRAIN_WIFI_SCANNIG = 1;
   private static final int MODE_TRAIN_WIFI_FOUND = 2;
   private int mode = MODE_TRAIN_WIFI_SCANNIG;
-  private static final int MODE_TRAIN_WIFI_FOUND_PERIOD = 1*15*1000;
-  private static final int MODE_TRAIN_WIFI_SCANNIG_PERIOD = 5*60*1000;
+  
   private LocationScanner locationScanner;
   
   private boolean                mStarted;
@@ -38,8 +37,11 @@ public class WifiScanner extends BroadcastReceiver {
   private final Set<String>      mAPs = new HashSet<String>();
   private long                mLastUpdateTime;
 
-  WifiScanner(Context c) {
-    mContext = c;
+  private Prefs mPrefs;
+  
+  WifiScanner(Context context) {
+    mContext = context;
+    mPrefs = Prefs.getInstance(context);
     mStarted = false;
   }
 
@@ -114,7 +116,7 @@ public void onReceive(Context c, Intent intent) {
     }
     long currentTime = System.currentTimeMillis();
     long timeDelta = currentTime - mLastUpdateTime;
-    if (timeDelta > WifiScanner.WIFI_MAX_UPDATE_PERIOD) {
+    if (timeDelta > mPrefs.WIFI_MIN_UPDATE_TIME) {
     	mLastUpdateTime = currentTime; 
 	    Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
 	    i.putExtra(Intent.EXTRA_SUBJECT, "WifiScanner");
@@ -158,11 +160,11 @@ public void onReceive(Context c, Intent intent) {
   private void setMode(int mode) {
 		this.mode = mode;
 		if (MODE_TRAIN_WIFI_SCANNIG == mode) {
-			schedulemWifiScanTimer(MODE_TRAIN_WIFI_SCANNIG_PERIOD);
+			schedulemWifiScanTimer(mPrefs.WIFI_MODE_TRAIN_SCANNIG_PERIOD);
 			if (locationScanner != null)
                 locationScanner.stop();
 		} else if (MODE_TRAIN_WIFI_FOUND == mode) {
-			schedulemWifiScanTimer(MODE_TRAIN_WIFI_FOUND_PERIOD);
+			schedulemWifiScanTimer(mPrefs.WIFI_MODE_TRAIN_FOUND_PERIOD);
 			if (locationScanner != null)
                 locationScanner.start();
 		}

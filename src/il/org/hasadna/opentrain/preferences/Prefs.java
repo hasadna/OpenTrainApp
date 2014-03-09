@@ -1,7 +1,7 @@
 package il.org.hasadna.opentrain.preferences;
 
 import java.util.Calendar;
-import 	java.security.SecureRandom;
+import java.security.SecureRandom;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -27,7 +27,15 @@ public final class Prefs {
 	public final String VERSION_NAME;
 	private Context mContext;
 
-	public Prefs(Context context) {
+	public long WIFI_MIN_UPDATE_TIME;
+	public long WIFI_MODE_TRAIN_SCANNIG_PERIOD;
+	public long WIFI_MODE_TRAIN_FOUND_PERIOD;
+	public long LOCATION_API_UPDATE_INTERVAL;
+	public long LOCATION_API_FAST_CEILING_INTERVAL;
+	public int RECORD_BATCH_SIZE;
+	public long TRAIN_INDICATION_TTL;
+
+	private Prefs(Context context) {
 		int versionCode;
 		String versionName;
 		try {
@@ -38,11 +46,19 @@ public final class Prefs {
 		} catch (PackageManager.NameNotFoundException exception) {
 			Log.e(LOGTAG, "getPackageInfo failed", exception);
 			versionCode = 0;
-			versionName = "";			
+			versionName = "";
 		}
 		VERSION_CODE = versionCode;
 		VERSION_NAME = versionName;
 		mContext = context;
+
+		WIFI_MIN_UPDATE_TIME = 1000;
+		WIFI_MODE_TRAIN_FOUND_PERIOD = 1 * 15 * 1000;
+		WIFI_MODE_TRAIN_SCANNIG_PERIOD = 5 * 60 * 1000;
+		LOCATION_API_UPDATE_INTERVAL = 5000;
+		LOCATION_API_FAST_CEILING_INTERVAL = 1000;
+		RECORD_BATCH_SIZE = 5;
+		TRAIN_INDICATION_TTL = 1 * 1 * 30 * 1000;
 	}
 
 	public void setReports(String json) {
@@ -64,15 +80,16 @@ public final class Prefs {
 
 		// Create a new seed if current one is out of date
 		if (existingSeedDate == null || !existingSeedDate.equals(nowDate)) {
-			
+
 			Log.d(LOGTAG, "Creating new daily random ID...");
 			SecureRandom sr = new SecureRandom();
 			// take 8 bytes -> 10^-9 chance of collision for 190,000 device_ids,
-			// according to http://en.wikipedia.org/wiki/Birthday_problem#Probability_table
+			// according to
+			// http://en.wikipedia.org/wiki/Birthday_problem#Probability_table
 			byte[] randomIdByteArray = new byte[DEVICE_ID_BYTE_LENGTH];
 			sr.nextBytes(randomIdByteArray);
 			String randomId = byteArrayToString(randomIdByteArray);
-			
+
 			SharedPreferences.Editor editor = getPrefs().edit();
 			editor.putString(DAILY_SEED, randomId);
 			editor.putString(SEED_CREATED_ON, nowDate);
@@ -81,14 +98,13 @@ public final class Prefs {
 		}
 		return getPrefs().getString(DAILY_SEED, "");
 	}
-	
-	private static String byteArrayToString(byte[] ba)
-	{
-	  StringBuilder hex = new StringBuilder(ba.length * 2);
-	  for (byte b : ba)
-	    hex.append(String.format("%02x", b));
-	  return hex.toString();
-	}	
+
+	private static String byteArrayToString(byte[] ba) {
+		StringBuilder hex = new StringBuilder(ba.length * 2);
+		for (byte b : ba)
+			hex.append(String.format("%02x", b));
+		return hex.toString();
+	}
 
 	private String getStringPref(String key) {
 		return getPrefs().getString(key, null);
@@ -122,5 +138,14 @@ public final class Prefs {
 		}
 		return builder.toString();
 
+	}
+
+	private static Prefs mInstance;
+
+	public static Prefs getInstance(Context context) {
+		if (mInstance == null) {
+			mInstance = new Prefs(context);
+		}
+		return mInstance;
 	}
 }

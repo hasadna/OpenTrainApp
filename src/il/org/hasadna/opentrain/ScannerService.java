@@ -217,8 +217,7 @@ public final class ScannerService extends Service {
 		};
 		registerReceiver(mCloseAppReceiver, new IntentFilter(ACTION_CLOSE));
 
-		Prefs prefs = new Prefs(this);
-		mReporter = new Reporter(this, prefs);
+		mReporter = new Reporter(this);
 		mScanner = new Scanner(this);
 		mLooper = new LooperThread();
 		mLooper.start();
