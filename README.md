@@ -6,6 +6,8 @@ For more information, please visit:
 
 http://wiki.hasadna.org.il/index.php?title=%D7%A8%D7%9B%D7%91%D7%AA_%D7%A4%D7%AA%D7%95%D7%97%D7%94
 
+12/3/2014. Eran: Moved to new repo under the Hasana
+
 # Building #
 
 ```
