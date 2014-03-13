@@ -1,11 +1,5 @@
 package il.org.hasadna.opentrain;
 
-import java.util.Calendar;
-
-import com.google.android.gms.internal.bu;
-
-import il.org.hasadna.opentrain.preferences.Prefs;
-
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -21,7 +15,8 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
+
+import java.util.Calendar;
 
 public final class ScannerService extends Service {
 	public static final String MESSAGE_TOPIC = "il.org.hasadna.opentrain.serviceMessage";
@@ -206,10 +201,6 @@ public final class ScannerService extends Service {
 					if (mBinder.isScanning()) {
 						mBinder.stopScanning();
 					}
-					Intent closeIntent = new Intent(
-							ScannerService.MESSAGE_TOPIC);
-					closeIntent.putExtra(Intent.EXTRA_SUBJECT, ACTION_CLOSE);
-					context.sendBroadcast(closeIntent);
 				} catch (RemoteException e) {
 					e.printStackTrace();
 				}
@@ -289,12 +280,12 @@ public final class ScannerService extends Service {
 		builder.setContentIntent(contentIntent);
 		builder.setTicker(contentTitle);
 		builder.setSmallIcon(icon);
-		builder.setOngoing(true);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
 		Intent closeIntent = new Intent(ACTION_CLOSE);
 		PendingIntent pendingCloseIntent = PendingIntent.getBroadcast(context,
 				0, closeIntent, 0);
 		builder.addAction(android.R.drawable.ic_menu_close_clear_cancel,
-				context.getString(R.string.close), pendingCloseIntent);
+				context.getString(R.string.notification_close), pendingCloseIntent);
 
 		Notification n = builder.build();
 		n.flags |= flags;

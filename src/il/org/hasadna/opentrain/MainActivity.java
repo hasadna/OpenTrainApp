@@ -1,6 +1,5 @@
 package il.org.hasadna.opentrain;
 
-import il.org.hasadna.opentrain.fragment.ExtendedDialogFragment;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -24,6 +23,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import il.org.hasadna.opentrain.fragment.ExtendedDialogFragment;
 
 public final class MainActivity extends FragmentActivity {
 	private static final String LOGTAG = MainActivity.class.getName();
@@ -82,9 +83,6 @@ public final class MainActivity extends FragmentActivity {
 			} else if (intent.getBooleanExtra("TrainIndication", false)) {
 				updateUI();
 				Log.d(LOGTAG, "Received train indication...");
-				return;
-			} else if (subject.equals(ScannerService.ACTION_CLOSE)) {
-				finish();
 				return;
 			}
 		}
@@ -354,8 +352,8 @@ public final class MainActivity extends FragmentActivity {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				finish();
 			}
+            finish();
 		}
 	};
 }

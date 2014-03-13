@@ -36,8 +36,8 @@
     <string name="about_version">גרסה %1$s</string>
 	<string name="status_off">לחץ על הכפתור להפעלה.</string>
     <string name="status_on">מופעל. דיווחים ישלחו רק בזמן שהות ברכבת ובתחנות.</string>
-    <string name="close">סגור את רכבת פתוחה</string>
-    <string name="alert_dialog_confirm_exit">לסגור את רכבת פתוחה?</string>
-    <string name="alert_dialog_ok">אישור</string>
-    <string name="alert_dialog_cancel">ביטול</string>
+    <string name="notification_close">הפסק סריקה</string>
+    <string name="alert_dialog_confirm_exit">להפסיק סריקה לפני יציאה?</string>
+    <string name="alert_dialog_ok">כן</string>
+    <string name="alert_dialog_cancel">לא</string>
 </resources>
