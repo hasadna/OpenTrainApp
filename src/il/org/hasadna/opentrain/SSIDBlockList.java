@@ -56,8 +56,8 @@ final class SSIDBlockList {
         "ISRAEL-RAILWAYS",
         "S-ISRAEL-RAILWAYS",
         "keydars", // TODO: Remove before launch!
-        "Bartals", // TODO: Remove before launch!
-        "CampusGuest", //TODO: Remove before launch!
+        //"Bartals", // TODO: Remove before launch!
+        //"CampusGuest", //TODO: Remove before launch!
         "zooni" //TODO: Remove before launch!
     };
 
