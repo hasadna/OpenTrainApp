@@ -26,6 +26,8 @@ import il.org.hasadna.opentrain.preferences.Prefs;
 class Reporter extends BroadcastReceiver {
     private static final String LOGTAG = Reporter.class.getName();
     private static final String LOCATION_URL = "http://192.241.154.128/reports/add/";//"http://54.221.246.54/reports/add/";//"https://location.services.mozilla.com/v1/submit"; //TODO: hasadna this should contain our own url
+    // FALSE URL FOR TESTING// private static final String LOCATION_URL = "http://127.0.0.1/reports/add/";
+
     private static final String USER_AGENT_HEADER = "User-Agent";
     
     private static String MOZSTUMBLER_USER_AGENT_STRING;
@@ -33,6 +35,7 @@ class Reporter extends BroadcastReceiver {
     private final Context mContext;
     private final Prefs mPrefs;
     private JSONArray mReports;
+
     private long mLastUploadTime;
     private URL mURL;
     private long mReportsSent;
@@ -67,10 +70,12 @@ class Reporter extends BroadcastReceiver {
     }
 
     void shutdown() {
-        Log.d(LOGTAG, "shutdown");
+        Log("shutdown");
 
         // Attempt to write out mReports
-        mPrefs.setReports(mReports.toString());
+    	synchronized(mReports){
+    		mPrefs.setReports(mReports.toString());
+    	}
         mContext.unregisterReceiver(this);
     }
 
@@ -98,7 +103,7 @@ class Reporter extends BroadcastReceiver {
         String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
         String data = intent.getStringExtra("data");
 
-        if (data != null) Log.d(LOGTAG, "" + subject + " : " + data);
+        if (data != null) Log("" + subject + " : " + data);
 
         String wifiData = "";
         String cellData = "";
@@ -106,19 +111,19 @@ class Reporter extends BroadcastReceiver {
         String GPSData = "";
         if (subject.equals("WifiScanner")) {
             wifiData = data;
-            Log.d(LOGTAG, "Reporter data: WiFi: " + wifiData.length());
+            Log("Reporter data: WiFi: " + wifiData.length());
         } else if (subject.equals("CellScanner")) {
             cellData = data;
             radioType = intent.getStringExtra("radioType");
-            Log.d(LOGTAG, "Reporter data: Cell: " + cellData.length() + " (" + radioType + ")");
+            Log("Reporter data: Cell: " + cellData.length() + " (" + radioType + ")");
         } else if (subject.equals("GPSScanner")) {
             GPSData = data;
-            Log.d(LOGTAG, "Reporter data: GPS: " + GPSData.length());
+            Log("Reporter data: GPS: " + GPSData.length());
         } else if (subject.equals(LocationScanner.LOCATION_SCANNER_EXTRA_SUBJECT)) {
             location = intent.getParcelableExtra(LocationScanner.LOCATION_SCANNER_ARG_LOCATION);
-            Log.d(LOGTAG, "Reporter data: Location: " + location);
+            Log("Reporter data: Location: " + location);
         } else {
-            Log.d(LOGTAG, "Intent ignored with Subject: " + subject);
+            Log("Intent ignored with Subject: " + subject);
             return; // Intent not aimed at the Reporter (it is possibly for UI instead)
         }
 
@@ -128,92 +133,13 @@ class Reporter extends BroadcastReceiver {
         //}
     }
 
-    void sendReports(boolean force) {
-        Log.d(LOGTAG, "sendReports: force=" + force);
-
-        int count = mReports.length();
-        if (count == 0) {
-            Log.d(LOGTAG, "no reports to send");
-            return;
-        }
-
-        if (count < mPrefs.RECORD_BATCH_SIZE && !force && mLastUploadTime > 0) {
-            Log.d(LOGTAG, "batch count not reached, and !force");
-            return;
-        }
-
-        if (!NetworkUtils.isNetworkAvailable(mContext)) {
-            Log.d(LOGTAG, "Can't send reports without network connection");
-            return;
-        }
-
-        JSONArray reports = mReports;
-        mReports = new JSONArray();
-        spawnReporterThread(reports);
-    }
-
-    private void spawnReporterThread(final JSONArray reports) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Log.d(LOGTAG, "sending results...");
-
-                    HttpURLConnection urlConnection = (HttpURLConnection) mURL.openConnection();
-                    try {
-                        urlConnection.setDoOutput(true);
-                        urlConnection.setRequestProperty(USER_AGENT_HEADER, MOZSTUMBLER_USER_AGENT_STRING);
-
-                        JSONObject wrapper = new JSONObject();
-                        wrapper.put("items", reports);
-                        String wrapperData = wrapper.toString();
-                        byte[] bytes = wrapperData.getBytes();
-                        urlConnection.setFixedLengthStreamingMode(bytes.length);
-                        OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-                        out.write(bytes);
-                        out.flush();
-
-                        Log.d(LOGTAG, "uploaded wrapperData: " + wrapperData + " to " + mURL.toString());
-
-                        int code = urlConnection.getResponseCode();
-                        if (code >= 200 && code <= 299) {
-                            mReportsSent = mReportsSent + reports.length();
-                        }
-                        Log.i(LOGTAG, "urlConnection returned " + code);
-
-                        InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                        BufferedReader r = new BufferedReader(new InputStreamReader(in));
-                        StringBuilder total = new StringBuilder(in.available());
-                        String line;
-                        while ((line = r.readLine()) != null) {
-                            total.append(line);
-                        }
-                        r.close();
-
-                        mLastUploadTime = System.currentTimeMillis();
-                        sendUpdateIntent();
-
-                        Log.d(LOGTAG, "response was: \n" + total + "\n");
-                    } catch (JSONException jsonex) {
-                        Log.e(LOGTAG, "error wrapping data as a batch", jsonex);
-                    } catch (Exception ex) {
-                        Log.e(LOGTAG, "error submitting data", ex);
-                    } finally {
-                        urlConnection.disconnect();
-                    }
-                } catch (Exception ex) {
-                    Log.e(LOGTAG, "error submitting data", ex);
-                }
-            }
-        }).start();
-    }
-
     void reportLocation(long time, String gpsLocation, String wifiInfo, String radioType, String cellInfo, Location location) {
         // HASADNA: added this to enable debugging:
         //android.os.Debug.waitForDebugger();
-        Log.d(LOGTAG, "reportLocation called");
+        Log("reportLocation:");
         JSONObject locInfo = null;
-        JSONArray cellJSON = null, wifiJSON = null;
+        //JSONArray cellJSON = null; 
+   		JSONArray wifiJSON = null;
 
         // Prepare the device id to be sent along with the report
         String hashed_device_id = mPrefs.getDailyID();
@@ -269,11 +195,128 @@ class Reporter extends BroadcastReceiver {
             return;
         }
 
-        mReports.put(locInfo);
+    	synchronized(mReports){
+    		mReports.put(locInfo);
+    	}
+    	
         sendReports(false);
     }
+    
 
-    public long getLastUploadTime() {
+    void sendReports(boolean force) {
+        Log("sendReports: force=" + force);
+
+        int count = mReports.length();
+        if (count == 0) {
+            Log("no reports to send");
+            return;
+        }
+
+        if (count < mPrefs.RECORD_BATCH_SIZE && !force && mLastUploadTime > 0) {
+            Log("batch count not reached, and !force");
+            return;
+        }
+
+        if (!NetworkUtils.isNetworkAvailable(mContext)) {
+            Log("Can't send reports without network connection");
+            return;
+        }
+
+        JSONArray reports =null;;
+    	synchronized(mReports){
+    		reports = mReports;
+    		mReports = new JSONArray();
+    	}    	
+    	if(null!=reports)
+    	{
+    		spawnReporterThread(reports);
+    	}
+    }
+
+    private void spawnReporterThread(final JSONArray reports) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Log("spawnReporterThread.run: sending results...");
+                    Log("spawnReporterThread.run: reports.length="+reports.length());
+                    
+
+                    HttpURLConnection urlConnection = (HttpURLConnection) mURL.openConnection();
+                    try {
+                        urlConnection.setDoOutput(true);
+                        urlConnection.setRequestProperty(USER_AGENT_HEADER, MOZSTUMBLER_USER_AGENT_STRING);
+
+                        JSONObject wrapper = new JSONObject();
+                        wrapper.put("items", reports);
+                        String wrapperData = wrapper.toString();
+                        byte[] bytes = wrapperData.getBytes();
+                        urlConnection.setFixedLengthStreamingMode(bytes.length);
+                        OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+                        out.write(bytes);
+                        out.flush();
+
+                        Log("uploaded wrapperData: " + wrapperData + " to " + mURL.toString());
+
+                        int code = urlConnection.getResponseCode();
+                        if (code >= 200 && code <= 299) {
+                            mReportsSent = mReportsSent + reports.length();
+                        }
+                        Log.i(LOGTAG, "urlConnection returned " + code);
+
+                        InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                        BufferedReader r = new BufferedReader(new InputStreamReader(in));
+                        StringBuilder total = new StringBuilder(in.available());
+                        String line;
+                        while ((line = r.readLine()) != null) {
+                            total.append(line);
+                        }
+                        r.close();
+
+                        mLastUploadTime = System.currentTimeMillis();
+                        sendUpdateIntent();
+
+                        Log("response was: \n" + total + "\n");
+                    } catch (JSONException jsonex) {
+                    	Log.e(LOGTAG, "Error wrapping data as a batch", jsonex);
+                        Log.d(LOGTAG,"spawnReporterThread.run: JSONException caught. Reports lost.",jsonex);
+                    } catch (Exception ex) {
+                        Log.e(LOGTAG, "Error submitting data", ex);
+                        Log.d(LOGTAG,"spawnReporterThread.run: Exception caught.",ex);
+                        RetryLater(reports);
+                    } finally {
+                        urlConnection.disconnect();
+                    }
+                } catch (Exception ex) {
+                    Log.e(LOGTAG, "error submitting data", ex);
+                }
+            }
+        }).start();
+    }
+
+
+    private void RetryLater(JSONArray reports) {
+		// TODO Auto-generated method stub
+    	Log("RetryLater");
+    	
+    	int length=reports.length();
+    	Log("RetryLater: reports.length="+length);
+
+    	synchronized(mReports){
+	    	for(int i=0;i<length;i++)
+	    	{
+				try {
+		    		JSONObject report;
+					report = reports.getJSONObject(i);
+		    		mReports.put(report);
+				} catch (JSONException e) {
+					Log.e(LOGTAG,"RetryLater: JSONException caught. Report lost.",e );
+				}
+	    	}		
+    	}
+	}
+
+	public long getLastUploadTime() {
         return mLastUploadTime;
     }
 
@@ -289,5 +332,10 @@ class Reporter extends BroadcastReceiver {
         Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
         i.putExtra(Intent.EXTRA_SUBJECT, "Reporter");
         mContext.sendBroadcast(i);
+    }
+
+    private void Log(String msg)
+    {
+    	Log.d(LOGTAG,msg);
     }
 }
