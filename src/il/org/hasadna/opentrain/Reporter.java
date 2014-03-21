@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -42,6 +44,8 @@ class Reporter extends BroadcastReceiver {
     private long mLastTrainIndicationTime;
 
     private Location location = null;
+    
+    ReporterThread mReporterThread;
 
     Reporter(Context context) {
 
@@ -49,6 +53,8 @@ class Reporter extends BroadcastReceiver {
         mPrefs = Prefs.getInstance(context);
         mLastTrainIndicationTime = 0;
 
+        mReporterThread = new ReporterThread();
+        
         MOZSTUMBLER_USER_AGENT_STRING = NetworkUtils.getUserAgentString(mContext);
 
         String storedReports = mPrefs.getReports();
@@ -71,7 +77,7 @@ class Reporter extends BroadcastReceiver {
 
     void shutdown() {
         Log("shutdown");
-
+       // mReporterThread.shutDown();
         // Attempt to write out mReports
     	synchronized(mReports){
     		mPrefs.setReports(mReports.toString());
@@ -195,6 +201,9 @@ class Reporter extends BroadcastReceiver {
             return;
         }
 
+        Log("reportLocation: enqueue report on reporterthread");
+        mReporterThread.enqueueReport(locInfo);
+        
     	synchronized(mReports){
     		mReports.put(locInfo);
     	}
@@ -337,5 +346,82 @@ class Reporter extends BroadcastReceiver {
     private void Log(String msg)
     {
     	Log.d(LOGTAG,msg);
+    }
+    
+    
+    class ReporterThread extends HandlerThread{
+        private static final String LOGTAG = "il.org.opentrain.hasadna.ReporterThread";//Reporter.class.getName();
+
+    	Handler mHandler;
+    	ReporterQueue mReporterQueue;
+
+		public ReporterThread() {
+			super(ReporterThread.class.getName());
+	        start();
+			mHandler= new Handler(getLooper());	
+			mReporterQueue= new ReporterQueue();
+			Log("ReporterThread: ctor");
+
+		}
+	
+		public void enqueueReport(final JSONObject report){
+			Log("enqueueReport:");
+			mHandler.post(new Runnable() {
+				
+				@Override
+				public void run() {
+					mReporterQueue.enqueueReport(report);
+				}
+			});
+			
+		}
+		
+		public void triggerUploadNow(){
+			Log("triggerUploadNow:");
+			mHandler.post(new Runnable() {
+				
+				@Override
+				public void run() {
+					mReporterQueue.upload();					
+				}
+			});
+		}
+		public void shutDown()
+		{
+			Log("shutDown:");
+			mHandler.post(new Runnable() {
+				
+				@Override
+				public void run() {
+					mReporterQueue.shutDown();					
+				}
+			});
+		}
+		
+		
+		private class ReporterQueue{
+			
+			ReporterQueue(){
+				Log("ReporterQueue: ctor");				
+			}
+			public void enqueueReport(JSONObject report){
+				Log("ReporterQueue.enqueueReport:");
+				
+			}
+			
+			public void upload(){
+				Log("ReporterQueue.Upload:");
+			}
+			
+			public void shutDown()
+			{
+				Log("ReporterQueue.shutDown:");
+			}			
+		}
+		
+		void Log(String msg){
+			Log.d(LOGTAG, msg);
+		}
+		
     }
 }
