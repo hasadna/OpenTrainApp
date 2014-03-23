@@ -7,7 +7,7 @@ interface ScannerServiceInterface {
     void stopScanning();
     int getLocationCount();
     int getAPCount();
-    long getLastUploadTime();
-    long getReportsSent();
-    long getLastTrainIndicationTime();
+  //  long getLastUploadTime();
+  //  long getReportsSent();
+ //   long getLastTrainIndicationTime();
 }

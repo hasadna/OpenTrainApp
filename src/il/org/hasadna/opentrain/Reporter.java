@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.SystemClock;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -74,6 +73,7 @@ class Reporter extends BroadcastReceiver {
         boolean isTrainIndication = intent.getBooleanExtra("TrainIndication", false);
         if (isTrainIndication) {
             mLastTrainIndicationTime = time;
+            sendTrainIndicationIntent();
         }
 
         if (System.currentTimeMillis() - mLastTrainIndicationTime > mPrefs.TRAIN_INDICATION_TTL) {
@@ -117,7 +117,7 @@ class Reporter extends BroadcastReceiver {
         JSONObject report = buildReport(time, GPSData, wifiData, radioType, cellData, mLocation);
         if(report!=null)
         {
-        	mReporterThread.enqueueReport(report);
+        	mReporterThread.report(report);
         }
     }
     
@@ -193,21 +193,29 @@ class Reporter extends BroadcastReceiver {
 		mReporterThread.triggerUpload();
 	}
 	 
-	//TODO: remove this interface and send info as part of intent
+//	//TODO: remove this interface and send info as part of intent
 //	public long getLastUploadTime() {
 //        Log("getLastUploadTime:");
 //        return mReporterThread.getLastUploadTime();
 //    }
-	
-	//TODO: remove this interface and send info as part of intent
-    public long getReportsSent() {
-        Log("getReportsSent:");
-        return mReporterThread.getReportsSent();
-    }
+//	
+//	//TODO: remove this interface and send info as part of intent
+//    public long getReportsSent() {
+//        Log("getReportsSent:");
+//        return mReporterThread.getReportsSent();
+//    }
 
-    public long getLastTrainIndicationTime() {
-        Log("getLastTrainIndicationTime:");
-        return mLastTrainIndicationTime;
+//    public long getLastTrainIndicationTime() {
+//        Log("getLastTrainIndicationTime:");
+//        return mLastTrainIndicationTime;
+//    }
+    private void sendTrainIndicationIntent() {
+		Log("sendTrainIndicationIntent:");
+        Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
+        i.putExtra(Intent.EXTRA_SUBJECT, Reporter.class.getName()+".trainIndication");
+        i.putExtra(Reporter.class.getName()+".lastTrainIndicationTime", mLastTrainIndicationTime);
+        //TODO: use extra data and remove the getters for lastUploadTime and reportsSent
+        mContext.sendBroadcast(i);
     }
 
     private void Log(String msg)
@@ -229,7 +237,7 @@ class Reporter extends BroadcastReceiver {
 	    private  final String USER_AGENT_HEADER = "User-Agent";
 	    private String MOZSTUMBLER_USER_AGENT_STRING;
 		
-	    private long mLastUploadTime;			
+	//    private long mLastUploadTime;			
 	    private long mReportsSent;
 	    
 	    private  final long DELAY_RETRY_UPLOAD_ON_FAILURE = 30*1000;//30 seconds
@@ -275,7 +283,7 @@ class Reporter extends BroadcastReceiver {
 		}			
 	
 		public void report(final JSONObject report){
-			Log("enqueueReport:");
+			Log("report:");
 			mHandler.post(new Runnable() {
 				@Override
 				public void run() {
@@ -284,7 +292,7 @@ class Reporter extends BroadcastReceiver {
 			});
 		}
 		public void triggerUpload(){
-			Log("triggerUploadNow:");
+			Log("triggerUpload:");
 			mHandler.post(new Runnable() {
 				@Override
 				public void run() {
@@ -305,18 +313,18 @@ class Reporter extends BroadcastReceiver {
 			});
 		}
 		
-		//TODO send as part of intent data
-	    synchronized public long getReportsSent() {
-			Log("getReportsSent:");
-			return mReportsSent;
-		}
-
-
-		//TODO send as part of intent data
-		synchronized public long getLastUploadTime() {
-			Log("getLastUploadTime:");
-			return mLastUploadTime;
-		}
+//		//TODO send as part of intent data
+//	    synchronized public long getReportsSent() {
+//			Log("getReportsSent:");
+//			return mReportsSent;
+//		}
+//
+//
+//		//TODO send as part of intent data
+//		synchronized public long getLastUploadTime() {
+//			Log("getLastUploadTime:");
+//			return mLastUploadTime;
+//		}
 
 	    //TODO revisit threading model. consider enqueue and check on main thread. currently all actions except for getters are done on looper-handler thread
 		private void enqueueReport(JSONObject report){
@@ -359,13 +367,13 @@ class Reporter extends BroadcastReceiver {
 
                         Log("Upload: uploaded wrapperData: " + wrapperData + " to " + mURL.toString());
 
-                    	synchronized (this) {//TODO remove synchronization block when removing getters after putting data on intent
+                   // 	synchronized (this) {//TODO remove synchronization block when removing getters after putting data on intent
 	                        int returnCode = urlConnection.getResponseCode();
 	                        if (returnCode >= 200 && returnCode <= 299) {
 		                            mReportsSent = mReportsSent + mReportArray.length();									
 							}	                        
 	                        Log.i(LOGTAG, "Upload: Upload done. mReportsSent="+mReportsSent+", mReportArray.length="+mReportArray.length()+", returnCode=" + returnCode);
-                    	}
+                  //  	}
                         InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                         BufferedReader r = new BufferedReader(new InputStreamReader(in));
                         StringBuilder total = new StringBuilder(in.available());
@@ -382,7 +390,7 @@ class Reporter extends BroadcastReceiver {
 //                        synchronized(this){//TODO remove synchronization block when removing getters after putting data on intent
 //                        	mLastUploadTime = System.currentTimeMillis();	
 //                        }
-                        
+               
                         sendUpdateIntent();
                     } catch (JSONException jsonex) {
                     	Log.e(LOGTAG, "Upload: JSONException caught. Error wrapping data as a batch. Reports lost.", jsonex);
@@ -409,7 +417,6 @@ class Reporter extends BroadcastReceiver {
 					schedulePeriodicUpload();
 				}
 			},DELAY_PERIODIC_UPLOAD );
-		
 		}
 		private void scheduleRetryUpload() {
 			Log("scheduleRetryUpload:");
@@ -420,7 +427,7 @@ class Reporter extends BroadcastReceiver {
 	    private void sendUpdateIntent() {
 			Log("sendUpdateIntent:");
 	        Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
-	        i.putExtra(Intent.EXTRA_SUBJECT, "Reporter");
+	        i.putExtra(Intent.EXTRA_SUBJECT, Reporter.class.getName()+".upload");
 	        i.putExtra(Reporter.class.getName()+".lastUploadTime", System.currentTimeMillis());
 	        i.putExtra(Reporter.class.getName()+".reportsSent", mReportsSent);
 	        //TODO: use extra data and remove the getters for lastUploadTime and reportsSent

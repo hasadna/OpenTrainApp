@@ -1,7 +1,6 @@
 package il.org.hasadna.opentrain;
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,14 +8,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.StrictMode;
-import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -63,18 +60,41 @@ public final class MainActivity extends FragmentActivity {
 			}
 
 			String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
+			Log.d(LOGTAG, "onReceive: action="+action+", subject="+subject);
+
 
 			if (subject.equals("Notification")) {
 				String text = intent.getStringExtra(Intent.EXTRA_TEXT);
 				Toast.makeText(getApplicationContext(), text,
 						Toast.LENGTH_SHORT).show();
-				Log.d(LOGTAG, "Received a notification intent and showing: "
+				Log.d(LOGTAG, "onReceive: Showing as toast notification intent. text="
 						+ text);
 				return;
-			} else if (subject.equals("Reporter")) {
+			} else if (subject.equals(Reporter.class.getName()+".upload")) {
+				long lastUploadTime = intent.getLongExtra(Reporter.class.getName()+".lastUploadTime", 0);
+				String lastUploadTimeString = (lastUploadTime > 0) ? DateTimeUtils
+						.formatTimeForLocale(lastUploadTime) : "-";
+				formatTextView(R.id.last_upload_time, R.string.last_upload_time,
+						lastUploadTimeString);
+
+				long reportsSent =  intent.getLongExtra(Reporter.class.getName()+".reportsSent", 0);
+				formatTextView(R.id.reports_sent, R.string.reports_sent, reportsSent);
+				
+				Log.d(LOGTAG, "onReceive: Reporter intent. lastUploadTimeString="+lastUploadTimeString+", reportsSent="+reportsSent);
+				
 				updateUI();
-				Log.d(LOGTAG, "Received a reporter intent...");
 				return;
+			} else if (subject.equals(Reporter.class.getName()+".trainIndication")) {
+				long lastTrainIndicationTime = intent.getLongExtra(Reporter.class.getName()+".lastTrainIndicationTime", 0);
+				String lastTrainIndicationTimeString = (lastTrainIndicationTime > 0) ? DateTimeUtils
+						.formatTimeForLocale(lastTrainIndicationTime) : "-";
+				formatTextView(R.id.last_train, R.string.last_train,
+						lastTrainIndicationTimeString);	
+				Log.d(LOGTAG, "onReceive: trainIndication intent. lastTrainIndicationTime="+lastTrainIndicationTime);
+				
+				updateUI();
+				return;
+
 			} else if (subject.equals("Scanner")) {
 				mGpsFixes = intent.getIntExtra("fixes", 0);
 				updateUI();
@@ -93,49 +113,54 @@ public final class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		enableStrictMode();
 		setContentView(R.layout.activity_main);
+		formatTextView(R.id.last_upload_time, R.string.last_upload_time,
+				"-");
+		formatTextView(R.id.reports_sent, R.string.reports_sent, 0);
+		formatTextView(R.id.last_train, R.string.last_train,
+				"-");		
 
 		// Updater.checkForUpdates(this);
 
 		Log.d(LOGTAG, "onCreate");
 	}
 
-	private void checkGps() {
-		LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-		if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-			new AlertDialog.Builder(this)
-					.setCancelable(false)
-					.setTitle(R.string.app_name)
-					.setMessage(R.string.gps_alert_msg)
-					.setPositiveButton(R.string.yes,
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									startActivity(new Intent(
-											Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-								}
-							})
-					.setNegativeButton(R.string.no,
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									dialog.dismiss();
-								}
-							}).show();
-		}
-	}
-
-	private boolean isGoogleApiKeyValid() {
-		String apiKey = PackageUtils.getMetaDataString(this,
-				"com.google.android.maps.v2.API_KEY");
-		if ("FAKE_GOOGLE_API_KEY".equals(apiKey)) {
-			Log.w(LOGTAG, "Fake Google API Key found.");
-			return false;
-		}
-		return true;
-	}
+//	private void checkGps() {
+//		LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//
+//		if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+//			new AlertDialog.Builder(this)
+//					.setCancelable(false)
+//					.setTitle(R.string.app_name)
+//					.setMessage(R.string.gps_alert_msg)
+//					.setPositiveButton(R.string.yes,
+//							new DialogInterface.OnClickListener() {
+//								@Override
+//								public void onClick(DialogInterface dialog,
+//										int which) {
+//									startActivity(new Intent(
+//											Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+//								}
+//							})
+//					.setNegativeButton(R.string.no,
+//							new DialogInterface.OnClickListener() {
+//								@Override
+//								public void onClick(DialogInterface dialog,
+//										int which) {
+//									dialog.dismiss();
+//								}
+//							}).show();
+//		}
+//	}
+//
+//	private boolean isGoogleApiKeyValid() {
+//		String apiKey = PackageUtils.getMetaDataString(this,
+//				"com.google.android.maps.v2.API_KEY");
+//		if ("FAKE_GOOGLE_API_KEY".equals(apiKey)) {
+//			Log.w(LOGTAG, "Fake Google API Key found.");
+//			return false;
+//		}
+//		return true;
+//	}
 
 	@Override
 	protected void onStart() {
@@ -200,7 +225,7 @@ public final class MainActivity extends FragmentActivity {
 			return;
 		}
 
-		Log.d(LOGTAG, "Updating UI");
+		Log.d(LOGTAG, "UpdateUI:");
 		boolean scanning = false;
 		try {
 			scanning = mConnectionRemote.isScanning();
@@ -220,36 +245,36 @@ public final class MainActivity extends FragmentActivity {
 
 		int locationsScanned = 0;
 		int APs = 0;
-		long lastUploadTime = 0;
-		long reportsSent = 0;
-		long lastTrainIndicationTime = 0; // TODO: should have time when we were
+	//	long lastUploadTime = 0;
+	//	long reportsSent = 0;
+	//	long lastTrainIndicationTime = 0; // TODO: should have time when we were
 											// last on train
 		try {
 			locationsScanned = mConnectionRemote.getLocationCount();
 			APs = mConnectionRemote.getAPCount();
-			lastUploadTime = mConnectionRemote.getLastUploadTime();
-			reportsSent = mConnectionRemote.getReportsSent();
-			lastTrainIndicationTime = mConnectionRemote
-					.getLastTrainIndicationTime();
+		//	lastUploadTime = mConnectionRemote.getLastUploadTime();
+			//reportsSent = mConnectionRemote.getReportsSent();
+		//	lastTrainIndicationTime = mConnectionRemote
+			//		.getLastTrainIndicationTime();
 		} catch (RemoteException e) {
 			Log.e(LOGTAG, "", e);
 		}
 
-		String lastUploadTimeString = (lastUploadTime > 0) ? DateTimeUtils
-				.formatTimeForLocale(lastUploadTime) : "-";
-		String lastTrainIndicationTimeString = (lastTrainIndicationTime > 0) ? DateTimeUtils
-				.formatTimeForLocale(lastTrainIndicationTime) : "-";
+		//String lastUploadTimeString = (lastUploadTime > 0) ? DateTimeUtils
+		//		.formatTimeForLocale(lastUploadTime) : "-";
+		//String lastTrainIndicationTimeString = (lastTrainIndicationTime > 0) ? DateTimeUtils
+		//		.formatTimeForLocale(lastTrainIndicationTime) : "-";
 
 		formatTextView(R.id.gps_satellites, R.string.gps_satellites, mGpsFixes);
 		formatTextView(R.id.wifi_access_points, R.string.wifi_access_points,
 				APs);
 		formatTextView(R.id.locations_scanned, R.string.locations_scanned,
 				locationsScanned);
-		formatTextView(R.id.last_upload_time, R.string.last_upload_time,
-				lastUploadTimeString);
-		formatTextView(R.id.reports_sent, R.string.reports_sent, reportsSent);
-		formatTextView(R.id.last_train, R.string.last_train,
-				lastTrainIndicationTimeString);
+		//formatTextView(R.id.last_upload_time, R.string.last_upload_time,
+		//		lastUploadTimeString);
+		//formatTextView(R.id.reports_sent, R.string.reports_sent, reportsSent);
+		//formatTextView(R.id.last_train, R.string.last_train,
+		//		lastTrainIndicationTimeString);
 	}
 
 	public void onClick_ToggleScanning(View v) throws RemoteException {

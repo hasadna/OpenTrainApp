@@ -131,20 +131,20 @@ public final class ScannerService extends Service {
 			return mScanner.getAPCount();
 		}
 
-		@Override
-		public long getLastUploadTime() throws RemoteException {
-			return mReporter.getLastUploadTime();
-		}
+//		@Override
+//		public long getLastUploadTime() throws RemoteException {
+//			return mReporter.getLastUploadTime();
+//		}
+//
+//		@Override
+//		public long getReportsSent() throws RemoteException {
+//			return mReporter.getReportsSent();
+//		}
 
-		@Override
-		public long getReportsSent() throws RemoteException {
-			return mReporter.getReportsSent();
-		}
-
-		@Override
-		public long getLastTrainIndicationTime() throws RemoteException {
-			return mReporter.getLastTrainIndicationTime();
-		}
+//		@Override
+//		public long getLastTrainIndicationTime() throws RemoteException {
+//			return mReporter.getLastTrainIndicationTime();
+//		}
 	};
 
 	private final class LooperThread extends Thread {
