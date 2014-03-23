@@ -194,10 +194,10 @@ class Reporter extends BroadcastReceiver {
 	}
 	 
 	//TODO: remove this interface and send info as part of intent
-	public long getLastUploadTime() {
-        Log("getLastUploadTime:");
-        return mReporterThread.getLastUploadTime();
-    }
+//	public long getLastUploadTime() {
+//        Log("getLastUploadTime:");
+//        return mReporterThread.getLastUploadTime();
+//    }
 	
 	//TODO: remove this interface and send info as part of intent
     public long getReportsSent() {
@@ -379,9 +379,9 @@ class Reporter extends BroadcastReceiver {
 
                         mReportArray =new JSONArray();
 
-                        synchronized(this){//TODO remove synchronization block when removing getters after putting data on intent
-                        	mLastUploadTime = System.currentTimeMillis();	
-                        }
+//                        synchronized(this){//TODO remove synchronization block when removing getters after putting data on intent
+//                        	mLastUploadTime = System.currentTimeMillis();	
+//                        }
                         
                         sendUpdateIntent();
                     } catch (JSONException jsonex) {
@@ -421,7 +421,9 @@ class Reporter extends BroadcastReceiver {
 			Log("sendUpdateIntent:");
 	        Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
 	        i.putExtra(Intent.EXTRA_SUBJECT, "Reporter");
-	        //TODO: put extra data and remove the getters below
+	        i.putExtra(Reporter.class.getName()+".lastUploadTime", System.currentTimeMillis());
+	        i.putExtra(Reporter.class.getName()+".reportsSent", mReportsSent);
+	        //TODO: use extra data and remove the getters for lastUploadTime and reportsSent
 	        mContext.sendBroadcast(i);
 	    }
 		
