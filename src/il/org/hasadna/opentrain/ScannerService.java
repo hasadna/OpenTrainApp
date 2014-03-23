@@ -72,7 +72,7 @@ public final class ScannerService extends Service {
 								cal.getTimeInMillis(), WAKE_TIMEOUT,
 								mWakeIntent);
 
-						mReporter.sendReports(false);
+						mReporter.triggerUpload(); 
 					} catch (Exception e) {
 						Log.d(LOGTAG, "looper shat itself : " + e);
 					}
@@ -116,7 +116,7 @@ public final class ScannerService extends Service {
 
 					mScanner.stopScanning();
 
-					mReporter.sendReports(true);
+					mReporter.triggerUpload();
 				}
 			});
 		}
