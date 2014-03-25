@@ -55,12 +55,10 @@ final class SSIDBlockList {
         // Transportation Wi-Fi
         "ISRAEL-RAILWAYS",
         "S-ISRAEL-RAILWAYS",
-        "keydars", // TODO: Remove before launch!
+        //"keydars", // TODO: Remove before launch!
         //"Bartals", // TODO: Remove before launch!
         //"CampusGuest", //TODO: Remove before launch!
-        "zooni" ,//TODO: Remove before launch!
-        "PeerSport",////TODO: Remove before launch!
-        "Galina"//TODO: Remove before launch!
+        //"zooni" //TODO: Remove before launch!
     };
 
     private static final String[] SUFFIX_LIST = {
