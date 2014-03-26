@@ -69,7 +69,6 @@
 
         <service
             android:name=".ScannerService"
-            android:process=":.ScannerService"
             android:icon="@drawable/ic_launcher"
             android:label="@string/service_name"
             android:process=":.ScannerService"></service>
