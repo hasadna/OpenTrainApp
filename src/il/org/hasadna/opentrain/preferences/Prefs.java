@@ -1,15 +1,17 @@
 package il.org.hasadna.opentrain.preferences;
 
-import java.util.Calendar;
-import java.security.SecureRandom;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build.VERSION;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build.VERSION;
 import android.util.Log;
+
+import org.json.JSONObject;
+
+import java.security.SecureRandom;
+import java.util.Calendar;
 
 public final class Prefs {
     private static final String LOGTAG = Prefs.class.getName();
@@ -51,7 +53,7 @@ public final class Prefs {
     public int RECORD_BATCH_SIZE;
     public long TRAIN_INDICATION_TTL;
 
-    public static final String URL_CONFIG="http://opentrain.hasadna.org.il/client/config";
+    public static final String URL_CONFIG = "http://opentrain.hasadna.org.il/client/config";
 
     private Prefs(Context context) {
         int versionCode;
@@ -172,5 +174,38 @@ public final class Prefs {
         LOCATION_API_FAST_CEILING_INTERVAL = sharedPreferences.getLong(PREF_LOCATION_API_FAST_CEILING_INTERVAL, DEF_LOCATION_API_FAST_CEILING_INTERVAL);
         RECORD_BATCH_SIZE = sharedPreferences.getInt(PREF_RECORD_BATCH_SIZE, DEF_RECORD_BATCH_SIZE);
         TRAIN_INDICATION_TTL = sharedPreferences.getLong(PREF_TRAIN_INDICATION_TTL, DEF_TRAIN_INDICATION_TTL);
+    }
+
+    public void setPreferenceFromServer(String result) throws Exception {
+        JSONObject jsonObject = new JSONObject(result);
+        WIFI_MIN_UPDATE_TIME = jsonObject.optInt("WIFI_MIN_UPDATE_TIME");
+        WIFI_MODE_TRAIN_FOUND_PERIOD = jsonObject
+                .optInt("WIFI_MODE_TRAIN_FOUND_PERIOD");
+        WIFI_MODE_TRAIN_SCANNIG_PERIOD = jsonObject
+                .optInt("WIFI_MODE_TRAIN_SCANNIG_PERIOD");
+        LOCATION_API_UPDATE_INTERVAL = jsonObject
+                .optInt("LOCATION_API_UPDATE_INTERVAL");
+        LOCATION_API_FAST_CEILING_INTERVAL = jsonObject
+                .optInt("LOCATION_API_FAST_CEILING_INTERVAL");
+        RECORD_BATCH_SIZE = jsonObject.optInt("RECORD_BATCH_SIZE");
+        TRAIN_INDICATION_TTL = jsonObject.optInt("TRAIN_INDICATION_TTL");
+
+        Log.d("params", " " + WIFI_MIN_UPDATE_TIME + " "
+                + WIFI_MODE_TRAIN_FOUND_PERIOD + " "
+                + WIFI_MODE_TRAIN_SCANNIG_PERIOD + " "
+                + LOCATION_API_UPDATE_INTERVAL + " "
+                + LOCATION_API_FAST_CEILING_INTERVAL + " " + RECORD_BATCH_SIZE
+                + " " + TRAIN_INDICATION_TTL + " ");
+
+        SharedPreferences.Editor editor = getPrefs().edit();
+        editor.putLong(PREF_WIFI_MIN_UPDATE_TIME, WIFI_MIN_UPDATE_TIME);
+        editor.putLong(PREF_WIFI_MODE_TRAIN_FOUND_PERIOD, WIFI_MODE_TRAIN_FOUND_PERIOD);
+        editor.putLong(PREF_WIFI_MODE_TRAIN_SCANNIG_PERIOD, WIFI_MODE_TRAIN_SCANNIG_PERIOD);
+        editor.putLong(PREF_LOCATION_API_UPDATE_INTERVAL, LOCATION_API_UPDATE_INTERVAL);
+        editor.putLong(PREF_LOCATION_API_FAST_CEILING_INTERVAL, LOCATION_API_FAST_CEILING_INTERVAL);
+        editor.putInt(PREF_RECORD_BATCH_SIZE, RECORD_BATCH_SIZE);
+        editor.putLong(PREF_TRAIN_INDICATION_TTL, TRAIN_INDICATION_TTL);
+
+        //apply(editor);
     }
 }

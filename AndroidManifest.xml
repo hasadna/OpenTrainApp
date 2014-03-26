@@ -71,8 +71,10 @@
             android:name=".ScannerService"
             android:process=":.ScannerService"
             android:icon="@drawable/ic_launcher"
-            android:label="@string/service_name">
-        </service>
+            android:label="@string/service_name"
+            android:process=":.ScannerService"></service>
+
+        <service android:name="il.org.hasadna.opentrain.preferences.PrefsUpdaterService"></service>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
