@@ -16,6 +16,9 @@ import android.os.RemoteException;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -381,4 +384,24 @@ public final class MainActivity extends FragmentActivity {
             finish();
 		}
 	};
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.options_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.privacy_policy:
+			Intent i = new Intent(this, PrivacyPolicyActivity.class);
+	        startActivity(i);
+			return true;
+		default:
+			return false;
+		}
+	}
+
 }
