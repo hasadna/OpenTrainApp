@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import il.org.hasadna.opentrain.fragment.ExtendedDialogFragment;
+import il.org.hasadna.opentrain.preferences.PrefsUpdater;
 
 public final class MainActivity extends FragmentActivity {
 	private static final String LOGTAG = MainActivity.class.getName();
@@ -125,6 +126,7 @@ public final class MainActivity extends FragmentActivity {
 		// Updater.checkForUpdates(this);
 
 		Log.d(LOGTAG, "onCreate");
+        PrefsUpdater.scheduleUpdate(this);
 	}
 
 //	private void checkGps() {

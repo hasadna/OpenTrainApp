@@ -14,9 +14,9 @@ import java.util.Random;
  */
 public class PrefsUpdater {
 
-    private static long PREFS_UPDATE_INTERVAL = 60 * 60 * 1000;// 60 * 60 * 1000
+    private static long PREFS_UPDATE_INTERVAL = 24 * 60 * 60 * 1000;
 
-    public void scheduleUpdate(Activity context) {
+    public static void scheduleUpdate(Activity context) {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -35,6 +35,7 @@ public class PrefsUpdater {
         PendingIntent pintent = PendingIntent.getService(context, PrefsUpdaterService.SERVICE_ID, intent, 0);
 
         AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, PREFS_UPDATE_INTERVAL, pintent);
+        alarm.cancel(pintent);
+        alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), PREFS_UPDATE_INTERVAL, pintent);
     }
 }

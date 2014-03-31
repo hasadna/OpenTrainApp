@@ -39,7 +39,7 @@ public final class Prefs {
 
     private static final long DEF_WIFI_MIN_UPDATE_TIME = 1000;
     private static final long DEF_WIFI_MODE_TRAIN_FOUND_PERIOD = 1 * 15 * 1000;
-    private static final long DEF_WIFI_MODE_TRAIN_SCANNIG_PERIOD = 5 * 60 * 1000;
+    private static final long DEF_WIFI_MODE_TRAIN_SCANNIG_PERIOD = 1 * 30 * 1000;
     private static final long DEF_LOCATION_API_UPDATE_INTERVAL = 5000;
     private static final long DEF_LOCATION_API_FAST_CEILING_INTERVAL = 1000;
     private static final int DEF_RECORD_BATCH_SIZE = 5;
@@ -178,25 +178,46 @@ public final class Prefs {
 
     public void setPreferenceFromServer(String result) throws Exception {
         JSONObject jsonObject = new JSONObject(result);
-        WIFI_MIN_UPDATE_TIME = jsonObject.optInt("WIFI_MIN_UPDATE_TIME");
-        WIFI_MODE_TRAIN_FOUND_PERIOD = jsonObject
-                .optInt("WIFI_MODE_TRAIN_FOUND_PERIOD");
-        WIFI_MODE_TRAIN_SCANNIG_PERIOD = jsonObject
-                .optInt("WIFI_MODE_TRAIN_SCANNIG_PERIOD");
-        LOCATION_API_UPDATE_INTERVAL = jsonObject
-                .optInt("LOCATION_API_UPDATE_INTERVAL");
-        LOCATION_API_FAST_CEILING_INTERVAL = jsonObject
-                .optInt("LOCATION_API_FAST_CEILING_INTERVAL");
-        RECORD_BATCH_SIZE = jsonObject.optInt("RECORD_BATCH_SIZE");
-        TRAIN_INDICATION_TTL = jsonObject.optInt("TRAIN_INDICATION_TTL");
 
-        Log.d("params", " " + WIFI_MIN_UPDATE_TIME + " "
-                + WIFI_MODE_TRAIN_FOUND_PERIOD + " "
-                + WIFI_MODE_TRAIN_SCANNIG_PERIOD + " "
-                + LOCATION_API_UPDATE_INTERVAL + " "
-                + LOCATION_API_FAST_CEILING_INTERVAL + " " + RECORD_BATCH_SIZE
-                + " " + TRAIN_INDICATION_TTL + " ");
+        long wifi_min_update_time = jsonObject.optLong("WIFI_MIN_UPDATE_TIME");
+        if (wifi_min_update_time != 0) {
+            WIFI_MIN_UPDATE_TIME = wifi_min_update_time;
+        }
 
+        long wifi_mode_train_found_period = jsonObject
+                .optLong("MODE_TRAIN_WIFI_FOUND_PERIOD");
+        if (wifi_mode_train_found_period != 0) {
+            WIFI_MODE_TRAIN_FOUND_PERIOD = wifi_mode_train_found_period;
+        }
+
+        long wifi_mode_train_scannig_period = jsonObject.optLong("MODE_TRAIN_WIFI_SCANNIG_PERIOD");
+        if (wifi_mode_train_scannig_period != 0) {
+            wifi_mode_train_scannig_period=23000;
+            WIFI_MODE_TRAIN_SCANNIG_PERIOD = wifi_mode_train_scannig_period;
+        }
+
+        long location_api_update_interval = jsonObject.optLong("LOCATION_API_UPDATE_INTERVAL");
+        if (location_api_update_interval != 0) {
+            LOCATION_API_UPDATE_INTERVAL = location_api_update_interval;
+        }
+
+        long location_api_fast_ceiling_interval = jsonObject.optLong("LOCATION_API_FAST_CEILING_INTERVAL");
+        if (location_api_fast_ceiling_interval != 0) {
+            LOCATION_API_FAST_CEILING_INTERVAL = location_api_fast_ceiling_interval;
+        }
+
+        int record_batch_size = jsonObject.optInt("RECORD_BATCH_SIZE");
+        if (record_batch_size != 0) {
+            RECORD_BATCH_SIZE = record_batch_size;
+        }
+
+        long train_indication_ttl = jsonObject.optLong("TRAIN_INDICATION_TTL");
+        if (train_indication_ttl != 0) {
+            TRAIN_INDICATION_TTL = train_indication_ttl;
+        }
+    }
+
+    public void savePreferenceFromServer(){
         SharedPreferences.Editor editor = getPrefs().edit();
         editor.putLong(PREF_WIFI_MIN_UPDATE_TIME, WIFI_MIN_UPDATE_TIME);
         editor.putLong(PREF_WIFI_MODE_TRAIN_FOUND_PERIOD, WIFI_MODE_TRAIN_FOUND_PERIOD);
@@ -206,6 +227,6 @@ public final class Prefs {
         editor.putInt(PREF_RECORD_BATCH_SIZE, RECORD_BATCH_SIZE);
         editor.putLong(PREF_TRAIN_INDICATION_TTL, TRAIN_INDICATION_TTL);
 
-        //apply(editor);
+        apply(editor);
     }
 }
