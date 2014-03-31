@@ -20,8 +20,9 @@
     <string name="enter_nickname_title">כינוי: </string>
     <string name="enter_nickname_longtext">הכינוי שלך יופיע בלוח המובילים</string>
 
-    <string name="battery_low_message">הסוללה חלשה, הסריקה הושעתה כדי לחסוך בסוללה</string>
-    <string name="battery_okay_message">הסוללה שוב ברמה תקינה. הסריקה חודשה</string>
+    <string name="battery_low_message">סריקה מושעית. סוללה חלשה.</string>
+    <string name="battery_low_ticker">הסוללה חלשה. משעה סריקה על מנת לחסוך בסוללה</string>
+    <string name="battery_okay_ticker">הסוללה שוב ברמה תקינה. מחדש סריקה</string>
     
     <string name="update_title">האם להוריד עדכון תוכנה??</string>
     <string name="update_message">הגרסה המותקנת: %1$s\nהגרסה העדכנית: %2$s</string>

@@ -262,9 +262,11 @@ public final class ScannerService extends Service {
 				
 				String title = getResources().getString(
 						R.string.service_name);
-				String batteryLowWarning = getResources().getString(
+				String text = getResources().getString(
 						R.string.battery_low_message);
-				postNotification(title, batteryLowWarning,
+				String ticker = getResources().getString(
+						R.string.battery_low_ticker);
+				postNotification(title, text,ticker,
 						Notification.FLAG_AUTO_CANCEL);
 			
 			}
@@ -289,16 +291,23 @@ public final class ScannerService extends Service {
 				
 				String title = getResources().getString(
 						R.string.service_name);
-				String batteryLowWarning = getResources().getString(
-						R.string.battery_okay_message);
-				postNotification(title, batteryLowWarning,
+				String text = getResources().getString(
+						R.string.service_scanning);
+				String ticker = getResources().getString(
+						R.string.battery_okay_ticker);
+				postNotification(title, text,ticker,
 						Notification.FLAG_AUTO_CANCEL);
 			}
 		});
 		
 	}
 
-	private void postNotification(final String title, final String text,
+	private void postNotification(final String title, final String text, final int flags) {
+		Log.d(LOGTAG, "postNotification:");
+		postNotification( title, text,text,flags);
+	}
+	
+	private void postNotification(final String title, final String text, final String ticker,
 			final int flags) {
 		Log.d(LOGTAG, "postNotification:");
 
@@ -317,7 +326,7 @@ public final class ScannerService extends Service {
 						PendingIntent.FLAG_CANCEL_CURRENT);
 
 				int icon = R.drawable.ic_status_scanning;
-				Notification n = buildNotification(ctx, icon, title, text,
+				Notification n = buildNotification(ctx, icon, title, text, ticker,
 						contentIntent, flags);
 				startForeground(NOTIFICATION_ID, n);
 			}
@@ -340,14 +349,14 @@ public final class ScannerService extends Service {
 	// new version of notification creation.
 	// replace deprecated version and add close action to it.
 	private static Notification buildNotification(Context context, int icon,
-			String contentTitle, String contentText,
+			String contentTitle, String contentText, String tickerText,
 			PendingIntent contentIntent, int flags) {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
 				context);
 		builder.setContentTitle(contentTitle);
 		builder.setContentText(contentText);
 		builder.setContentIntent(contentIntent);
-		builder.setTicker(contentTitle);
+		builder.setTicker(tickerText);
 		builder.setSmallIcon(icon);
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
 		Intent closeIntent = new Intent(ACTION_CLOSE);
