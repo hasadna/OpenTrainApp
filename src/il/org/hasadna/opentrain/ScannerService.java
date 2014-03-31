@@ -31,120 +31,46 @@ public final class ScannerService extends Service {
 	private LooperThread mLooper;
 	private PendingIntent mWakeIntent;
 	private BroadcastReceiver mBatteryLowReceiver;
+	private BroadcastReceiver mBatteryOkayReceiver;
+
 	private BroadcastReceiver mCloseAppReceiver;
 
 	private final ScannerServiceInterface.Stub mBinder = new ScannerServiceInterface.Stub() {
 		@Override
 		public boolean isScanning() throws RemoteException {
-			return mScanner.isScanning();
+			Log.d(LOGTAG, "ScannerServiceInterface.Stub.isScanning:");
+			return ((null==mScanner)?false:mScanner.isScanning());
 		}
 
 		@Override
 		public void startScanning() throws RemoteException {
-			if (mScanner.isScanning()) {
-				return;
-			}
-
-			mLooper.post(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						Log.d(LOGTAG, "Running looper...");
-
-						String title = getResources().getString(
-								R.string.service_name);
-						String text = getResources().getString(
-								R.string.service_scanning);
-						postNotification(title, text,
-								Notification.FLAG_NO_CLEAR
-										| Notification.FLAG_ONGOING_EVENT);
-
-						mScanner.startScanning();
-
-						// keep us awake.
-						Context cxt = getApplicationContext();
-						Calendar cal = Calendar.getInstance();
-						Intent intent = new Intent(cxt, ScannerService.class);
-						mWakeIntent = PendingIntent.getService(cxt, 0, intent,
-								0);
-						AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-						alarm.setRepeating(AlarmManager.RTC_WAKEUP,
-								cal.getTimeInMillis(), WAKE_TIMEOUT,
-								mWakeIntent);
-
-						mReporter.triggerUpload(); 
-					} catch (Exception e) {
-						Log.d(LOGTAG, "looper shat itself : " + e);
-					}
-				}
-			});
+			Log.d(LOGTAG, "ScannerServiceInterface.Stub.startScanning:");
+			ScannerService.this.startScanning();
 		}
 
 		@Override
 		public void startWifiScanningOnly() throws RemoteException {
-			if (mScanner.isScanning()) {
-				return;
-			}
-
-			mLooper.post(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						Log.d(LOGTAG, "Running looper...");
-						mScanner.startWifiOnly();
-					} catch (Exception e) {
-					}
-				}
-			});
+			Log.d(LOGTAG, "ScannerServiceInterface.Stub.startWifiScanningOnly:");
+			ScannerService.this.startWifiScanningOnly();
 		}
 
 		@Override
 		public void stopScanning() throws RemoteException {
-			if (!mScanner.isScanning()) {
-				return;
-			}
-
-			mLooper.post(new Runnable() {
-				@Override
-				public void run() {
-					AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-					alarm.cancel(mWakeIntent);
-
-					NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-					nm.cancel(NOTIFICATION_ID);
-					stopForeground(true);
-
-					mScanner.stopScanning();
-
-					mReporter.triggerUpload();
-				}
-			});
+			Log.d(LOGTAG, "ScannerServiceInterface.Stub.stopScanning:");
+			ScannerService.this.stopScanning();
 		}
-
+	
 		@Override
 		public int getLocationCount() throws RemoteException {
-			return mScanner.getLocationCount();
+			Log.d(LOGTAG, "ScannerServiceInterface.Stub.getLocationCount:");
+			return ((null==mScanner)?0:mScanner.getLocationCount());
 		}
 
 		@Override
 		public int getAPCount() throws RemoteException {
-			return mScanner.getAPCount();
+			Log.d(LOGTAG, "ScannerServiceInterface.Stub.getAPCount:");
+			return ((null==mScanner)?0:mScanner.getAPCount());
 		}
-
-//		@Override
-//		public long getLastUploadTime() throws RemoteException {
-//			return mReporter.getLastUploadTime();
-//		}
-//
-//		@Override
-//		public long getReportsSent() throws RemoteException {
-//			return mReporter.getReportsSent();
-//		}
-
-//		@Override
-//		public long getLastTrainIndicationTime() throws RemoteException {
-//			return mReporter.getLastTrainIndicationTime();
-//		}
 	};
 
 	private final class LooperThread extends Thread {
@@ -172,29 +98,22 @@ public final class ScannerService extends Service {
 		mBatteryLowReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				Log.d(LOGTAG, "Got battery low broadcast!");
-				try {
-					if (mBinder.isScanning()) {
-						mBinder.stopScanning();
-
-						String title = getResources().getString(
-								R.string.service_name);
-						String batteryLowWarning = getResources().getString(
-								R.string.battery_low_warning);
-						postNotification(title, batteryLowWarning,
-								Notification.FLAG_AUTO_CANCEL);
-					}
-				} catch (RemoteException e) {
-					Log.e(LOGTAG, "", e);
-				}
+				Log.d(LOGTAG, "BatteryLowReceiver.onReceive: Battery low broadcast received");
+				ScannerService.this.suspendScanningOnBatteryLow();
 			}
 		};
+		registerReceiver(mBatteryLowReceiver, new IntentFilter(Intent.ACTION_BATTERY_LOW));
 
-		registerReceiver(mBatteryLowReceiver, new IntentFilter(
-				Intent.ACTION_BATTERY_LOW));
+		mBatteryOkayReceiver= new BroadcastReceiver(){
+			@Override
+			public void onReceive(Context context,Intent intent){
+				Log.d(LOGTAG,"BatteryOkayReciever.onReceive: Battery back to normal broadcast received");
+				ScannerService.this.resumeScanningOnBatteryOkay();
+			}
+		};
+		registerReceiver(mBatteryOkayReceiver, new IntentFilter(Intent.ACTION_BATTERY_OKAY));
 
 		mCloseAppReceiver = new BroadcastReceiver() {
-
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				try {
@@ -220,11 +139,19 @@ public final class ScannerService extends Service {
 		Log.d(LOGTAG, "onDestroy");
 
 		unregisterReceiver(mBatteryLowReceiver);
+		mBatteryLowReceiver=null;
+		
+		unregisterReceiver(mBatteryOkayReceiver);
+		mBatteryOkayReceiver = null;
+		
 		unregisterReceiver(mCloseAppReceiver);
-		mBatteryLowReceiver = null;
+		mCloseAppReceiver=null;
+
 
 		mLooper.interrupt();
 		mLooper = null;
+		
+		mScanner.stopScanning();
 		mScanner = null;
 
 		mReporter.shutdown();
@@ -233,12 +160,153 @@ public final class ScannerService extends Service {
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		nm.cancel(NOTIFICATION_ID);
 	}
+	private void startScanning(){
+		Log.d(LOGTAG, "startScanning:");
 
-	private void postNotification(final String title, final String text,
-			final int flags) {
+		if (mScanner.isScanning()) {
+			return;
+		}
+
 		mLooper.post(new Runnable() {
 			@Override
 			public void run() {
+				try {
+					Log.d(LOGTAG, "startScanning: run");
+
+					String title = getResources().getString(
+							R.string.service_name);
+					String text = getResources().getString(
+							R.string.service_scanning);
+					postNotification(title, text,
+							Notification.FLAG_NO_CLEAR
+									| Notification.FLAG_ONGOING_EVENT);
+
+					mScanner.startScanning();
+
+					// keep us awake.
+					Context cxt = getApplicationContext();
+					Calendar cal = Calendar.getInstance();
+					Intent intent = new Intent(cxt, ScannerService.class);
+					mWakeIntent = PendingIntent.getService(cxt, 0, intent,
+							0);
+					AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+					alarm.setRepeating(AlarmManager.RTC_WAKEUP,
+							cal.getTimeInMillis(), WAKE_TIMEOUT,
+							mWakeIntent);
+
+					mReporter.triggerUpload(); 
+				} catch (Exception e) {
+					Log.d(LOGTAG, "looper shut itself : " + e);
+				}
+			}
+		});
+	}
+	private void startWifiScanningOnly(){
+		Log.d(LOGTAG, "startWifiScanningOnly:");
+
+		if (mScanner.isScanning()) {
+			return;
+		}
+
+		mLooper.post(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Log.d(LOGTAG, "startWifiScanningOnly: run");
+					mScanner.startWifiOnly();
+				} catch (Exception e) {
+				}
+			}
+		});
+	}
+
+	private void stopScanning(){
+		Log.d(LOGTAG, "stopScanning:");
+
+		if (!mScanner.isScanning()) {
+			return;
+		}
+
+		mLooper.post(new Runnable() {
+			@Override
+			public void run() {
+				Log.d(LOGTAG, "stopScanning: run");
+
+				AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+				alarm.cancel(mWakeIntent);
+
+				NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+				nm.cancel(NOTIFICATION_ID);
+				stopForeground(true);
+
+				mScanner.stopScanning();
+
+				mReporter.triggerUpload();
+			}
+		});
+	}
+	
+	private void suspendScanningOnBatteryLow() {
+		Log.d(LOGTAG, "suspendScanningOnBatteryLow:");
+
+		if (!mScanner.isScanning()) {
+			return;
+		}
+		mLooper.post(new Runnable() {
+			@Override
+			public void run() {
+				Log.d(LOGTAG, "suspendScanningOnBatteryLow: run");
+
+				mScanner.stopScanning();
+				mReporter.triggerUpload();
+				
+				String title = getResources().getString(
+						R.string.service_name);
+				String batteryLowWarning = getResources().getString(
+						R.string.battery_low_message);
+				postNotification(title, batteryLowWarning,
+						Notification.FLAG_AUTO_CANCEL);
+			
+			}
+		});
+	}
+		
+	
+	
+	public void resumeScanningOnBatteryOkay() {
+		Log.d(LOGTAG, "resumeScanningOnBatteryOkay:");
+
+		if (mScanner.isScanning()) {
+			return;
+		}
+
+		mLooper.post(new Runnable() {
+			@Override
+			public void run() {
+				Log.d(LOGTAG, "resumeScanningOnBatteryOkay: run");
+				mScanner.startScanning();
+				mReporter.triggerUpload(); 
+				
+				String title = getResources().getString(
+						R.string.service_name);
+				String batteryLowWarning = getResources().getString(
+						R.string.battery_okay_message);
+				postNotification(title, batteryLowWarning,
+						Notification.FLAG_AUTO_CANCEL);
+			}
+		});
+		
+	}
+
+	private void postNotification(final String title, final String text,
+			final int flags) {
+		Log.d(LOGTAG, "postNotification:");
+
+		mLooper.post(new Runnable() {
+			@Override
+			public void run() {
+				Log.d(LOGTAG, "postNotification: run");
+
 				Context ctx = getApplicationContext();
 				Intent notificationIntent = new Intent(ctx, MainActivity.class);
 				notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -259,6 +327,7 @@ public final class ScannerService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// keep running!
+		Log.d(LOGTAG, "onStartCommand:");
 		return Service.START_STICKY;
 	}
 

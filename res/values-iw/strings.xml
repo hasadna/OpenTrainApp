@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">רכבת פתוחה</string>
-    <string name="action_about">על אודות MozStumbler</string>
+    <string name="action_about">על אודות אפליקציית רכבת פתוחה</string>
     <string name="action_preferences">הגדרות</string>
     <string name="mozilla_title">Mozilla</string>
     <string name="view_leaderboard">צפייה בלוח המובילים</string>
@@ -20,9 +20,10 @@
     <string name="enter_nickname_title">כינוי: </string>
     <string name="enter_nickname_longtext">הכינוי שלך יופיע בלוח המובילים</string>
 
-    <string name="battery_low_warning">הסוללה חלשה, הסריקה של MozStumbler תופסק</string>
-
-    <string name="update_title">האם להוריד עדכון ל־MozStumbler?</string>
+    <string name="battery_low_message">הסוללה חלשה, הסריקה הושעתה כדי לחסוך בסוללה</string>
+    <string name="battery_okay_message">הסוללה שוב ברמה תקינה. הסריקה חודשה</string>
+    
+    <string name="update_title">האם להוריד עדכון תוכנה??</string>
     <string name="update_message">הגרסה המותקנת: %1$s\nהגרסה העדכנית: %2$s</string>
     <string name="update_now">לעדכן כעת</string>
     <string name="update_later">לעדכן מאוחר יותר</string>
