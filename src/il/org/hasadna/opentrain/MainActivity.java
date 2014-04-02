@@ -115,17 +115,14 @@ public final class MainActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.i(LOGTAG, "onCreate:");
 		enableStrictMode();
 		setContentView(R.layout.activity_main);
-		formatTextView(R.id.last_upload_time, R.string.last_upload_time,
-				"-");
+		formatTextView(R.id.last_upload_time, R.string.last_upload_time,"-");
 		formatTextView(R.id.reports_sent, R.string.reports_sent, 0);
 		formatTextView(R.id.last_train, R.string.last_train,
 				"-");		
-
 		// Updater.checkForUpdates(this);
-
-		Log.d(LOGTAG, "onCreate");
         PrefsUpdater.scheduleUpdate(this);
 	}
 
@@ -166,10 +163,20 @@ public final class MainActivity extends FragmentActivity {
 //		}
 //		return true;
 //	}
+	
+
+//	@Override
+//	protected void onRestart()
+//	{
+//		super.onRestart();
+//		Log.i(LOGTAG, "onRestart:");
+//	}
+	
 
 	@Override
 	protected void onStart() {
 		super.onStart();
+		Log.i(LOGTAG, "onStart:");
 
 		// Reason for commenting out checkGps() :
 		// We are currently working under the assumption that we don't need GPS
@@ -184,29 +191,48 @@ public final class MainActivity extends FragmentActivity {
 			@Override
 			public void onServiceConnected(ComponentName className,
 					IBinder binder) {
+				Log.i(LOGTAG, "ServiceConnection.onServiceConnected:");
+
 				mConnectionRemote = ScannerServiceInterface.Stub
 						.asInterface(binder);
-				Log.d(LOGTAG, "Service connected");
 				updateUI();
 			}
 
 			@Override
 			public void onServiceDisconnected(ComponentName className) {
+				Log.i(LOGTAG, "ServiceConnection.onServiceDisconnected:");
 				mConnectionRemote = null;
-				Log.d(LOGTAG, "Service disconnected", new Exception());
 			}
 		};
 
 		Intent intent = new Intent(this, ScannerService.class);
 		startService(intent);
 		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+		
 
 		Log.d(LOGTAG, "onStart");
 	}
+	
+//	@Override
+//	protected void onResume()
+//	{
+//		super.onResume();
+//		Log.i(LOGTAG, "onResume:");
+//	}
+//	
+//
+//	@Override
+//	protected void onPause()
+//	{
+//		super.onPause();
+//		Log.i(LOGTAG, "onPause:");
+//	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
+		Log.i(LOGTAG, "onStop:");
+
 		try {
 			unbindService(mConnection);
 			mConnection = null;
@@ -257,30 +283,23 @@ public final class MainActivity extends FragmentActivity {
 		try {
 			locationsScanned = mConnectionRemote.getLocationCount();
 			APs = mConnectionRemote.getAPCount();
-		//	lastUploadTime = mConnectionRemote.getLastUploadTime();
-			//reportsSent = mConnectionRemote.getReportsSent();
-		//	lastTrainIndicationTime = mConnectionRemote
-			//		.getLastTrainIndicationTime();
 		} catch (RemoteException e) {
 			Log.e(LOGTAG, "", e);
 		}
-
-		//String lastUploadTimeString = (lastUploadTime > 0) ? DateTimeUtils
-		//		.formatTimeForLocale(lastUploadTime) : "-";
-		//String lastTrainIndicationTimeString = (lastTrainIndicationTime > 0) ? DateTimeUtils
-		//		.formatTimeForLocale(lastTrainIndicationTime) : "-";
-
+		
 		formatTextView(R.id.gps_satellites, R.string.gps_satellites, mGpsFixes);
 		formatTextView(R.id.wifi_access_points, R.string.wifi_access_points,
 				APs);
 		formatTextView(R.id.locations_scanned, R.string.locations_scanned,
 				locationsScanned);
-		//formatTextView(R.id.last_upload_time, R.string.last_upload_time,
-		//		lastUploadTimeString);
-		//formatTextView(R.id.reports_sent, R.string.reports_sent, reportsSent);
-		//formatTextView(R.id.last_train, R.string.last_train,
-		//		lastTrainIndicationTimeString);
 	}
+	
+//	@Override
+//	protected void onDestroy()
+//	{
+//		super.onDestroy();
+//		Log.i(LOGTAG, "onDestroy:");
+//	}
 
 	public void onClick_ToggleScanning(View v) throws RemoteException {
 		if (mConnectionRemote == null) {
