@@ -312,14 +312,14 @@ public final class MainActivity extends FragmentActivity {
 		Button scanningBtn = (Button) v;
 		TextView status = (TextView) findViewById(R.id.status_text);
 		if (scanning) {
-			unbindService(mConnection);
+			//unbindService(mConnection);
 			mConnectionRemote.stopScanning();
 			status.setText(R.string.status_on);
 			scanningBtn.setBackgroundResource(R.drawable.red_button);
 		} else {
-			Intent intent = new Intent(this, ScannerService.class);
-			startService(intent);
-			bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+			//Intent intent = new Intent(this, ScannerService.class);
+			//startService(intent);
+			//bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 			mConnectionRemote.startScanning();
 			status.setText(R.string.status_off);
 			scanningBtn.setBackgroundResource(R.drawable.green_button);

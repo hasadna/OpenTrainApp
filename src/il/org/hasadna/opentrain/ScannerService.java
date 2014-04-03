@@ -55,6 +55,12 @@ public final class ScannerService extends Service {
 		}
 
 		@Override
+		public void pauseScanning() throws RemoteException {
+			Log.d(LOGTAG, "ScannerServiceInterface.Stub.pauseScanning:");
+			ScannerService.this.pauseScanning();
+		}
+		
+		@Override
 		public void stopScanning() throws RemoteException {
 			Log.d(LOGTAG, "ScannerServiceInterface.Stub.stopScanning:");
 			ScannerService.this.stopScanning();
@@ -220,6 +226,23 @@ public final class ScannerService extends Service {
 		});
 	}
 
+	private void pauseScanning()
+	{
+		Log.d(LOGTAG, "pauseScanning:");
+
+		if (!mScanner.isScanning()) {
+			return;
+		}
+
+		mLooper.post(new Runnable() {
+			@Override
+			public void run() {
+				Log.d(LOGTAG, "pauseScanning: run");
+				mScanner.stopScanning();
+				mReporter.triggerUpload();
+			}
+		});
+	}
 	private void stopScanning(){
 		Log.d(LOGTAG, "stopScanning:");
 
