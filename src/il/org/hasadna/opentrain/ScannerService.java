@@ -34,7 +34,7 @@ public final class ScannerService extends Service {
 	private BroadcastReceiver mBatteryOkayReceiver;
 
 	private BroadcastReceiver mCloseAppReceiver;
-
+	
 	private final ScannerServiceInterface.Stub mBinder = new ScannerServiceInterface.Stub() {
 		@Override
 		public boolean isScanning() throws RemoteException {
@@ -48,18 +48,6 @@ public final class ScannerService extends Service {
 			ScannerService.this.startScanning();
 		}
 
-		@Override
-		public void startWifiScanningOnly() throws RemoteException {
-			Log.d(LOGTAG, "ScannerServiceInterface.Stub.startWifiScanningOnly:");
-			ScannerService.this.startWifiScanningOnly();
-		}
-
-		@Override
-		public void pauseScanning() throws RemoteException {
-			Log.d(LOGTAG, "ScannerServiceInterface.Stub.pauseScanning:");
-			ScannerService.this.pauseScanning();
-		}
-		
 		@Override
 		public void stopScanning() throws RemoteException {
 			Log.d(LOGTAG, "ScannerServiceInterface.Stub.stopScanning:");
@@ -166,6 +154,7 @@ public final class ScannerService extends Service {
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		nm.cancel(NOTIFICATION_ID);
 	}
+	
 	private void startScanning(){
 		Log.d(LOGTAG, "startScanning:");
 
@@ -188,6 +177,7 @@ public final class ScannerService extends Service {
 									| Notification.FLAG_ONGOING_EVENT);
 
 					mScanner.startScanning();
+					mReporter.triggerUpload(); 
 
 					// keep us awake.
 					Context cxt = getApplicationContext();
@@ -199,50 +189,13 @@ public final class ScannerService extends Service {
 					alarm.setRepeating(AlarmManager.RTC_WAKEUP,
 							cal.getTimeInMillis(), WAKE_TIMEOUT,
 							mWakeIntent);
-
-					mReporter.triggerUpload(); 
 				} catch (Exception e) {
-					Log.d(LOGTAG, "looper shut itself : " + e);
+					Log.d(LOGTAG, "startScanning: Looper shut itself : " + e);
 				}
 			}
 		});
 	}
-	private void startWifiScanningOnly(){
-		Log.d(LOGTAG, "startWifiScanningOnly:");
-
-		if (mScanner.isScanning()) {
-			return;
-		}
-
-		mLooper.post(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Log.d(LOGTAG, "startWifiScanningOnly: run");
-					mScanner.startWifiOnly();
-				} catch (Exception e) {
-				}
-			}
-		});
-	}
-
-	private void pauseScanning()
-	{
-		Log.d(LOGTAG, "pauseScanning:");
-
-		if (!mScanner.isScanning()) {
-			return;
-		}
-
-		mLooper.post(new Runnable() {
-			@Override
-			public void run() {
-				Log.d(LOGTAG, "pauseScanning: run");
-				mScanner.stopScanning();
-				mReporter.triggerUpload();
-			}
-		});
-	}
+	
 	private void stopScanning(){
 		Log.d(LOGTAG, "stopScanning:");
 

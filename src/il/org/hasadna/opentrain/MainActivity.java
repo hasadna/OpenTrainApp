@@ -125,44 +125,6 @@ public final class MainActivity extends FragmentActivity {
 		// Updater.checkForUpdates(this);
         PrefsUpdater.scheduleUpdate(this);
 	}
-
-//	private void checkGps() {
-//		LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//
-//		if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-//			new AlertDialog.Builder(this)
-//					.setCancelable(false)
-//					.setTitle(R.string.app_name)
-//					.setMessage(R.string.gps_alert_msg)
-//					.setPositiveButton(R.string.yes,
-//							new DialogInterface.OnClickListener() {
-//								@Override
-//								public void onClick(DialogInterface dialog,
-//										int which) {
-//									startActivity(new Intent(
-//											Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-//								}
-//							})
-//					.setNegativeButton(R.string.no,
-//							new DialogInterface.OnClickListener() {
-//								@Override
-//								public void onClick(DialogInterface dialog,
-//										int which) {
-//									dialog.dismiss();
-//								}
-//							}).show();
-//		}
-//	}
-//
-//	private boolean isGoogleApiKeyValid() {
-//		String apiKey = PackageUtils.getMetaDataString(this,
-//				"com.google.android.maps.v2.API_KEY");
-//		if ("FAKE_GOOGLE_API_KEY".equals(apiKey)) {
-//			Log.w(LOGTAG, "Fake Google API Key found.");
-//			return false;
-//		}
-//		return true;
-//	}
 	
 
 //	@Override
@@ -195,6 +157,12 @@ public final class MainActivity extends FragmentActivity {
 
 				mConnectionRemote = ScannerServiceInterface.Stub
 						.asInterface(binder);
+				try {
+					mConnectionRemote.startScanning();
+				} catch (RemoteException e) {
+					Log.w(LOGTAG, "ServiceConnection.onServiceConnected: Failed to start service.",e);
+					e.printStackTrace();
+				}
 				updateUI();
 			}
 
@@ -368,43 +336,43 @@ public final class MainActivity extends FragmentActivity {
 		textView.setText(str);
 	}
 
-	@Override
-	public void onBackPressed() {
-		try {
-			boolean scanning = mConnectionRemote.isScanning();
-			if (!scanning) {
-				super.onBackPressed();
-				return;
-			}
-		} catch (Exception e) {
+//	@Override
+//	public void onBackPressed() {
+//		try {
+//			boolean scanning = mConnectionRemote.isScanning();
+//			if (!scanning) {
+//				super.onBackPressed();
+//				return;
+//			}
+//		} catch (Exception e) {
+//
+//		}
+//		showDialog();
+//	}
 
-		}
-		showDialog();
-	}
-
-	void showDialog() {
-		ExtendedDialogFragment extendedDialogFragment = ExtendedDialogFragment
-				.newInstance();
-		extendedDialogFragment.setDialogClicksListener(dialogListener);
-		extendedDialogFragment.show(getSupportFragmentManager(), "dialog");
-	}
-
-	private DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
-
-		@Override
-		public void onClick(DialogInterface dialog, int which) {
-			if (which == DialogInterface.BUTTON_NEGATIVE) {
-
-			} else if (which == DialogInterface.BUTTON_POSITIVE) {
-				try {
-					mConnectionRemote.stopScanning();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-            finish();
-		}
-	};
+//	void showDialog() {
+//		ExtendedDialogFragment extendedDialogFragment = ExtendedDialogFragment
+//				.newInstance();
+//		extendedDialogFragment.setDialogClicksListener(dialogListener);
+//		extendedDialogFragment.show(getSupportFragmentManager(), "dialog");
+//	}
+//
+////	private DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
+//
+//		@Override
+//		public void onClick(DialogInterface dialog, int which) {
+//			if (which == DialogInterface.BUTTON_NEGATIVE) {
+//
+//			} else if (which == DialogInterface.BUTTON_POSITIVE) {
+//				try {
+//					mConnectionRemote.stopScanning();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//            finish();
+//		}
+//	};
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
