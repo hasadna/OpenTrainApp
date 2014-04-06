@@ -334,44 +334,6 @@ public final class MainActivity extends FragmentActivity {
 		}
 		textView.setText(str);
 	}
-
-//	@Override
-//	public void onBackPressed() {
-//		try {
-//			boolean scanning = mConnectionRemote.isScanning();
-//			if (!scanning) {
-//				super.onBackPressed();
-//				return;
-//			}
-//		} catch (Exception e) {
-//
-//		}
-//		showDialog();
-//	}
-
-//	void showDialog() {
-//		ExtendedDialogFragment extendedDialogFragment = ExtendedDialogFragment
-//				.newInstance();
-//		extendedDialogFragment.setDialogClicksListener(dialogListener);
-//		extendedDialogFragment.show(getSupportFragmentManager(), "dialog");
-//	}
-//
-////	private DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
-//
-//		@Override
-//		public void onClick(DialogInterface dialog, int which) {
-//			if (which == DialogInterface.BUTTON_NEGATIVE) {
-//
-//			} else if (which == DialogInterface.BUTTON_POSITIVE) {
-//				try {
-//					mConnectionRemote.stopScanning();
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//            finish();
-//		}
-//	};
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
