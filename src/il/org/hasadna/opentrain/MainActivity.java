@@ -202,7 +202,12 @@ public final class MainActivity extends FragmentActivity {
 		Log.i(LOGTAG, "onStop:");
 
 		try {
+			if(!mConnectionRemote.isScanning()){
+				Intent intent = new Intent(this, ScannerService.class);
+				stopService(intent);				
+			}
 			unbindService(mConnection);
+			
 			mConnection = null;
 			mConnectionRemote = null;
 		} catch (Exception ex) {
@@ -210,6 +215,7 @@ public final class MainActivity extends FragmentActivity {
 		}
 		mReceiver.unregister();
 		mReceiver = null;
+		
 		Log.d(LOGTAG, "onStop");
 	}
 
@@ -244,10 +250,7 @@ public final class MainActivity extends FragmentActivity {
 
 		int locationsScanned = 0;
 		int APs = 0;
-	//	long lastUploadTime = 0;
-	//	long reportsSent = 0;
-	//	long lastTrainIndicationTime = 0; // TODO: should have time when we were
-											// last on train
+
 		try {
 			locationsScanned = mConnectionRemote.getLocationCount();
 			APs = mConnectionRemote.getAPCount();
@@ -280,14 +283,10 @@ public final class MainActivity extends FragmentActivity {
 		Button scanningBtn = (Button) v;
 		TextView status = (TextView) findViewById(R.id.status_text);
 		if (scanning) {
-			//unbindService(mConnection);
 			mConnectionRemote.stopScanning();
 			status.setText(R.string.status_on);
 			scanningBtn.setBackgroundResource(R.drawable.red_button);
 		} else {
-			//Intent intent = new Intent(this, ScannerService.class);
-			//startService(intent);
-			//bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 			mConnectionRemote.startScanning();
 			status.setText(R.string.status_off);
 			scanningBtn.setBackgroundResource(R.drawable.green_button);

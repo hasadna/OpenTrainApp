@@ -87,7 +87,7 @@ public final class ScannerService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Log.d(LOGTAG, "onCreate");
+		Log.i(LOGTAG, "onCreate:");
 
 		mBatteryLowReceiver = new BroadcastReceiver() {
 			@Override
@@ -130,7 +130,7 @@ public final class ScannerService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		Log.d(LOGTAG, "onDestroy");
+		Log.i(LOGTAG, "onDestroy");
 
 		unregisterReceiver(mBatteryLowReceiver);
 		mBatteryLowReceiver=null;
@@ -247,9 +247,7 @@ public final class ScannerService extends Service {
 			
 			}
 		});
-	}
-		
-	
+	}	
 	
 	public void resumeScanningOnBatteryOkay() {
 		Log.d(LOGTAG, "resumeScanningOnBatteryOkay:");
@@ -318,7 +316,7 @@ public final class ScannerService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.d(LOGTAG, "onBind");
+		Log.i(LOGTAG, "onBind:");
 		return mBinder;
 	}
 
@@ -327,6 +325,8 @@ public final class ScannerService extends Service {
 	private static Notification buildNotification(Context context, int icon,
 			String contentTitle, String contentText, String tickerText,
 			PendingIntent contentIntent, int flags) {
+		Log.d(LOGTAG, "buildNotification:");
+
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
 				context);
 		builder.setContentTitle(contentTitle);
