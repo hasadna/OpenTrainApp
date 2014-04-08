@@ -36,14 +36,16 @@ public final class Prefs {
     private static final String PREF_LOCATION_API_FAST_CEILING_INTERVAL = "PREF_LOCATION_API_FAST_CEILING_INTERVAL";
     private static final String PREF_RECORD_BATCH_SIZE = "PREF_RECORD_BATCH_SIZE";
     private static final String PREF_TRAIN_INDICATION_TTL = "PREF_TRAIN_INDICATION_TTL";
+    private static final String PREF_CONFIG_VERSION = "PREF_CONFIG_VERSION";
 
     private static final long DEF_WIFI_MIN_UPDATE_TIME = 1000;
     private static final long DEF_WIFI_MODE_TRAIN_FOUND_PERIOD = 1 * 15 * 1000;
-    private static final long DEF_WIFI_MODE_TRAIN_SCANNIG_PERIOD = 1 * 30 * 1000;
+    private static final long DEF_WIFI_MODE_TRAIN_SCANNIG_PERIOD = 5 * 60 * 1000;
     private static final long DEF_LOCATION_API_UPDATE_INTERVAL = 5000;
     private static final long DEF_LOCATION_API_FAST_CEILING_INTERVAL = 1000;
     private static final int DEF_RECORD_BATCH_SIZE = 5;
     private static final long DEF_TRAIN_INDICATION_TTL = 1 * 1 * 30 * 1000;
+    private static final long DEF_CONFIG_VERSION = 1;
 
     public long WIFI_MIN_UPDATE_TIME;
     public long WIFI_MODE_TRAIN_SCANNIG_PERIOD;
@@ -52,8 +54,7 @@ public final class Prefs {
     public long LOCATION_API_FAST_CEILING_INTERVAL;
     public int RECORD_BATCH_SIZE;
     public long TRAIN_INDICATION_TTL;
-
-    public static final String URL_CONFIG = "http://opentrain.hasadna.org.il/client/config";
+    public long CONFIG_VERSION;
 
     private Prefs(Context context) {
         int versionCode;
@@ -174,6 +175,7 @@ public final class Prefs {
         LOCATION_API_FAST_CEILING_INTERVAL = sharedPreferences.getLong(PREF_LOCATION_API_FAST_CEILING_INTERVAL, DEF_LOCATION_API_FAST_CEILING_INTERVAL);
         RECORD_BATCH_SIZE = sharedPreferences.getInt(PREF_RECORD_BATCH_SIZE, DEF_RECORD_BATCH_SIZE);
         TRAIN_INDICATION_TTL = sharedPreferences.getLong(PREF_TRAIN_INDICATION_TTL, DEF_TRAIN_INDICATION_TTL);
+        CONFIG_VERSION = sharedPreferences.getLong(PREF_CONFIG_VERSION, DEF_CONFIG_VERSION);
     }
 
     public void setPreferenceFromServer(String result) throws Exception {
@@ -192,7 +194,6 @@ public final class Prefs {
 
         long wifi_mode_train_scannig_period = jsonObject.optLong("MODE_TRAIN_WIFI_SCANNIG_PERIOD");
         if (wifi_mode_train_scannig_period != 0) {
-            wifi_mode_train_scannig_period=23000;
             WIFI_MODE_TRAIN_SCANNIG_PERIOD = wifi_mode_train_scannig_period;
         }
 
@@ -215,9 +216,14 @@ public final class Prefs {
         if (train_indication_ttl != 0) {
             TRAIN_INDICATION_TTL = train_indication_ttl;
         }
+
+        long config_version = jsonObject.optLong("CONFIG_VERSION");
+        if (config_version != 0) {
+            CONFIG_VERSION = config_version;
+        }
     }
 
-    public void savePreferenceFromServer(){
+    public void savePreferenceFromServer() {
         SharedPreferences.Editor editor = getPrefs().edit();
         editor.putLong(PREF_WIFI_MIN_UPDATE_TIME, WIFI_MIN_UPDATE_TIME);
         editor.putLong(PREF_WIFI_MODE_TRAIN_FOUND_PERIOD, WIFI_MODE_TRAIN_FOUND_PERIOD);
@@ -226,6 +232,7 @@ public final class Prefs {
         editor.putLong(PREF_LOCATION_API_FAST_CEILING_INTERVAL, LOCATION_API_FAST_CEILING_INTERVAL);
         editor.putInt(PREF_RECORD_BATCH_SIZE, RECORD_BATCH_SIZE);
         editor.putLong(PREF_TRAIN_INDICATION_TTL, TRAIN_INDICATION_TTL);
+        editor.putLong(PREF_CONFIG_VERSION, CONFIG_VERSION);
 
         apply(editor);
     }

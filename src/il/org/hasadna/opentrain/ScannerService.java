@@ -18,6 +18,9 @@ import android.util.Log;
 
 import java.util.Calendar;
 
+import il.org.hasadna.opentrain.preferences.Prefs;
+import il.org.hasadna.opentrain.preferences.PrefsUpdater;
+
 public final class ScannerService extends Service {
 	public static final String MESSAGE_TOPIC = "il.org.hasadna.opentrain.serviceMessage";
 	public static final String ACTION_CLOSE = "il.org.hasadna.opentrain.serviceMessage.close";
@@ -34,6 +37,7 @@ public final class ScannerService extends Service {
 	private BroadcastReceiver mBatteryOkayReceiver;
 
 	private BroadcastReceiver mCloseAppReceiver;
+    private BroadcastReceiver mLoadPrefsFromServerReceiver;
 	
 	private final ScannerServiceInterface.Stub mBinder = new ScannerServiceInterface.Stub() {
 		@Override
@@ -121,6 +125,19 @@ public final class ScannerService extends Service {
 		};
 		registerReceiver(mCloseAppReceiver, new IntentFilter(ACTION_CLOSE));
 
+        mLoadPrefsFromServerReceiver=new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                try {
+                    String newFrefs=intent.getStringExtra(Intent.EXTRA_SUBJECT);
+                    Prefs.getInstance(context).setPreferenceFromServer(newFrefs);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        registerReceiver(mLoadPrefsFromServerReceiver,new IntentFilter(PrefsUpdater.ACTION_PREFS_UPDATED_FROM_SERVER));
+
 		mReporter = new Reporter(this);
 		mScanner = new Scanner(this);
 		mLooper = new LooperThread();
@@ -141,6 +158,8 @@ public final class ScannerService extends Service {
 		unregisterReceiver(mCloseAppReceiver);
 		mCloseAppReceiver=null;
 
+        unregisterReceiver(mLoadPrefsFromServerReceiver);
+        mLoadPrefsFromServerReceiver=null;
 
 		mLooper.interrupt();
 		mLooper = null;

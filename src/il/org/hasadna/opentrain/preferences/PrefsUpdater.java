@@ -14,7 +14,9 @@ import java.util.Random;
  */
 public class PrefsUpdater {
 
+    public static final String URL_CONFIG = "http://opentrain.hasadna.org.il/client/config";
     private static long PREFS_UPDATE_INTERVAL = 24 * 60 * 60 * 1000;
+    public static final String ACTION_PREFS_UPDATED_FROM_SERVER = "il.org.hasadna.opentrain.serviceMessage.prefsupdated";
 
     public static void scheduleUpdate(Activity context) {
 
@@ -26,7 +28,7 @@ public class PrefsUpdater {
 
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.HOUR, 5);
         calendar.set(Calendar.AM_PM, Calendar.AM);
         calendar.add(Calendar.DAY_OF_MONTH, 1);
         calendar.add(Calendar.SECOND, randomMinute);

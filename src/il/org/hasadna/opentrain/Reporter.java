@@ -160,6 +160,7 @@ class Reporter extends BroadcastReceiver {
 
             reportBuilder.put("app_version_code", mPrefs.VERSION_CODE);
             reportBuilder.put("app_version_name", mPrefs.VERSION_NAME);
+            reportBuilder.put("config_version", mPrefs.CONFIG_VERSION);
 
             // commenting out all CellScanner usage for now:            
 //            if (cellInfo.length()>0) {
