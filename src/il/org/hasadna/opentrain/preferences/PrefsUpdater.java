@@ -28,7 +28,7 @@ public class PrefsUpdater {
 
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.HOUR, 5);
+        calendar.set(Calendar.HOUR, 4);
         calendar.set(Calendar.AM_PM, Calendar.AM);
         calendar.add(Calendar.DAY_OF_MONTH, 1);
         calendar.add(Calendar.SECOND, randomMinute);
