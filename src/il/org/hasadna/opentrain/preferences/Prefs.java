@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build.VERSION;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -111,7 +112,12 @@ public final class Prefs {
             apply(editor);
             Log.d(LOGTAG, "New daily random ID is: " + randomId);
         }
-        return getPrefs().getString(DAILY_SEED, "");
+        String dailyID = getPrefs().getString(DAILY_SEED, "");
+        String userName = getUserPrefs().getString(PREF_USER_NAME, "");
+        if (!("").equals(userName)) {
+            dailyID = userName + "_" + dailyID;
+        }
+        return dailyID;
     }
 
     private static String byteArrayToString(byte[] ba) {
@@ -178,48 +184,52 @@ public final class Prefs {
         CONFIG_VERSION = sharedPreferences.getLong(PREF_CONFIG_VERSION, DEF_CONFIG_VERSION);
     }
 
-    public void setPreferenceFromServer(String result) throws Exception {
-        JSONObject jsonObject = new JSONObject(result);
+    public void setPreferenceFromServer(String result) {
+        try {
+            JSONObject jsonObject = new JSONObject(result);
 
-        long wifi_min_update_time = jsonObject.optLong("WIFI_MIN_UPDATE_TIME");
-        if (wifi_min_update_time != 0) {
-            WIFI_MIN_UPDATE_TIME = wifi_min_update_time;
-        }
+            long wifi_min_update_time = jsonObject.optLong("WIFI_MIN_UPDATE_TIME");
+            if (wifi_min_update_time != 0) {
+                WIFI_MIN_UPDATE_TIME = wifi_min_update_time;
+            }
 
-        long wifi_mode_train_found_period = jsonObject
-                .optLong("MODE_TRAIN_WIFI_FOUND_PERIOD");
-        if (wifi_mode_train_found_period != 0) {
-            WIFI_MODE_TRAIN_FOUND_PERIOD = wifi_mode_train_found_period;
-        }
+            long wifi_mode_train_found_period = jsonObject
+                    .optLong("MODE_TRAIN_WIFI_FOUND_PERIOD");
+            if (wifi_mode_train_found_period != 0) {
+                WIFI_MODE_TRAIN_FOUND_PERIOD = wifi_mode_train_found_period;
+            }
 
-        long wifi_mode_train_scannig_period = jsonObject.optLong("MODE_TRAIN_WIFI_SCANNIG_PERIOD");
-        if (wifi_mode_train_scannig_period != 0) {
-            WIFI_MODE_TRAIN_SCANNIG_PERIOD = wifi_mode_train_scannig_period;
-        }
+            long wifi_mode_train_scannig_period = jsonObject.optLong("MODE_TRAIN_WIFI_SCANNIG_PERIOD");
+            if (wifi_mode_train_scannig_period != 0) {
+                WIFI_MODE_TRAIN_SCANNIG_PERIOD = wifi_mode_train_scannig_period;
+            }
 
-        long location_api_update_interval = jsonObject.optLong("LOCATION_API_UPDATE_INTERVAL");
-        if (location_api_update_interval != 0) {
-            LOCATION_API_UPDATE_INTERVAL = location_api_update_interval;
-        }
+            long location_api_update_interval = jsonObject.optLong("LOCATION_API_UPDATE_INTERVAL");
+            if (location_api_update_interval != 0) {
+                LOCATION_API_UPDATE_INTERVAL = location_api_update_interval;
+            }
 
-        long location_api_fast_ceiling_interval = jsonObject.optLong("LOCATION_API_FAST_CEILING_INTERVAL");
-        if (location_api_fast_ceiling_interval != 0) {
-            LOCATION_API_FAST_CEILING_INTERVAL = location_api_fast_ceiling_interval;
-        }
+            long location_api_fast_ceiling_interval = jsonObject.optLong("LOCATION_API_FAST_CEILING_INTERVAL");
+            if (location_api_fast_ceiling_interval != 0) {
+                LOCATION_API_FAST_CEILING_INTERVAL = location_api_fast_ceiling_interval;
+            }
 
-        int record_batch_size = jsonObject.optInt("RECORD_BATCH_SIZE");
-        if (record_batch_size != 0) {
-            RECORD_BATCH_SIZE = record_batch_size;
-        }
+            int record_batch_size = jsonObject.optInt("RECORD_BATCH_SIZE");
+            if (record_batch_size != 0) {
+                RECORD_BATCH_SIZE = record_batch_size;
+            }
 
-        long train_indication_ttl = jsonObject.optLong("TRAIN_INDICATION_TTL");
-        if (train_indication_ttl != 0) {
-            TRAIN_INDICATION_TTL = train_indication_ttl;
-        }
+            long train_indication_ttl = jsonObject.optLong("TRAIN_INDICATION_TTL");
+            if (train_indication_ttl != 0) {
+                TRAIN_INDICATION_TTL = train_indication_ttl;
+            }
 
-        long config_version = jsonObject.optLong("CONFIG_VERSION");
-        if (config_version != 0) {
-            CONFIG_VERSION = config_version;
+            long config_version = jsonObject.optLong("CONFIG_VERSION");
+            if (config_version != 0) {
+                CONFIG_VERSION = config_version;
+            }
+        } catch (Exception e) {
+
         }
     }
 
@@ -234,6 +244,28 @@ public final class Prefs {
         editor.putLong(PREF_TRAIN_INDICATION_TTL, TRAIN_INDICATION_TTL);
         editor.putLong(PREF_CONFIG_VERSION, CONFIG_VERSION);
 
+        apply(editor);
+    }
+
+    //user selectable settings
+    private SharedPreferences getUserPrefs() {
+        return PreferenceManager.getDefaultSharedPreferences(mContext);
+    }
+
+    private static final String PREF_USER_NAME = "prefUsername";
+
+    public void setPreferenceFromUser(String newPresfs) {
+        try {
+            String[] keyValue = newPresfs.split(":");
+            setStringUserPref(keyValue[0], keyValue[1]);
+        } catch (Exception e) {
+
+        }
+    }
+
+    private void setStringUserPref(String key, String value) {
+        SharedPreferences.Editor editor = getUserPrefs().edit();
+        editor.putString(key, value);
         apply(editor);
     }
 }

@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import il.org.hasadna.opentrain.ScannerService;
+
 /**
  * Created by Noam.m on 3/23/2014.
  */
@@ -35,7 +37,7 @@ public class PrefsUpdaterService extends IntentService {
             prefs.savePreferenceFromServer();
 
             //if service running
-            Intent i = new Intent(PrefsUpdater.ACTION_PREFS_UPDATED_FROM_SERVER);
+            Intent i = new Intent(ScannerService.ACTION_PREFS_UPDATED_FROM_SERVER);
             i.putExtra(Intent.EXTRA_SUBJECT, updateRefs);
             sendBroadcast(i);
 

@@ -19,11 +19,12 @@ import android.util.Log;
 import java.util.Calendar;
 
 import il.org.hasadna.opentrain.preferences.Prefs;
-import il.org.hasadna.opentrain.preferences.PrefsUpdater;
 
 public final class ScannerService extends Service {
 	public static final String MESSAGE_TOPIC = "il.org.hasadna.opentrain.serviceMessage";
 	public static final String ACTION_CLOSE = "il.org.hasadna.opentrain.serviceMessage.close";
+    public static final String ACTION_PREFS_UPDATED_FROM_SERVER = "il.org.hasadna.opentrain.serviceMessage.prefsupdated";
+    public static final String ACTION_PREFS_UPDATED_BY_USER = "il.org.hasadna.opentrain.serviceMessage.prefsupdatedbyuser";
 
 	private static final String LOGTAG = ScannerService.class.getName();
 	private static final int NOTIFICATION_ID = 1;
@@ -38,6 +39,7 @@ public final class ScannerService extends Service {
 
 	private BroadcastReceiver mCloseAppReceiver;
     private BroadcastReceiver mLoadPrefsFromServerReceiver;
+    private BroadcastReceiver mPrefsChangedByUserReceiver;
 	
 	private final ScannerServiceInterface.Stub mBinder = new ScannerServiceInterface.Stub() {
 		@Override
@@ -128,15 +130,20 @@ public final class ScannerService extends Service {
         mLoadPrefsFromServerReceiver=new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                try {
-                    String newFrefs=intent.getStringExtra(Intent.EXTRA_SUBJECT);
-                    Prefs.getInstance(context).setPreferenceFromServer(newFrefs);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                String newFrefs=intent.getStringExtra(Intent.EXTRA_SUBJECT);
+                Prefs.getInstance(context).setPreferenceFromServer(newFrefs);
             }
         };
-        registerReceiver(mLoadPrefsFromServerReceiver,new IntentFilter(PrefsUpdater.ACTION_PREFS_UPDATED_FROM_SERVER));
+        registerReceiver(mLoadPrefsFromServerReceiver,new IntentFilter(ACTION_PREFS_UPDATED_FROM_SERVER));
+
+        mPrefsChangedByUserReceiver=new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String newFrefs=intent.getStringExtra(Intent.EXTRA_SUBJECT);
+                Prefs.getInstance(context).setPreferenceFromUser(newFrefs);
+            }
+        };
+        registerReceiver(mPrefsChangedByUserReceiver,new IntentFilter(ACTION_PREFS_UPDATED_BY_USER));
 
 		mReporter = new Reporter(this);
 		mScanner = new Scanner(this);
@@ -160,6 +167,9 @@ public final class ScannerService extends Service {
 
         unregisterReceiver(mLoadPrefsFromServerReceiver);
         mLoadPrefsFromServerReceiver=null;
+
+        unregisterReceiver(mPrefsChangedByUserReceiver);
+        mPrefsChangedByUserReceiver=null;
 
 		mLooper.interrupt();
 		mLooper = null;

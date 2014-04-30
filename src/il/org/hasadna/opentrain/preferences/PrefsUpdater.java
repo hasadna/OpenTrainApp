@@ -16,7 +16,6 @@ public class PrefsUpdater {
 
     public static final String URL_CONFIG = "http://opentrain.hasadna.org.il/client/config";
     private static long PREFS_UPDATE_INTERVAL = 24 * 60 * 60 * 1000;
-    public static final String ACTION_PREFS_UPDATED_FROM_SERVER = "il.org.hasadna.opentrain.serviceMessage.prefsupdated";
 
     public static void scheduleUpdate(Activity context) {
 

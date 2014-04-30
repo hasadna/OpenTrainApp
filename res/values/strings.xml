@@ -8,7 +8,7 @@
     <string name="view_leaderboard">View Leaderboard</string>
     <string name="view_map">Test Mozilla Location Service</string>
     <string name="service_name">Open Trains</string>
-    
+
     <string name="last_train">Last on Train: %1$s</string>
     <string name="wifi_access_points">Wi-Fi Access Points Scanned: %1$d</string>
     <string name="gps_satellites">GPS Satellites Visible: %1$d</string>
@@ -16,7 +16,7 @@
     <string name="last_upload_time">Last Report: %1$s</string>
     <string name="reports_sent">Reports Sent: %1$d</string>
     <string name="service_scanning">Open Trains Online</string>
-    
+
     <string name="enter_nickname">Enter Nickname (optional)</string>
     <string name="enter_nickname_title">Nickname: </string>
     <string name="enter_nickname_longtext">Your nickname will appear on the leaderboard</string>
@@ -24,7 +24,7 @@
     <string name="battery_low_ticker">Battery low, Scanning suspended to save on your battery</string>
     <string name="battery_low_message">Scanning suspened. Battery low</string>
     <string name="battery_okay_ticker">Battery level is back to noraml, Scanning resumed</string>
-    
+
     <string name="update_title">Download software Update?</string>
     <string name="update_message">Installed version: %1$s\nLatest version: %2$s</string>
     <string name="update_now">Update Now</string>
@@ -44,7 +44,10 @@
     <string name="alert_dialog_confirm_exit">Stop scannig before exit?</string>
     <string name="alert_dialog_ok">Yes</string>
     <string name="alert_dialog_cancel">No</string>
-    
+
     <string name="privacy_policy_menu_item">Privacy policy</string>
-     <string name="privacy_policy_title">Privacy policy</string>    
+    <string name="privacy_policy_title">Privacy policy</string>
+
+    <string name="pref_user_name">User Name</string>
+    <string name="settings">Settings</string>
 </resources>
