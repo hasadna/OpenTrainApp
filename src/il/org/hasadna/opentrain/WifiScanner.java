@@ -24,9 +24,9 @@ import java.util.TimerTask;
 public class WifiScanner extends BroadcastReceiver {
   private static final String LOGTAG              = WifiScanner.class.getName();
  
-  private static final int MODE_TRAIN_WIFI_SCANNIG = 1;
+  private static final int MODE_TRAIN_WIFI_SCANNING = 1;
   private static final int MODE_TRAIN_WIFI_FOUND = 2;
-  private int mode = MODE_TRAIN_WIFI_SCANNIG;
+  private int mode = MODE_TRAIN_WIFI_SCANNING;
   
   private LocationScanner locationScanner;
   
@@ -38,6 +38,41 @@ public class WifiScanner extends BroadcastReceiver {
   private long                mLastUpdateTime;
 
   private Prefs mPrefs;
+  
+  class WifiSource
+  {
+	  void start()
+	  {
+		  WifiManager wm = getWifiManager();
+		    mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_SCAN_ONLY, LOGTAG);
+		    mWifiLock.acquire();
+	  }
+	  
+	  Collection<ScanResult> getScanResults()
+	  {
+		  return getWifiManager().getScanResults();
+		  //    LogRawWifiInfo(scanResults);
+
+	  }
+	  
+	  void ensureScanning()
+	  {
+		  WifiManager wm = getWifiManager();
+		  boolean enable = wm.isWifiEnabled();
+		  if (!enable) {
+			  wm.setWifiEnabled(true);
+		  }
+		  getWifiManager().startScan();
+		  
+	  }
+
+	  private WifiManager getWifiManager() {
+	    return (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+	  }
+	  
+  }
+  
+  WifiSource mWifiSource;
   
   WifiScanner(Context context) {
     mContext = context;
@@ -51,19 +86,18 @@ public class WifiScanner extends BroadcastReceiver {
     }
     mStarted = true;
 
-    WifiManager wm = getWifiManager();
-    mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_SCAN_ONLY,
-                                  "MozStumbler");
-    mWifiLock.acquire();
-
+    mWifiSource.start();
+    
     IntentFilter i = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
     mContext.registerReceiver(this, i);
 
     // Ensure that we are constantly scanning for new access points.
-    setMode(MODE_TRAIN_WIFI_SCANNIG);
+    setMode(MODE_TRAIN_WIFI_SCANNING);
   }
 
   public void stop() {
+	  
+	  //Eyalliebermann shouldn't we explicitly call wifimanager.stop?
     if (mWifiLock != null) {
       mWifiLock.release();
       mWifiLock = null;
@@ -80,8 +114,11 @@ public class WifiScanner extends BroadcastReceiver {
 
   @Override
 public void onReceive(Context c, Intent intent) {
-    Collection<ScanResult> scanResults = getWifiManager().getScanResults();
+    Collection<ScanResult> scanResults = mWifiSource.getScanResults();
+
+    
     boolean isTrainIndication = false;
+    
     JSONArray wifiInfo = new JSONArray();
     for (ScanResult scanResult : scanResults) {
       scanResult.BSSID = BSSIDBlockList.canonicalizeBSSID(scanResult.BSSID);
@@ -153,13 +190,9 @@ public void onReceive(Context c, Intent intent) {
 		return false;
 	}
 
-  private WifiManager getWifiManager() {
-    return (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
-  }
-  
   private void setMode(int mode) {
 		this.mode = mode;
-		if (MODE_TRAIN_WIFI_SCANNIG == mode) {
+		if (MODE_TRAIN_WIFI_SCANNING == mode) {
 			schedulemWifiScanTimer(mPrefs.WIFI_MODE_TRAIN_SCANNIG_PERIOD);
 			if (locationScanner != null)
                 locationScanner.stop();
@@ -179,19 +212,14 @@ public void onReceive(Context c, Intent intent) {
 			@Override
 			public void run() {
 				Log.d(LOGTAG, "WiFi Scanning Timer fired");
-				WifiManager wm = getWifiManager();
-				boolean enable = wm.isWifiEnabled();
-				if (!enable) {
-					wm.setWifiEnabled(true);
-				}
-				getWifiManager().startScan();
+				mWifiSource.ensureScanning();
 			}
 		}, 0, period);
 	}
 
 	private void checkForStateChange(boolean isTrainIndication) {
 		int newMode = isTrainIndication ? MODE_TRAIN_WIFI_FOUND
-				: MODE_TRAIN_WIFI_SCANNIG;
+				: MODE_TRAIN_WIFI_SCANNING;
 		if (mode != newMode) {
 			setMode(newMode);
 		}
