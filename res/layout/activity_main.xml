@@ -62,16 +62,6 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/status_text" >
 
-        <ImageView
-            android:id="@+id/radar_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/radar_image_desc"
-            android:src="@drawable/radar" />
-
         <Button
             android:id="@+id/toggle_scanning"
             android:layout_width="wrap_content"
