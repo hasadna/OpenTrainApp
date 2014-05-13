@@ -39,7 +39,6 @@
     <string name="about_version">Version %1$s</string>
     <string name="status_off">Click the button to engage. The app will only ever do work if Israel Railways Wi-Fi hotspots are observed.</string>
     <string name="status_on">Engaged. Will report what Wifi Hotspots are around the device, but only if Israel Railways hotspots have recently been observed.</string>
-    <string name="radar_image_desc">Image of radar screen</string>
     <string name="notification_close">Stop scannig</string>
     <string name="alert_dialog_confirm_exit">Stop scannig before exit?</string>
     <string name="alert_dialog_ok">Yes</string>

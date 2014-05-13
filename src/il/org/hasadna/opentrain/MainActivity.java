@@ -243,10 +243,10 @@ public final class MainActivity extends FragmentActivity {
         TextView status = (TextView) findViewById(R.id.status_text);
         if (scanning) {
             status.setText(R.string.status_on);
-            scanningBtn.setBackgroundResource(R.drawable.red_button);
+            scanningBtn.setBackgroundResource(R.drawable.green_button);
         } else {
             status.setText(R.string.status_off);
-            scanningBtn.setBackgroundResource(R.drawable.green_button);
+            scanningBtn.setBackgroundResource(R.drawable.red_button);
         }
 
         int locationsScanned = 0;
@@ -286,11 +286,11 @@ public final class MainActivity extends FragmentActivity {
         if (scanning) {
             mConnectionRemote.stopScanning();
             status.setText(R.string.status_on);
-            scanningBtn.setBackgroundResource(R.drawable.red_button);
+            scanningBtn.setBackgroundResource(R.drawable.green_button);
         } else {
             mConnectionRemote.startScanning();
             status.setText(R.string.status_off);
-            scanningBtn.setBackgroundResource(R.drawable.green_button);
+            scanningBtn.setBackgroundResource(R.drawable.red_button);
         }
     }
 
