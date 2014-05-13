@@ -7,6 +7,6 @@ interface ScannerServiceInterface {
     void startScanning();
    	void stopScanning();
     
-    int getLocationCount();
-    int getAPCount();
+//    int getLocationCount();
+//    int getAPCount();
 }

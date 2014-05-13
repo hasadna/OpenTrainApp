@@ -9,12 +9,12 @@
     <string name="view_map">בדיקת שירות האיכון של Mozilla</string>
     <string name="service_name">רכבת פתוחה</string>
     <string name="wifi_access_points">נקודות גישה מסוג Wi-Fi שנסרקו: %1$d</string>
-    <string name="gps_satellites">לווייני GPS גלויים: %1$d</string>
-    <string name="locations_scanned">מיקומים שנסרקו: %1$d</string>
-    <string name="last_upload_time">מועד ההעלאה האחרון: %1$s</string>
-    <string name="reports_sent">דיווחים שנשלחו: %1$d</string>
-    <string name="service_scanning">מדווח על רכבות</string>
+ 
     <string name="last_train">זמן אחרון ברכבת: %1$s</string>
+    <string name="last_upload_time">מועד ההעלאה האחרון:s</string>
+    <string name="reports_sent">דיווחים שנשלחו:</string>
+   <string name="reports_pending">דיווחים לשליחה:</string>
+    <string name="service_scanning">מדווח על רכבות</string>
 
     <string name="enter_nickname">הזנת שם המשתמש (רשות)</string>
     <string name="enter_nickname_title">כינוי: </string>

@@ -75,13 +75,13 @@ class Scanner {
     boolean isScanning() {
         return mIsScanning;
     }
-
-    int getAPCount() {
-        return mWifiScanner.getAPCount();
-    }
-
-    int getLocationCount() {
-        //return mGPSScanner.getLocationCount();
-        return mLocationScanner.getLocationCount();
-    }
+//
+//    int getAPCount() {
+//        return mWifiScanner.getAPCount();
+//    }
+//
+//    int getLocationCount() {
+//        //return mGPSScanner.getLocationCount();
+//        return mLocationScanner.getLocationCount();
+//    }
 }

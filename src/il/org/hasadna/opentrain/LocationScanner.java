@@ -105,9 +105,9 @@ public class LocationScanner {
         }
     }
 
-    public int getLocationCount() {
-        return 0;
-    }
+//    public int getLocationCount() {
+//        return 0;
+//    }
 
     public interface LocationCallBack {
         public void onLocationCallBack(Location location);
