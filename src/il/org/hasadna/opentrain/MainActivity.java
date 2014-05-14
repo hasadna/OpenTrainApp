@@ -85,6 +85,9 @@ public final class MainActivity extends FragmentActivity {
                 long reportsSent = intent.getLongExtra(Reporter.class.getName() + ".reportsSent", 0);
                 formatTextView(R.id.reports_sent, R.string.reports_sent, String.valueOf(reportsSent));
 
+                long reportsPending =  intent.getLongExtra(Reporter.class.getName()+".reportsPending", 0);
+				formatTextView(R.id.reports_pending, R.string.reports_pending, String.valueOf(reportsPending));
+				
                 Log.d(LOGTAG, "onReceive: Reporter intent. lastUploadTimeString=" + lastUploadTimeString + ", reportsSent=" + reportsSent);
 
                 updateUI();

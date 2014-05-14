@@ -44,8 +44,7 @@
 		android:layout_below="@+id/reports_sent"        
         android:text="@string/reports_pending"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white" 
-        android:visibility="gone"/><!-- EyalLiebermann remove this once update logic in place -->
+        android:textColor="@android:color/white"/>
     
     <TextView
         android:id="@+id/status_text"
