@@ -36,7 +36,7 @@
 
     <string name="about_version">Version %1$s</string>
     <string name="status_off">Inactive. Click the button to engage. Help us monitor Israel Railways activity through its hotspots.</string>
-	<string name="status_on">Engaged. Monitoring Israel Railway hotspots. Sending location and hotspot information when relevant.</string>
+	<string name="status_on">Engaged. Monitoring Israel Railways hotspots. Sending location and hotspot information when relevant.</string>
     <string name="notification_close">Stop scannig</string>
     <string name="alert_dialog_confirm_exit">Stop scannig before exit?</string>
     <string name="alert_dialog_ok">Yes</string>

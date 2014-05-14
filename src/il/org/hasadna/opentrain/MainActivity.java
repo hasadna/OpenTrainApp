@@ -78,7 +78,7 @@ public final class MainActivity extends FragmentActivity {
             } else if (subject.equals(Reporter.class.getName() + ".upload")) {
                 long lastUploadTime = intent.getLongExtra(Reporter.class.getName() + ".lastUploadTime", 0);
                 String lastUploadTimeString = (lastUploadTime > 0) ? DateTimeUtils
-                        .formatTimeForLocale(lastUploadTime) : "-";
+                        .formatTimeForLocale(lastUploadTime) : "";
                 formatTextView(R.id.last_upload_time, R.string.last_upload_time,
                         lastUploadTimeString);
 
@@ -95,7 +95,7 @@ public final class MainActivity extends FragmentActivity {
             } else if (subject.equals(Reporter.class.getName() + ".trainIndication")) {
                 long lastTrainIndicationTime = intent.getLongExtra(Reporter.class.getName() + ".lastTrainIndicationTime", 0);
                 String lastTrainIndicationTimeString = (lastTrainIndicationTime > 0) ? DateTimeUtils
-                        .formatTimeForLocale(lastTrainIndicationTime) : "-";
+                        .formatTimeForLocale(lastTrainIndicationTime) : "";
                 formatTextView(R.id.last_train, R.string.last_train,
                         lastTrainIndicationTimeString);
                 Log.d(LOGTAG, "onReceive: trainIndication intent. lastTrainIndicationTime=" + lastTrainIndicationTime);
