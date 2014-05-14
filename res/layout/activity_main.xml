@@ -1,53 +1,56 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"    
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@android:color/black"
     android:focusableInTouchMode="true"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical" >
     tools:context=".MainActivity" >
 
     <TextView
         android:id="@+id/last_train"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/last_train"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/white" />
 
+
     <TextView
         android:id="@+id/last_upload_time"
-      	android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/last_train"
         android:text="@string/last_upload_time"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/white" />
 
     <TextView
         android:id="@+id/reports_sent"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/last_upload_time"
         android:text="@string/reports_sent"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/white" />
-    
+
       <TextView
         android:id="@+id/reports_pending"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+		android:layout_below="@+id/reports_sent"        
         android:text="@string/reports_pending"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/white" 
         android:visibility="gone"/><!-- EyalLiebermann remove this once update logic in place -->
-
+    
     <TextView
         android:id="@+id/status_text"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="128dp"
         android:layout_below="@+id/reports_sent"
         android:paddingLeft="6dp"
         android:paddingRight="6dp"
@@ -55,7 +58,6 @@
         android:text="@string/status_off"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/white" />
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -73,4 +75,4 @@
             android:textAppearance="?android:attr/textAppearanceLarge" />
     </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>
