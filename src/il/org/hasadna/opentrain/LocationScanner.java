@@ -1,7 +1,6 @@
 package il.org.hasadna.opentrain;
 
 import il.org.hasadna.opentrain.monitoring.JsonDumper;
-import il.org.hasadna.opentrain.preferences.Prefs;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -13,6 +12,9 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+
+import il.org.hasadna.opentrain.application.MainApplication;
+import il.org.hasadna.opentrain.preferences.Prefs;
 
 /**
  * Created by Noam.m on 3/6/14.
@@ -30,7 +32,10 @@ public class LocationScanner {
     JsonDumper mLogJsonLocation=null;
 
     private Prefs mPrefs;
-    
+
+    private Location mLastLocation;
+    private long mLastLocationTime;
+
     LocationScanner(Context context) {
         init(context);
         mLogJsonLocation= new JsonDumper(context, LOGTAG);
@@ -96,6 +101,7 @@ public class LocationScanner {
             if (locationCallBack != null) {
                 locationCallBack.onLocationCallBack(location);
             }
+            trackLocation(location);
         }
     };
 
@@ -112,9 +118,9 @@ public class LocationScanner {
         }
     }
 
-    public int getLocationCount() {
-        return 0;
-    }
+//    public int getLocationCount() {
+//        return 0;
+//    }
 
     public interface LocationCallBack {
         public void onLocationCallBack(Location location);
@@ -143,5 +149,25 @@ public class LocationScanner {
         i.putExtra("time", System.currentTimeMillis());
         mContext.sendBroadcast(i);
         mLogJsonLocation.dump(location);
+    }
+
+    //check if two points are far away from each other and if so - report.
+    private void trackLocation(Location location) {
+        if (location == null) {
+            return;
+        }
+        if (mLastLocation == null) {
+            mLastLocation = location;
+            mLastLocationTime = System.currentTimeMillis();
+        } else {
+            float distance = mLastLocation.distanceTo(location);
+            long interval = System.currentTimeMillis() - mLastLocationTime;
+            if (distance > 2000 && interval < 5000) {
+                String reportString = "GPS error indication : " + mLastLocation.getLatitude() + "," + mLastLocation.getLongitude() + " and " + location.getLatitude() + "," + location.getLongitude();
+                ((MainApplication) mContext.getApplicationContext()).trackEvent("location", reportString);
+            }
+            mLastLocation = location;
+            mLastLocationTime = System.currentTimeMillis();
+        }
     }
 }
