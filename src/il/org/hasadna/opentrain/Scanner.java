@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-class Scanner {
+public class Scanner {
     private static final String LOGTAG = Scanner.class.getName();
 
     private final Context mContext;

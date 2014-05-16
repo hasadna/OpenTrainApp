@@ -7,7 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
-final class DateTimeUtils {
+public final class DateTimeUtils {
     private static final DateFormat mISO8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
 
     static final long MILLISECONDS_PER_DAY = 86400000;  // milliseconds/day
@@ -28,7 +28,7 @@ final class DateTimeUtils {
         return formatDate(new Date(time));
     }
 
-    static String formatTimeForLocale(long time) {
+    public static String formatTimeForLocale(long time) {
         return DateFormat.getDateTimeInstance().format(time);
     }
 

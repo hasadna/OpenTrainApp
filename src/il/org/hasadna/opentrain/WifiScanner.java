@@ -4,6 +4,7 @@ import android.util.Log;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
+import android.os.Environment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,20 +14,30 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import il.org.hasadna.opentrain.monitoring.JsonDumper;
 import il.org.hasadna.opentrain.preferences.Prefs;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class WifiScanner extends BroadcastReceiver {
   private static final String LOGTAG              = WifiScanner.class.getName();
+  
+  public static final String WIFI_SCANNER_EXTRA_SUBJECT = "WifiScanner";
+  public static final String WIFI_SCANNER_ARG_SCANRESULT = "il.org.hasadna.opentrain.WifiScanner.ScanResult";
+
  
-  private static final int MODE_TRAIN_WIFI_SCANNIG = 1;
+  private static final int MODE_TRAIN_WIFI_SCANNING = 1;
   private static final int MODE_TRAIN_WIFI_FOUND = 2;
-  private int mode = MODE_TRAIN_WIFI_SCANNIG;
+  private int mode = MODE_TRAIN_WIFI_SCANNING;
   
   private LocationScanner locationScanner;
   
@@ -36,6 +47,8 @@ public class WifiScanner extends BroadcastReceiver {
   private Timer                  mWifiScanTimer;
   private final Set<String>      mAPs = new HashSet<String>();
   private long                mLastUpdateTime;
+  
+  private JsonDumper		JsonDumperScanREsults;
 
   private Prefs mPrefs;
   
@@ -43,6 +56,7 @@ public class WifiScanner extends BroadcastReceiver {
     mContext = context;
     mPrefs = Prefs.getInstance(context);
     mStarted = false;
+    JsonDumperScanREsults= new JsonDumper(context,LOGTAG);
   }
 
   public void start() {
@@ -52,15 +66,16 @@ public class WifiScanner extends BroadcastReceiver {
     mStarted = true;
 
     WifiManager wm = getWifiManager();
-    mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_SCAN_ONLY,
-                                  "MozStumbler");
+    mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_SCAN_ONLY, LOGTAG);
     mWifiLock.acquire();
 
     IntentFilter i = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
     mContext.registerReceiver(this, i);
 
     // Ensure that we are constantly scanning for new access points.
-    setMode(MODE_TRAIN_WIFI_SCANNIG);
+    setMode(MODE_TRAIN_WIFI_SCANNING);
+    
+    JsonDumperScanREsults.open();
   }
 
   public void stop() {
@@ -75,14 +90,24 @@ public class WifiScanner extends BroadcastReceiver {
     }
 
     mContext.unregisterReceiver(this);
+    
+    JsonDumperScanREsults.close();
+
     mStarted = false;
   }
 
   @Override
 public void onReceive(Context c, Intent intent) {
+		Log.d(LOGTAG,"onReceive:");
+
     Collection<ScanResult> scanResults = getWifiManager().getScanResults();
+    
+   JsonDumperScanREsults.dump(scanResults);
+    
     boolean isTrainIndication = false;
     JSONArray wifiInfo = new JSONArray();
+    ArrayList<ScanResult> railWifiScanResults= new ArrayList<ScanResult>();
+    
     for (ScanResult scanResult : scanResults) {
       scanResult.BSSID = BSSIDBlockList.canonicalizeBSSID(scanResult.BSSID);
       if (!shouldLog(scanResult)) {
@@ -90,13 +115,14 @@ public void onReceive(Context c, Intent intent) {
       }
       if (isTrainIndication(scanResult)) {
     	  isTrainIndication = true;
+    	  railWifiScanResults.add(scanResult);
 
     	  try {
     		  JSONObject obj = new JSONObject();
     		  obj.put("SSID", scanResult.SSID);
     		  obj.put("key", scanResult.BSSID);
     		  obj.put("frequency", scanResult.frequency);
-    		  obj.put("signal", scanResult.level);
+    		  obj.put("signal", scanResult.level);    		  
     		  wifiInfo.put(obj);
     	  } catch (JSONException jsonex) {
     		  Log.e(LOGTAG, "", jsonex);
@@ -119,9 +145,10 @@ public void onReceive(Context c, Intent intent) {
     if (timeDelta > mPrefs.WIFI_MIN_UPDATE_TIME) {
     	mLastUpdateTime = currentTime; 
 	    Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
-	    i.putExtra(Intent.EXTRA_SUBJECT, "WifiScanner");
+	    i.putExtra(Intent.EXTRA_SUBJECT, WIFI_SCANNER_EXTRA_SUBJECT);
 	    i.putExtra("data", wifiInfo.toString());
 	    i.putExtra("time", currentTime);
+	    i.putParcelableArrayListExtra(WIFI_SCANNER_ARG_SCANRESULT, railWifiScanResults);
 	    if (isTrainIndication) {
 	        i.putExtra("TrainIndication", true);
 	    }
@@ -159,7 +186,7 @@ public void onReceive(Context c, Intent intent) {
   
   private void setMode(int mode) {
 		this.mode = mode;
-		if (MODE_TRAIN_WIFI_SCANNIG == mode) {
+		if (MODE_TRAIN_WIFI_SCANNING == mode) {
 			schedulemWifiScanTimer(mPrefs.WIFI_MODE_TRAIN_SCANNIG_PERIOD);
 			if (locationScanner != null)
                 locationScanner.stop();
@@ -191,7 +218,7 @@ public void onReceive(Context c, Intent intent) {
 
 	private void checkForStateChange(boolean isTrainIndication) {
 		int newMode = isTrainIndication ? MODE_TRAIN_WIFI_FOUND
-				: MODE_TRAIN_WIFI_SCANNIG;
+				: MODE_TRAIN_WIFI_SCANNING;
 		if (mode != newMode) {
 			setMode(newMode);
 		}
@@ -200,4 +227,5 @@ public void onReceive(Context c, Intent intent) {
 	public void setLocationScanner(LocationScanner locationScanner) {
 		this.locationScanner=locationScanner;
 	}
+	
 }

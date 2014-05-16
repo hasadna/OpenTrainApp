@@ -54,7 +54,8 @@ final class SSIDBlockList {
         // Transportation Wi-Fi
         "ISRAEL-RAILWAYS",
         "S-ISRAEL-RAILWAYS",
-        "Galina"//EyalLiebermann debug network
+        "Galina",//EyalLiebermann debug network
+        "Hadad"//EyalLiebermann debug network
 
         //"keydars", // TODO: Remove before launch!
         //"Bartals", // TODO: Remove before launch!

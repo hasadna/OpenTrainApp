@@ -18,6 +18,7 @@ import android.util.Log;
 
 import java.util.Calendar;
 
+import il.org.hasadna.opentrain.monitoring.JsonIntentDumper;
 import il.org.hasadna.opentrain.preferences.Prefs;
 
 public final class ScannerService extends Service {
@@ -40,6 +41,10 @@ public final class ScannerService extends Service {
 	private BroadcastReceiver mCloseAppReceiver;
     private BroadcastReceiver mLoadPrefsFromServerReceiver;
     private BroadcastReceiver mPrefsChangedByUserReceiver;
+	private JsonIntentDumper mJsonIntentDumper;
+
+    
+    
 	
 	private final ScannerServiceInterface.Stub mBinder = new ScannerServiceInterface.Stub() {
 		@Override
@@ -144,7 +149,9 @@ public final class ScannerService extends Service {
             }
         };
         registerReceiver(mPrefsChangedByUserReceiver,new IntentFilter(ACTION_PREFS_UPDATED_BY_USER));
-
+        
+        mJsonIntentDumper= new JsonIntentDumper(getApplicationContext());
+        
 		mReporter = new Reporter(this);
 		mScanner = new Scanner(this);
 		mLooper = new LooperThread();
@@ -205,6 +212,8 @@ public final class ScannerService extends Service {
 							Notification.FLAG_NO_CLEAR
 									| Notification.FLAG_ONGOING_EVENT);
 
+					mJsonIntentDumper.open();
+					
 					mScanner.startScanning();
 					mReporter.triggerUpload(); 
 
@@ -247,6 +256,9 @@ public final class ScannerService extends Service {
 				mScanner.stopScanning();
 
 				mReporter.triggerUpload();
+				
+				mJsonIntentDumper.close();
+
 			}
 		});
 	}

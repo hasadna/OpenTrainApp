@@ -1,5 +1,6 @@
 package il.org.hasadna.opentrain;
 
+import il.org.hasadna.opentrain.monitoring.JsonDumper;
 import il.org.hasadna.opentrain.preferences.Prefs;
 import android.content.Context;
 import android.content.Intent;
@@ -26,11 +27,14 @@ public class LocationScanner {
     private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
     private Context mContext;
+    JsonDumper mLogJsonLocation=null;
 
     private Prefs mPrefs;
     
     LocationScanner(Context context) {
         init(context);
+        mLogJsonLocation= new JsonDumper(context, LOGTAG);
+        
     }
 
     public void init(Context context) {
@@ -53,6 +57,7 @@ public class LocationScanner {
 
     public void start() {
         mLocationClient.connect();
+        mLogJsonLocation.open();
     }
 
     public void stop() {
@@ -60,6 +65,8 @@ public class LocationScanner {
             mLocationClient.removeLocationUpdates(locationListener);
         }
         mLocationClient.disconnect();
+        mLogJsonLocation.close();
+
     }
 
     private GooglePlayServicesClient.ConnectionCallbacks connectionCallbacks = new GooglePlayServicesClient.ConnectionCallbacks() {
@@ -105,9 +112,9 @@ public class LocationScanner {
         }
     }
 
-//    public int getLocationCount() {
-//        return 0;
-//    }
+    public int getLocationCount() {
+        return 0;
+    }
 
     public interface LocationCallBack {
         public void onLocationCallBack(Location location);
@@ -119,13 +126,6 @@ public class LocationScanner {
         this.locationCallBack = locationCallBack;
     }
 
-    private void reportNewLocationReceived(Location location) {
-        Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
-        i.putExtra(Intent.EXTRA_SUBJECT, LOCATION_SCANNER_EXTRA_SUBJECT);
-        i.putExtra(LOCATION_SCANNER_ARG_LOCATION, location);
-        i.putExtra("time", System.currentTimeMillis());
-        mContext.sendBroadcast(i);
-    }
 
     private void reportLastLocation() {
         if (mLocationClient != null && mLocationClient.isConnected()) {
@@ -134,5 +134,14 @@ public class LocationScanner {
                 reportNewLocationReceived(lastKnownLocation);
             }
         }
+    }
+
+    private void reportNewLocationReceived(Location location) {
+        Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
+        i.putExtra(Intent.EXTRA_SUBJECT, LOCATION_SCANNER_EXTRA_SUBJECT);
+        i.putExtra(LOCATION_SCANNER_ARG_LOCATION, location);
+        i.putExtra("time", System.currentTimeMillis());
+        mContext.sendBroadcast(i);
+        mLogJsonLocation.dump(location);
     }
 }
