@@ -195,6 +195,14 @@ public final class ScannerService extends Service {
 		Log.d(LOGTAG, "startScanning:");
 
 		if (mScanner.isScanning()) {
+			if(mReporter!=null){
+				Log.i(LOGTAG, "startScanning: triggerUpload");
+				mReporter.triggerUpload();
+			}
+			else
+			{	
+				Log.w(LOGTAG, "startScanning: Inconsistent state. mScanner.isScanning whereas mReporter==NULL ");			
+			}
 			return;
 		}
 
@@ -202,7 +210,7 @@ public final class ScannerService extends Service {
 			@Override
 			public void run() {
 				try {
-					Log.d(LOGTAG, "startScanning: run");
+					Log.i(LOGTAG, "startScanning: run");
 
 					String title = getResources().getString(
 							R.string.service_name);
@@ -244,7 +252,7 @@ public final class ScannerService extends Service {
 		mLooper.post(new Runnable() {
 			@Override
 			public void run() {
-				Log.d(LOGTAG, "stopScanning: run");
+				Log.i(LOGTAG, "stopScanning: run");
 
 				AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 				alarm.cancel(mWakeIntent);
@@ -272,7 +280,7 @@ public final class ScannerService extends Service {
 		mLooper.post(new Runnable() {
 			@Override
 			public void run() {
-				Log.d(LOGTAG, "suspendScanningOnBatteryLow: run");
+				Log.i(LOGTAG, "suspendScanningOnBatteryLow: run");
 
 				mScanner.stopScanning();
 				mReporter.triggerUpload();
@@ -300,7 +308,7 @@ public final class ScannerService extends Service {
 		mLooper.post(new Runnable() {
 			@Override
 			public void run() {
-				Log.d(LOGTAG, "resumeScanningOnBatteryOkay: run");
+				Log.i(LOGTAG, "resumeScanningOnBatteryOkay: run");
 				mScanner.startScanning();
 				mReporter.triggerUpload(); 
 				
@@ -357,7 +365,7 @@ public final class ScannerService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.i(LOGTAG, "onBind:");
+		Log.d(LOGTAG, "onBind:");	
 		return mBinder;
 	}
 

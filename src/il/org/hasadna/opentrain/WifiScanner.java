@@ -162,11 +162,11 @@ public void onReceive(Context c, Intent intent) {
 
   private static boolean shouldLog(ScanResult scanResult) {
     if (BSSIDBlockList.contains(scanResult)) {
-      Log.w(LOGTAG, "Blocked BSSID: " + scanResult);
+      Log.d(LOGTAG, "Blocked BSSID: " + scanResult);
       return false;
     }
     if (SSIDBlockList.contains(scanResult)) {
-      Log.w(LOGTAG, "Blocked SSID: " + scanResult);
+      Log.d(LOGTAG, "Blocked SSID: " + scanResult);
       return false;
     }
     return true;
@@ -174,7 +174,7 @@ public void onReceive(Context c, Intent intent) {
   
 	private static boolean isTrainIndication(ScanResult scanResult) {
 		if (SSIDBlockList.trainIndicatorsContain(scanResult)) {
-			Log.w(LOGTAG, "Train SSID: " + scanResult);
+			Log.i(LOGTAG, "Train SSID: " + scanResult);
 			return true;
 		}
 		return false;
