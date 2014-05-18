@@ -102,7 +102,7 @@ public void onReceive(Context c, Intent intent) {
 
     Collection<ScanResult> scanResults = getWifiManager().getScanResults();
     
-   JsonDumperScanREsults.dump(scanResults);
+   JsonDumperScanREsults.dump(scanResults);//Note that all scan results are logged to file, whether rail indicators or not.
     
     boolean isTrainIndication = false;
     JSONArray wifiInfo = new JSONArray();
@@ -115,10 +115,10 @@ public void onReceive(Context c, Intent intent) {
       }
       if (isTrainIndication(scanResult)) {
     	  isTrainIndication = true;
-    	  railWifiScanResults.add(scanResult);
+    	  railWifiScanResults.add(scanResult);//EyalLiebermann TODO: Keep this and remove usage of string and rely on Parcelable ArrayList after dumps prove its reliable
 
     	  try {
-    		  JSONObject obj = new JSONObject();
+    		  JSONObject obj = new JSONObject();//EyalLiebermann TODO: Remove usage of json string and rely on Parcelable ArrayList after dumps prove its reliable
     		  obj.put("SSID", scanResult.SSID);
     		  obj.put("key", scanResult.BSSID);
     		  obj.put("frequency", scanResult.frequency);
@@ -146,10 +146,10 @@ public void onReceive(Context c, Intent intent) {
     	mLastUpdateTime = currentTime; 
 	    Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
 	    i.putExtra(Intent.EXTRA_SUBJECT, WIFI_SCANNER_EXTRA_SUBJECT);
-	    i.putExtra("data", wifiInfo.toString());
+	    i.putExtra("data", wifiInfo.toString());//EyalLiebermann TODO: Remove usage of string and rely on Parcelable ArrayList after dumps prove its reliable
 	    i.putExtra("time", currentTime);
-	    i.putParcelableArrayListExtra(WIFI_SCANNER_ARG_SCANRESULT, railWifiScanResults);
-	    if (isTrainIndication) {
+	    i.putParcelableArrayListExtra(WIFI_SCANNER_ARG_SCANRESULT, railWifiScanResults);//EyalLiebermann TODO: Keep this one. Remove usage of json string and rely on Parcelable ArrayList after dumps prove its reliable
+	    if (isTrainIndication) {//EyalLiebermann. Check seems redundant. if no train indication then wifi json array si proabably empty and we do not get to this if statement. Therefore parameter itself is redundant as well. 
 	        i.putExtra("TrainIndication", true);
 	    }
 	    mContext.sendBroadcast(i);

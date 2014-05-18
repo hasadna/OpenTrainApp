@@ -47,7 +47,6 @@ public class JsonIntentDumper extends BroadcastReceiver{
 		}		
 		
 		if (subject.equals(WifiScanner.WIFI_SCANNER_EXTRA_SUBJECT)) {
-		    //wifiData = data;
 			Collection<ScanResult> railWifiScanResults = intent.getParcelableArrayListExtra(WifiScanner.WIFI_SCANNER_ARG_SCANRESULT);
 			mJsonDumper.dump(railWifiScanResults);
 		    Log.d(LOGTAG,"onReceive: Reporter data: wifi.");
