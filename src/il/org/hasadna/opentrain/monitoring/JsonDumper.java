@@ -3,7 +3,10 @@ package il.org.hasadna.opentrain.monitoring;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,7 +34,12 @@ public class JsonDumper {
 		{
 			mContext=context;
 			LOGTAG_PER_DUMPER=LOGTAG+creatorTag;	
-			mFileName=	String.valueOf(System.currentTimeMillis()) + "." + creatorTag + ".json.txt";
+
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+			String currentDateandTime = sdf.format(new Date());
+			
+			
+			mFileName=	currentDateandTime+ "." + creatorTag + ".txt";
 		}
 		
 		public void open()
