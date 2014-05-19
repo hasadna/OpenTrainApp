@@ -1,12 +1,7 @@
 package il.org.hasadna.opentrain;
 
-interface ScannerServiceInterface {
-   
-    boolean isScanning();
-    
+interface ScannerServiceInterface {   
     void startScanning();
    	void stopScanning();
-    
-    int getLocationCount();
-    int getAPCount();
+   	boolean isScanning();
 }

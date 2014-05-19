@@ -18,6 +18,7 @@ import android.util.Log;
 
 import java.util.Calendar;
 
+import il.org.hasadna.opentrain.monitoring.JsonIntentDumper;
 import il.org.hasadna.opentrain.preferences.Prefs;
 
 public final class ScannerService extends Service {
@@ -40,6 +41,8 @@ public final class ScannerService extends Service {
 	private BroadcastReceiver mCloseAppReceiver;
     private BroadcastReceiver mLoadPrefsFromServerReceiver;
     private BroadcastReceiver mPrefsChangedByUserReceiver;
+	private JsonIntentDumper mJsonIntentDumper;
+
 	
 	private final ScannerServiceInterface.Stub mBinder = new ScannerServiceInterface.Stub() {
 		@Override
@@ -60,17 +63,17 @@ public final class ScannerService extends Service {
 			ScannerService.this.stopScanning();
 		}
 	
-		@Override
-		public int getLocationCount() throws RemoteException {
-			Log.d(LOGTAG, "ScannerServiceInterface.Stub.getLocationCount:");
-			return ((null==mScanner)?0:mScanner.getLocationCount());
-		}
+//		@Override
+//		public int getLocationCount() throws RemoteException {
+//			Log.d(LOGTAG, "ScannerServiceInterface.Stub.getLocationCount:");
+//			return ((null==mScanner)?0:mScanner.getLocationCount());
+//		}
 
-		@Override
-		public int getAPCount() throws RemoteException {
-			Log.d(LOGTAG, "ScannerServiceInterface.Stub.getAPCount:");
-			return ((null==mScanner)?0:mScanner.getAPCount());
-		}
+//		@Override
+//		public int getAPCount() throws RemoteException {
+//			Log.d(LOGTAG, "ScannerServiceInterface.Stub.getAPCount:");
+//			return ((null==mScanner)?0:mScanner.getAPCount());
+//		}
 	};
 
 	private final class LooperThread extends Thread {
@@ -144,7 +147,10 @@ public final class ScannerService extends Service {
             }
         };
         registerReceiver(mPrefsChangedByUserReceiver,new IntentFilter(ACTION_PREFS_UPDATED_BY_USER));
-
+        
+        mJsonIntentDumper= new JsonIntentDumper(getApplicationContext());
+		mJsonIntentDumper.open();
+        
 		mReporter = new Reporter(this);
 		mScanner = new Scanner(this);
 		mLooper = new LooperThread();
@@ -180,6 +186,9 @@ public final class ScannerService extends Service {
 		mReporter.shutdown();
 		mReporter = null;
 
+		mJsonIntentDumper.close();
+		mJsonIntentDumper = null;
+
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		nm.cancel(NOTIFICATION_ID);
 	}
@@ -188,6 +197,14 @@ public final class ScannerService extends Service {
 		Log.d(LOGTAG, "startScanning:");
 
 		if (mScanner.isScanning()) {
+			if(mReporter!=null){
+				Log.i(LOGTAG, "startScanning: triggerUpload");
+				mReporter.triggerUpload();
+			}
+			else
+			{	
+				Log.w(LOGTAG, "startScanning: Inconsistent state. mScanner.isScanning whereas mReporter==NULL ");			
+			}
 			return;
 		}
 
@@ -195,7 +212,7 @@ public final class ScannerService extends Service {
 			@Override
 			public void run() {
 				try {
-					Log.d(LOGTAG, "startScanning: run");
+					Log.i(LOGTAG, "startScanning: run");
 
 					String title = getResources().getString(
 							R.string.service_name);
@@ -204,7 +221,7 @@ public final class ScannerService extends Service {
 					postNotification(title, text,
 							Notification.FLAG_NO_CLEAR
 									| Notification.FLAG_ONGOING_EVENT);
-
+				
 					mScanner.startScanning();
 					mReporter.triggerUpload(); 
 
@@ -235,7 +252,7 @@ public final class ScannerService extends Service {
 		mLooper.post(new Runnable() {
 			@Override
 			public void run() {
-				Log.d(LOGTAG, "stopScanning: run");
+				Log.i(LOGTAG, "stopScanning: run");
 
 				AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 				alarm.cancel(mWakeIntent);
@@ -247,6 +264,9 @@ public final class ScannerService extends Service {
 				mScanner.stopScanning();
 
 				mReporter.triggerUpload();
+				
+				mJsonIntentDumper.flush();
+
 			}
 		});
 	}
@@ -260,7 +280,7 @@ public final class ScannerService extends Service {
 		mLooper.post(new Runnable() {
 			@Override
 			public void run() {
-				Log.d(LOGTAG, "suspendScanningOnBatteryLow: run");
+				Log.i(LOGTAG, "suspendScanningOnBatteryLow: run");
 
 				mScanner.stopScanning();
 				mReporter.triggerUpload();
@@ -288,7 +308,7 @@ public final class ScannerService extends Service {
 		mLooper.post(new Runnable() {
 			@Override
 			public void run() {
-				Log.d(LOGTAG, "resumeScanningOnBatteryOkay: run");
+				Log.i(LOGTAG, "resumeScanningOnBatteryOkay: run");
 				mScanner.startScanning();
 				mReporter.triggerUpload(); 
 				
@@ -345,7 +365,7 @@ public final class ScannerService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.i(LOGTAG, "onBind:");
+		Log.d(LOGTAG, "onBind:");	
 		return mBinder;
 	}
 

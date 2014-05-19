@@ -35,7 +35,7 @@ public final class MainActivity extends FragmentActivity {
     private ScannerServiceInterface mConnectionRemote;
     private ServiceConnection mConnection;
     private ServiceBroadcastReceiver mReceiver;
-    private int mGpsFixes;
+//    private int mGpsFixes;
 
     private class ServiceBroadcastReceiver extends BroadcastReceiver {
         private boolean mReceiverIsRegistered;
@@ -78,13 +78,16 @@ public final class MainActivity extends FragmentActivity {
             } else if (subject.equals(Reporter.class.getName() + ".upload")) {
                 long lastUploadTime = intent.getLongExtra(Reporter.class.getName() + ".lastUploadTime", 0);
                 String lastUploadTimeString = (lastUploadTime > 0) ? DateTimeUtils
-                        .formatTimeForLocale(lastUploadTime) : "-";
+                        .formatTimeForLocale(lastUploadTime) : "";
                 formatTextView(R.id.last_upload_time, R.string.last_upload_time,
                         lastUploadTimeString);
 
                 long reportsSent = intent.getLongExtra(Reporter.class.getName() + ".reportsSent", 0);
-                formatTextView(R.id.reports_sent, R.string.reports_sent, reportsSent);
+                formatTextView(R.id.reports_sent, R.string.reports_sent, String.valueOf(reportsSent));
 
+                long reportsPending =  intent.getLongExtra(Reporter.class.getName()+".reportsPending", 0);
+				formatTextView(R.id.reports_pending, R.string.reports_pending, String.valueOf(reportsPending));
+				
                 Log.d(LOGTAG, "onReceive: Reporter intent. lastUploadTimeString=" + lastUploadTimeString + ", reportsSent=" + reportsSent);
 
                 updateUI();
@@ -92,7 +95,7 @@ public final class MainActivity extends FragmentActivity {
             } else if (subject.equals(Reporter.class.getName() + ".trainIndication")) {
                 long lastTrainIndicationTime = intent.getLongExtra(Reporter.class.getName() + ".lastTrainIndicationTime", 0);
                 String lastTrainIndicationTimeString = (lastTrainIndicationTime > 0) ? DateTimeUtils
-                        .formatTimeForLocale(lastTrainIndicationTime) : "-";
+                        .formatTimeForLocale(lastTrainIndicationTime) : "";
                 formatTextView(R.id.last_train, R.string.last_train,
                         lastTrainIndicationTimeString);
                 Log.d(LOGTAG, "onReceive: trainIndication intent. lastTrainIndicationTime=" + lastTrainIndicationTime);
@@ -101,7 +104,7 @@ public final class MainActivity extends FragmentActivity {
                 return;
 
             } else if (subject.equals("Scanner")) {
-                mGpsFixes = intent.getIntExtra("fixes", 0);
+ //               mGpsFixes = intent.getIntExtra("fixes", 0);
                 updateUI();
                 Log.d(LOGTAG, "Received a scanner intent...");
                 return;
@@ -119,11 +122,6 @@ public final class MainActivity extends FragmentActivity {
         Log.i(LOGTAG, "onCreate:");
         enableStrictMode();
         setContentView(R.layout.activity_main);
-        formatTextView(R.id.last_upload_time, R.string.last_upload_time, "-");
-        formatTextView(R.id.reports_sent, R.string.reports_sent, 0);
-        formatTextView(R.id.last_train, R.string.last_train,
-                "-");
-        // Updater.checkForUpdates(this);
         PrefsUpdater.scheduleUpdate(this);
     }
 
@@ -249,21 +247,21 @@ public final class MainActivity extends FragmentActivity {
             scanningBtn.setBackgroundResource(R.drawable.red_button);
         }
 
-        int locationsScanned = 0;
-        int APs = 0;
+//        int locationsScanned = 0;
+//        int APs = 0;
 
-        try {
-            locationsScanned = mConnectionRemote.getLocationCount();
-            APs = mConnectionRemote.getAPCount();
-        } catch (RemoteException e) {
-            Log.e(LOGTAG, "", e);
-        }
+//        try {
+////            locationsScanned = mConnectionRemote.getLocationCount();
+////            APs = mConnectionRemote.getAPCount();
+//        } catch (RemoteException e) {
+//            Log.e(LOGTAG, "", e);
+//        }
 
-        formatTextView(R.id.gps_satellites, R.string.gps_satellites, mGpsFixes);
-        formatTextView(R.id.wifi_access_points, R.string.wifi_access_points,
-                APs);
-        formatTextView(R.id.locations_scanned, R.string.locations_scanned,
-                locationsScanned);
+//        formatTextView(R.id.gps_satellites, R.string.gps_satellites, mGpsFixes);
+//        formatTextView(R.id.wifi_access_points, R.string.wifi_access_points,
+//                APs);
+//        formatTextView(R.id.locations_scanned, R.string.locations_scanned,
+//                locationsScanned);
     }
 
 //	@Override
@@ -324,16 +322,12 @@ public final class MainActivity extends FragmentActivity {
                 .penaltyLog().build());
     }
 
-    private void formatTextView(int textViewId, int stringId, Object... args) {
+    private void formatTextView(int textViewId, int stringId, String value) {
         TextView textView = (TextView) findViewById(textViewId);
-        String str = getResources().getString(stringId);
-        Log.d("hebrew", "str = " + str + " args = " + args);
-        try {
-            str = String.format(str, args);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        textView.setText(str);
+        String title = getResources().getString(stringId);
+        Log.d("formatTextView:", "title = " + title + " value = " + value);
+       String content=title+" "+value;
+        textView.setText(content);
     }
 
     @Override
@@ -347,8 +341,12 @@ public final class MainActivity extends FragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.privacy_policy:
-                Intent i = new Intent(this, PrivacyPolicyActivity.class);
-                startActivity(i);
+                Intent privacyIntent = new Intent(this, PrivacyPolicyActivity.class);
+                startActivity(privacyIntent);
+                return true;
+            case R.id.share_dump_files:
+                Intent shareIntent = new Intent(this, ShareDumpFilesActivity.class);
+                startActivity(shareIntent);
                 return true;
             case R.id.settings:
                 Intent settings;

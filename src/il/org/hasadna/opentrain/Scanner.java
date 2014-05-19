@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-class Scanner {
+public class Scanner {
     private static final String LOGTAG = Scanner.class.getName();
 
     private final Context mContext;
@@ -75,13 +75,13 @@ class Scanner {
     boolean isScanning() {
         return mIsScanning;
     }
-
-    int getAPCount() {
-        return mWifiScanner.getAPCount();
-    }
-
-    int getLocationCount() {
-        //return mGPSScanner.getLocationCount();
-        return mLocationScanner.getLocationCount();
-    }
+//
+//    int getAPCount() {
+//        return mWifiScanner.getAPCount();
+//    }
+//
+//    int getLocationCount() {
+//        //return mGPSScanner.getLocationCount();
+//        return mLocationScanner.getLocationCount();
+//    }
 }

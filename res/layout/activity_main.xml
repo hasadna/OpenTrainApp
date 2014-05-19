@@ -18,41 +18,12 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/white" />
 
-    <TextView
-        android:id="@+id/gps_satellites"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/last_train"
-        android:text="@string/gps_satellites"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/locations_scanned"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/gps_satellites"
-        android:text="@string/locations_scanned"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/wifi_access_points"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/locations_scanned"
-        android:text="@string/wifi_access_points"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white"
-        android:visibility="gone" />
 
     <TextView
         android:id="@+id/last_upload_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/wifi_access_points"
+        android:layout_below="@+id/last_train"
         android:text="@string/last_upload_time"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/white" />
@@ -66,6 +37,15 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/white" />
 
+      <TextView
+        android:id="@+id/reports_pending"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+		android:layout_below="@+id/reports_sent"        
+        android:text="@string/reports_pending"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white"/>
+    
     <TextView
         android:id="@+id/status_text"
         android:layout_width="wrap_content"
@@ -77,26 +57,6 @@
         android:text="@string/status_off"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/white" />
-
-    <Button
-        android:id="@+id/view_leaderboard"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/status_text"
-        android:onClick="onClick_ViewLeaderboard"
-        android:text="@string/view_leaderboard"
-        android:visibility="gone" />
-
-    <Button
-        android:id="@+id/view_map"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/view_leaderboard"
-        android:onClick="onClick_ViewMap"
-        android:text="@string/view_map"
-        android:visibility="gone" />
 
     <RelativeLayout
         android:layout_width="match_parent"

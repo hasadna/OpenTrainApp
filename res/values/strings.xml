@@ -9,12 +9,10 @@
     <string name="view_map">Test Mozilla Location Service</string>
     <string name="service_name">Open Trains</string>
 
-    <string name="last_train">Last on Train: %1$s</string>
-    <string name="wifi_access_points">Wi-Fi Access Points Scanned: %1$d</string>
-    <string name="gps_satellites">GPS Satellites Visible: %1$d</string>
-    <string name="locations_scanned">Locations Scanned: %1$d</string>
-    <string name="last_upload_time">Last Report: %1$s</string>
-    <string name="reports_sent">Reports Sent: %1$d</string>
+    <string name="last_train">Last on train:</string>
+    <string name="last_upload_time">Last report:</string>
+    <string name="reports_sent">Reports sent:</string>
+    <string name="reports_pending">Reports pending:</string>
     <string name="service_scanning">Open Trains Online</string>
 
     <string name="enter_nickname">Enter Nickname (optional)</string>
@@ -37,8 +35,8 @@
     <string name="no">No</string>
 
     <string name="about_version">Version %1$s</string>
-    <string name="status_off">Click the button to engage. The app will only ever do work if Israel Railways Wi-Fi hotspots are observed.</string>
-    <string name="status_on">Engaged. Will report what Wifi Hotspots are around the device, but only if Israel Railways hotspots have recently been observed.</string>
+    <string name="status_off">Inactive. Click the button to engage. Help us monitor Israel Railways activity through its hotspots.</string>
+	<string name="status_on">Engaged. Monitoring Israel Railways hotspots. Sending location and hotspot information when relevant.</string>
     <string name="notification_close">Stop scannig</string>
     <string name="alert_dialog_confirm_exit">Stop scannig before exit?</string>
     <string name="alert_dialog_ok">Yes</string>
@@ -49,4 +47,19 @@
 
     <string name="pref_user_name">User Name</string>
     <string name="settings">Settings</string>
+    
+	<string name="privacy_policy_menu_item">Privacy policy</string>
+    <string name="privacy_policy_activity_label">Privacy policy</string>
+
+    <string name="pref_user_name">User Name</string>
+	<string name="settings_menu_item">Settings</string>
+        
+    <string name="share_dump_files_menu_item">Share dump files</string>
+	<string name="share_dump_files_activity_label">Share dump files</string>
+	<string name="dump_files_path">Dump files path:</string>
+	<string name="share_dump_files_button">Share</string>
+	<string name="share_files_empty_folder_checkbox">Empty folder once done</string>
+	<string name="share_recent_n_files">Share 20 most recent files</string>
+	
+    
 </resources>

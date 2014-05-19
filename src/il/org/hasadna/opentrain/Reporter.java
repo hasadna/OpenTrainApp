@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
+import android.net.wifi.ScanResult;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
@@ -22,7 +23,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 
+import il.org.hasadna.opentrain.monitoring.JsonDumper;
 import il.org.hasadna.opentrain.preferences.Prefs;
 
 class Reporter extends BroadcastReceiver {
@@ -35,7 +38,8 @@ class Reporter extends BroadcastReceiver {
 
     private Location mLocation = null;
     
-    ReporterThread mReporterThread;
+    private ReporterThread mReporterThread;
+    
 
     Reporter(Context context) {
 
@@ -73,7 +77,7 @@ class Reporter extends BroadcastReceiver {
         boolean isTrainIndication = intent.getBooleanExtra("TrainIndication", false);
         if (isTrainIndication) {
             mLastTrainIndicationTime = time;
-            sendTrainIndicationIntent();
+            broadcastTrainIndicationStats();
         }
 
         if (System.currentTimeMillis() - mLastTrainIndicationTime > mPrefs.TRAIN_INDICATION_TTL) {
@@ -90,19 +94,12 @@ class Reporter extends BroadcastReceiver {
         }
 
         String wifiData = "";
-        String cellData = "";
-        String radioType = "";
-        String GPSData = "";
-        if (subject.equals("WifiScanner")) {
-            wifiData = data;
+        Collection<ScanResult> wifiScanResults=null;
+      
+        if (subject.equals(WifiScanner.WIFI_SCANNER_EXTRA_SUBJECT)) {
+            wifiData = data;//EyalLiebermann TODO: Remove usage of string and rely on Parcelable ArrayList after dumps prove its reliable 
+           // wifiScanResults=intent.getParcelableArrayListExtra(WifiScanner.WIFI_SCANNER_ARG_SCANRESULT);            
             Log("onReceive: Reporter data: WiFi.length=" + wifiData.length());
-        } else if (subject.equals("CellScanner")) {
-            cellData = data;
-            radioType = intent.getStringExtra("radioType");
-            Log("onReceive: Reporter data: Cell: " + cellData.length() + " (" + radioType + ")");
-        } else if (subject.equals("GPSScanner")) {
-            GPSData = data;
-            Log("onReceive: Reporter data: GPS.length=" + GPSData.length());
         } else if (subject.equals(LocationScanner.LOCATION_SCANNER_EXTRA_SUBJECT)) {
             mLocation = intent.getParcelableExtra(LocationScanner.LOCATION_SCANNER_ARG_LOCATION);
             Log("onReceive: Reporter data: Location=" + mLocation);
@@ -110,18 +107,16 @@ class Reporter extends BroadcastReceiver {
             Log("Intent ignored. Subject=" + subject);
             return; // Intent not aimed at the Reporter (it is possibly for UI instead)
         }
+        
 
-        // HASADNA: removed the following condition because we want to send data even when no gps is available.
-        //if (mGPSData.length() > 0 && (mWifiData.length() > 0 || mCellData.length() > 0)) ...
-        //TODO Verify location logic. Note it is a member variable and thus is included also on following reports
-        JSONObject report = buildReport(time, GPSData, wifiData, radioType, cellData, mLocation);
+        JSONObject report = buildReport(time, wifiData,mLocation);
         if(report!=null)
         {
         	mReporterThread.report(report);
         }
     }
     
-	private JSONObject buildReport(long time, String gpsLocation, String wifiInfo, String radioType, String cellInfo, Location location) {
+	private JSONObject buildReport(long time, String wifiInfo,  Location location) {
         // HASADNA: added this to enable debugging:
         //android.os.Debug.waitForDebugger();
         Log("buildReport:");
@@ -131,11 +126,7 @@ class Reporter extends BroadcastReceiver {
         // Prepare the device id to be sent along with the report
 
         try {
-            if (gpsLocation.length() > 0) {
-                reportBuilder = new JSONObject(gpsLocation);
-            } else {
-                reportBuilder = new JSONObject();
-            }
+        	reportBuilder = new JSONObject();
 
             reportBuilder.put("time", time);
             if (location != null) {
@@ -152,8 +143,6 @@ class Reporter extends BroadcastReceiver {
             } else {
                 reportBuilder.put("location_api", null);
             }
-
-            reportBuilder.put("time", time);//TODO remove repetition
             
             String hashed_device_id = mPrefs.getDailyID();
             reportBuilder.put("device_id", hashed_device_id);
@@ -162,18 +151,12 @@ class Reporter extends BroadcastReceiver {
             reportBuilder.put("app_version_name", mPrefs.VERSION_NAME);
             reportBuilder.put("config_version", mPrefs.CONFIG_VERSION);
 
-            // commenting out all CellScanner usage for now:            
-//            if (cellInfo.length()>0) {
-//                cellJSON=new JSONArray(cellInfo);
-//                locInfo.put("cell", cellJSON);
-//                locInfo.put("radio", radioType);
-//            }
        		JSONArray wifiJSON = null;
             if (wifiInfo.length() > 0) {
                 wifiJSON = new JSONArray(wifiInfo);
                 reportBuilder.put("wifi", wifiJSON);
             }
-            if (wifiJSON == null && gpsLocation.length() == 0) {
+            if (wifiJSON == null ) {
                 Log.w(LOGTAG, "buildReport: Invalid report: wifi or GPS entry is required. Report not built");
                 return null;
             }
@@ -190,34 +173,19 @@ class Reporter extends BroadcastReceiver {
 	 
 	//TODO: remove this interface and encapsulate logic in mReportThread class
 	public void triggerUpload(){
-        Log("considerUpload:");
+        Log("triggerUpload:");
 		mReporterThread.triggerUpload();
+		broadcastTrainIndicationStats();
 	}
-	 
-//	//TODO: remove this interface and send info as part of intent
-//	public long getLastUploadTime() {
-//        Log("getLastUploadTime:");
-//        return mReporterThread.getLastUploadTime();
-//    }
-//	
-//	//TODO: remove this interface and send info as part of intent
-//    public long getReportsSent() {
-//        Log("getReportsSent:");
-//        return mReporterThread.getReportsSent();
-//    }
-
-//    public long getLastTrainIndicationTime() {
-//        Log("getLastTrainIndicationTime:");
-//        return mLastTrainIndicationTime;
-//    }
-    private void sendTrainIndicationIntent() {
-		Log("sendTrainIndicationIntent:");
-        Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
-        i.putExtra(Intent.EXTRA_SUBJECT, Reporter.class.getName()+".trainIndication");
-        i.putExtra(Reporter.class.getName()+".lastTrainIndicationTime", mLastTrainIndicationTime);
-        //TODO: use extra data and remove the getters for lastUploadTime and reportsSent
-        mContext.sendBroadcast(i);
-    }
+	
+	 private void broadcastTrainIndicationStats() {
+			Log("broadcastTrainIndicationStats:");
+	        Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
+	        i.putExtra(Intent.EXTRA_SUBJECT, Reporter.class.getName()+".trainIndication");
+	        i.putExtra(Reporter.class.getName()+".lastTrainIndicationTime", mLastTrainIndicationTime);
+	        //TODO: use extra data and remove the getters for lastUploadTime and reportsSent
+	        mContext.sendBroadcast(i);
+	    }
 
     private void Log(String msg)
     {
@@ -236,13 +204,16 @@ class Reporter extends BroadcastReceiver {
 	    //TODO make static once class is not more an innner class;
 	    private  final String LOCATION_URL = "http://192.241.154.128/reports/add/";//"http://54.221.246.54/reports/add/";//"https://location.services.mozilla.com/v1/submit"; //TODO: hasadna this should contain our own url
 	    private  final String USER_AGENT_HEADER = "User-Agent";
-	    private String MOZSTUMBLER_USER_AGENT_STRING;
+	    private String USER_AGENT_STRING;
+	    		
+	    private long mReportsSent=0;
+		public long mLastUploadTime=0;
 		
-	//    private long mLastUploadTime;			
-	    private long mReportsSent;
-	    
 	    private  final long DELAY_RETRY_UPLOAD_ON_FAILURE = 30*1000;//30 seconds
 		private  final long DELAY_PERIODIC_UPLOAD = 5*60*1000;//30 seconds
+
+		private JsonDumper mJsonDumper;
+
 
 	    class RunnableRetyUpload implements Runnable{
 			@Override
@@ -275,7 +246,11 @@ class Reporter extends BroadcastReceiver {
 	        } catch (MalformedURLException e) {
 	            throw new IllegalArgumentException(e);
 	        }
-	        MOZSTUMBLER_USER_AGENT_STRING = NetworkUtils.getUserAgentString(mContext);
+	        USER_AGENT_STRING = NetworkUtils.getUserAgentString(mContext);
+	        
+	        mJsonDumper=new JsonDumper(Reporter.this.mContext, "out.reports");
+    		mJsonDumper.open();
+    
 			
 	        start();
 			mHandler= new Handler(getLooper());	
@@ -289,6 +264,7 @@ class Reporter extends BroadcastReceiver {
 				@Override
 				public void run() {
 					enqueueReport(report);
+					broadcastStats();
 				}
 			});
 		}
@@ -297,7 +273,8 @@ class Reporter extends BroadcastReceiver {
 			mHandler.post(new Runnable() {
 				@Override
 				public void run() {
-					upload();					
+					upload();	
+					broadcastStats();
 				}
 			});
 		}
@@ -308,7 +285,9 @@ class Reporter extends BroadcastReceiver {
 			mHandler.post(new Runnable() {
 				@Override
 				public void run() {
+					broadcastStats();
 		    		Reporter.this.mPrefs.setReports(mReportArray.toString());
+                    mJsonDumper.close();
 		    		quit();//Messages pending in looper queue dropped. Consider ROI for fixing this. 
 				}
 			});
@@ -350,12 +329,11 @@ class Reporter extends BroadcastReceiver {
 			 }
 			 try {
                    Log("Upload: reports.length="+mReportArray.length());
-                    
 
                     HttpURLConnection urlConnection = (HttpURLConnection) mURL.openConnection();
                     try {
                         urlConnection.setDoOutput(true);
-                        urlConnection.setRequestProperty(USER_AGENT_HEADER, MOZSTUMBLER_USER_AGENT_STRING);
+                        urlConnection.setRequestProperty(USER_AGENT_HEADER, USER_AGENT_STRING);
 
                         JSONObject wrapper = new JSONObject();
                         wrapper.put("items", mReportArray);
@@ -385,14 +363,17 @@ class Reporter extends BroadcastReceiver {
                         Log("Upload: response=" + total + "\n");
                       
                         r.close();
+                    
+                    	mJsonDumper.dump("sentReports",mReportArray);
+
 
                         mReportArray =new JSONArray();
 
 //                        synchronized(this){//TODO remove synchronization block when removing getters after putting data on intent
 //                        	mLastUploadTime = System.currentTimeMillis();	
 //                        }
-               
-                        sendUpdateIntent();
+                        mLastUploadTime=System.currentTimeMillis();
+                        broadcastStats();
                     } catch (JSONException jsonex) {
                     	Log.e(LOGTAG, "Upload: JSONException caught. Error wrapping data as a batch. Reports lost.", jsonex);
                         mReportArray =new JSONArray();
@@ -425,12 +406,17 @@ class Reporter extends BroadcastReceiver {
 			mHandler.postDelayed(mRunnableRetryUpload,DELAY_RETRY_UPLOAD_ON_FAILURE);
 		}
 
-	    private void sendUpdateIntent() {
-			Log("sendUpdateIntent:");
+	       
+	    private void broadcastStats() {
+			Log("broadcastStats:");
 	        Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
 	        i.putExtra(Intent.EXTRA_SUBJECT, Reporter.class.getName()+".upload");
-	        i.putExtra(Reporter.class.getName()+".lastUploadTime", System.currentTimeMillis());
+	        i.putExtra(Reporter.class.getName()+".lastUploadTime", mLastUploadTime);
 	        i.putExtra(Reporter.class.getName()+".reportsSent", mReportsSent);
+	        i.putExtra(Reporter.class.getName()+".reportsPending",(long)mReportArray.length());
+
+			Log("broadcastStats: MESSAGE_TOPIC="+ScannerService.MESSAGE_TOPIC+", EXTRA_SUBJECT=.upload, .lastUploadTime="+mLastUploadTime+", reportsSent="+mReportsSent+",reportsPending="+mReportArray.length());
+		        
 	        //TODO: use extra data and remove the getters for lastUploadTime and reportsSent
 	        mContext.sendBroadcast(i);
 	    }
