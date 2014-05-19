@@ -1,5 +1,9 @@
-package il.org.hasadna.opentrain;
+package il.org.hasadna.opentrain.activity;
 
+import il.org.hasadna.opentrain.R;
+import il.org.hasadna.opentrain.R.id;
+import il.org.hasadna.opentrain.R.layout;
+import il.org.hasadna.opentrain.R.string;
 import il.org.hasadna.opentrain.monitoring.JsonDumper;
 
 import java.io.BufferedReader;
@@ -25,7 +29,6 @@ import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ShareDumpFilesActivity extends Activity {
 	
@@ -71,15 +74,7 @@ public class ShareDumpFilesActivity extends Activity {
         listView.setAdapter(adapter);
     }
 	
-	 public void onClick_Share(View v) throws RemoteException {
-		 
-		 Context context = getApplicationContext();
-		 CharSequence text = "onClick_Share:";
-		 int duration = Toast.LENGTH_SHORT;
-		
-		 Toast toast = Toast.makeText(context, text, duration);
-		 toast.show();
-		 
+	 public void onClick_Share(View v) throws RemoteException {	 
 		 Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
 		
 		 intent.setType("text/plain");

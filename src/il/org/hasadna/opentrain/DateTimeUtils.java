@@ -31,8 +31,4 @@ public final class DateTimeUtils {
     public static String formatTimeForLocale(long time) {
         return DateFormat.getDateTimeInstance().format(time);
     }
-
-    static String formatCurrentTime() {
-        return formatTime(System.currentTimeMillis());
-    }
 }

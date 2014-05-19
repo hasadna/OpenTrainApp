@@ -2,7 +2,7 @@ package il.org.hasadna.opentrain;
 
 import android.net.wifi.ScanResult;
 
-final class SSIDBlockList {
+final class WifiNameFilter {
     private static final String[] PREFIX_LIST = {
         // Mobile devices
         "AndroidAP",
@@ -83,7 +83,7 @@ final class SSIDBlockList {
         "_nomap",
     };
 
-    private SSIDBlockList() {
+    private WifiNameFilter() {
     }
 
     static boolean contains(ScanResult scanResult) {

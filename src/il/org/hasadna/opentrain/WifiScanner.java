@@ -109,7 +109,7 @@ public void onReceive(Context c, Intent intent) {
     ArrayList<ScanResult> railWifiScanResults= new ArrayList<ScanResult>();
     
     for (ScanResult scanResult : scanResults) {
-      scanResult.BSSID = BSSIDBlockList.canonicalizeBSSID(scanResult.BSSID);
+      scanResult.BSSID = WifiMacCanonicalizer.canonicalizeBSSID(scanResult.BSSID);
       if (!shouldLog(scanResult)) {
         continue;
       }
@@ -161,11 +161,11 @@ public void onReceive(Context c, Intent intent) {
   }
 
   private static boolean shouldLog(ScanResult scanResult) {
-    if (BSSIDBlockList.contains(scanResult)) {
+    if (WifiMacCanonicalizer.contains(scanResult)) {
       Log.d(LOGTAG, "Blocked BSSID: " + scanResult);
       return false;
     }
-    if (SSIDBlockList.contains(scanResult)) {
+    if (WifiNameFilter.contains(scanResult)) {
       Log.d(LOGTAG, "Blocked SSID: " + scanResult);
       return false;
     }
@@ -173,7 +173,7 @@ public void onReceive(Context c, Intent intent) {
   }
   
 	private static boolean isTrainIndication(ScanResult scanResult) {
-		if (SSIDBlockList.trainIndicatorsContain(scanResult)) {
+		if (WifiNameFilter.trainIndicatorsContain(scanResult)) {
 			Log.i(LOGTAG, "Train SSID: " + scanResult);
 			return true;
 		}

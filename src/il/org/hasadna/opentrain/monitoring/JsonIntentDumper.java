@@ -24,7 +24,7 @@ public class JsonIntentDumper extends BroadcastReceiver{
 	private JsonDumper mJsonDumper= null;;
 	
 	public JsonIntentDumper(Context context) {
-		mJsonDumper= new JsonDumper(context,"inner.intent");
+		mJsonDumper= new JsonDumper(context,"inner");
 		context.registerReceiver(this,new IntentFilter(ScannerService.MESSAGE_TOPIC));
 
 	}

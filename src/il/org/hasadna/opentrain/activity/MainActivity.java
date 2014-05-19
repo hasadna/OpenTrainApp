@@ -28,7 +28,6 @@ import il.org.hasadna.opentrain.R;
 import il.org.hasadna.opentrain.Reporter;
 import il.org.hasadna.opentrain.ScannerService;
 import il.org.hasadna.opentrain.ScannerServiceInterface;
-import il.org.hasadna.opentrain.ShareDumpFilesActivity;
 import il.org.hasadna.opentrain.R.drawable;
 import il.org.hasadna.opentrain.R.id;
 import il.org.hasadna.opentrain.R.layout;
