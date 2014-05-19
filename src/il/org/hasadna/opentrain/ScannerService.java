@@ -63,18 +63,7 @@ public final class ScannerService extends Service {
 			Log.d(LOGTAG, "ScannerServiceInterface.Stub.stopScanning:");
 			ScannerService.this.stopScanning();
 		}
-	
-//		@Override
-//		public int getLocationCount() throws RemoteException {
-//			Log.d(LOGTAG, "ScannerServiceInterface.Stub.getLocationCount:");
-//			return ((null==mScanner)?0:mScanner.getLocationCount());
-//		}
 
-//		@Override
-//		public int getAPCount() throws RemoteException {
-//			Log.d(LOGTAG, "ScannerServiceInterface.Stub.getAPCount:");
-//			return ((null==mScanner)?0:mScanner.getAPCount());
-//		}
 	};
 
 	private final class LooperThread extends Thread {

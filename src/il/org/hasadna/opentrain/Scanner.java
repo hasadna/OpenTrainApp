@@ -10,8 +10,6 @@ public class Scanner {
     private final Context mContext;
     private boolean mIsScanning;
 
-    //private GPSScanner     mGPSScanner;
-    //private CellScanner    mCellScanner;
     private WifiScanner mWifiScanner;
     private LocationScanner mLocationScanner;
 
@@ -21,8 +19,6 @@ public class Scanner {
         mWifiScanner = new WifiScanner(context);
         mLocationScanner=new LocationScanner(context);
         mWifiScanner.setLocationScanner(mLocationScanner);
-        //mCellScanner = new CellScanner(context);
-        // mGPSScanner  = new GPSScanner(context);
     }
 
     void startScanning() {
@@ -32,9 +28,6 @@ public class Scanner {
         Log.d(LOGTAG, "Scanning started...");
 
         mWifiScanner.start();
-        // commenting out all CellScanner usage for now:
-        //mCellScanner.start();
-        //mGPSScanner.start();
 
         mIsScanning = true;
 
@@ -59,9 +52,6 @@ public class Scanner {
 
         mWifiScanner.stop();
         mLocationScanner.stop();
-        // commenting out all CellScanner usage for now:
-        //mCellScanner.stop();
-        //mGPSScanner.stop();
 
         mIsScanning = false;
 
@@ -75,13 +65,4 @@ public class Scanner {
     boolean isScanning() {
         return mIsScanning;
     }
-//
-//    int getAPCount() {
-//        return mWifiScanner.getAPCount();
-//    }
-//
-//    int getLocationCount() {
-//        //return mGPSScanner.getLocationCount();
-//        return mLocationScanner.getLocationCount();
-//    }
 }

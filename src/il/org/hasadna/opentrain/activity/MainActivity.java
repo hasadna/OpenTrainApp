@@ -42,7 +42,6 @@ public final class MainActivity extends FragmentActivity {
     private ScannerServiceInterface mConnectionRemote;
     private ServiceConnection mConnection;
     private ServiceBroadcastReceiver mReceiver;
-//    private int mGpsFixes;
 
     private class ServiceBroadcastReceiver extends BroadcastReceiver {
         private boolean mReceiverIsRegistered;
@@ -251,16 +250,6 @@ public final class MainActivity extends FragmentActivity {
             scanningBtn.setBackgroundResource(R.drawable.red_button);
         }
     }
-
-	/*
-     * public void onClick_ViewMap(View v) throws RemoteException { // We are
-	 * starting Wi-Fi scanning because we want the the APs for our //
-	 * geolocation request whose results we want to display on the map. if
-	 * (mConnectionRemote != null) { mConnectionRemote.startScanning(); }
-	 * 
-	 * Log.d(LOGTAG, "onClick_ViewMap"); Intent intent = new Intent(this,
-	 * MapActivity.class); startActivity(intent); }
-	 */
 
     @TargetApi(9)
     private void enableStrictMode() {
