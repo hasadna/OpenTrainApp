@@ -53,12 +53,7 @@
 	<string name="share_dump_files_activity_label">שליחת קבצי ריצה</string>
 	<string name="dump_files_path">מיקום קבצי ריצה:</string>
 	<string name="share_dump_files_button">שלח</string>
-	<string name="share_files_empty_folder_checkbox">רוקן תיקיה בגמר שליחה</string>
 	<string name="share_recent_n_files">שלח את 20 הקבצים החדשים ביותר</string>
-	
-		
-	
-	
-    
-
+	<string name="dump_email_first_line">תודה על קבצי המעקב, הם יעזרו לנו בשיפור האפליקציה.</string>
+	<string name="dump_email_last_line">פשוט שלח אימייל זה. אם ניתקלת בתקלות או התנהגות לא ברורה תאר אותה כאן.</string>
 </resources>

@@ -53,10 +53,10 @@
         
     <string name="share_dump_files_menu_item">Share dump files</string>
 	<string name="share_dump_files_activity_label">Share dump files</string>
-	<string name="dump_files_path">Dump files path:</string>
+	<string name="dump_files_path">Path:</string>
 	<string name="share_dump_files_button">Share</string>
-	<string name="share_files_empty_folder_checkbox">Empty folder once done</string>
 	<string name="share_recent_n_files">Share 20 most recent files</string>
-	
-    
+	<string name="dump_email_first_line">Thank you for sending us these dump files.</string>
+	<string name="dump_email_last_line">Simply send this mail. You can also describe any issue you have encountered below.</string>
+	<string name="dump_email_subject">OpenTrainApp user dump.</string>	    
 </resources>

@@ -38,7 +38,6 @@ import il.org.hasadna.opentrain.preferences.PrefsUpdater;
 
 public final class MainActivity extends FragmentActivity {
     private static final String LOGTAG = MainActivity.class.getName();
-    private static final String LEADERBOARD_URL = "https://location.services.mozilla.com/leaders";
 
     private ScannerServiceInterface mConnectionRemote;
     private ServiceConnection mConnection;
@@ -133,15 +132,6 @@ public final class MainActivity extends FragmentActivity {
         PrefsUpdater.scheduleUpdate(this);
     }
 
-
-//	@Override
-//	protected void onRestart()
-//	{
-//		super.onRestart();
-//		Log.i(LOGTAG, "onRestart:");
-//	}
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -187,21 +177,6 @@ public final class MainActivity extends FragmentActivity {
 
         Log.d(LOGTAG, "onStart");
     }
-
-//	@Override
-//	protected void onResume()
-//	{
-//		super.onResume();
-//		Log.i(LOGTAG, "onResume:");
-//	}
-//	
-//
-//	@Override
-//	protected void onPause()
-//	{
-//		super.onPause();
-//		Log.i(LOGTAG, "onPause:");
-//	}
 
     @Override
     protected void onStop() {
@@ -254,30 +229,7 @@ public final class MainActivity extends FragmentActivity {
             status.setText(R.string.status_off);
             scanningBtn.setBackgroundResource(R.drawable.red_button);
         }
-
-//        int locationsScanned = 0;
-//        int APs = 0;
-
-//        try {
-////            locationsScanned = mConnectionRemote.getLocationCount();
-////            APs = mConnectionRemote.getAPCount();
-//        } catch (RemoteException e) {
-//            Log.e(LOGTAG, "", e);
-//        }
-
-//        formatTextView(R.id.gps_satellites, R.string.gps_satellites, mGpsFixes);
-//        formatTextView(R.id.wifi_access_points, R.string.wifi_access_points,
-//                APs);
-//        formatTextView(R.id.locations_scanned, R.string.locations_scanned,
-//                locationsScanned);
     }
-
-//	@Override
-//	protected void onDestroy()
-//	{
-//		super.onDestroy();
-//		Log.i(LOGTAG, "onDestroy:");
-//	}
 
     public void onClick_ToggleScanning(View v) throws RemoteException {
         if (mConnectionRemote == null) {
@@ -298,12 +250,6 @@ public final class MainActivity extends FragmentActivity {
             status.setText(R.string.status_off);
             scanningBtn.setBackgroundResource(R.drawable.red_button);
         }
-    }
-
-    public void onClick_ViewLeaderboard(View v) {
-        Intent openLeaderboard = new Intent(Intent.ACTION_VIEW,
-                Uri.parse(LEADERBOARD_URL));
-        startActivity(openLeaderboard);
     }
 
 	/*
