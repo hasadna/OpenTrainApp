@@ -42,9 +42,6 @@
     <string name="alert_dialog_ok">Yes</string>
     <string name="alert_dialog_cancel">No</string>
 
-    <string name="privacy_policy_menu_item">Privacy policy</string>
-    <string name="privacy_policy_title">Privacy policy</string>
-
     <string name="pref_user_name">User Name</string>
     <string name="settings">Settings</string>
     

@@ -46,7 +46,7 @@
     <string name="alert_dialog_cancel">לא</string>
 
     <string name="privacy_policy_menu_item">מדיניות פרטיות</string>
-    <string name="privacy_policy_title">מדיניות פרטיות</string>
+    <string name="privacy_policy_activity_label">מדיניות פרטיות</string>
     <string name="pref_user_name">שם משתמש</string>
     <string name="settings_menu_item">הגדרות</string>
 	<string name="share_dump_files_menu_item">שלח קבצי ריצה</string>
