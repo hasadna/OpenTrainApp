@@ -48,7 +48,7 @@ public class WifiScanner extends BroadcastReceiver {
   private final Set<String>      mAPs = new HashSet<String>();
   private long                mLastUpdateTime;
   
-  private JsonDumper		JsonDumperScanREsults;
+  private JsonDumper		mJsonDumperWifi;
 
   private Prefs mPrefs;
   
@@ -56,7 +56,7 @@ public class WifiScanner extends BroadcastReceiver {
     mContext = context;
     mPrefs = Prefs.getInstance(context);
     mStarted = false;
-    JsonDumperScanREsults= new JsonDumper(context,LOGTAG);
+    mJsonDumperWifi= new JsonDumper(context,"raw.wifi");
   }
 
   public void start() {
@@ -64,6 +64,8 @@ public class WifiScanner extends BroadcastReceiver {
         return;
     }
     mStarted = true;
+  
+    mJsonDumperWifi.open();
 
     WifiManager wm = getWifiManager();
     mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_SCAN_ONLY, LOGTAG);
@@ -73,9 +75,7 @@ public class WifiScanner extends BroadcastReceiver {
     mContext.registerReceiver(this, i);
 
     // Ensure that we are constantly scanning for new access points.
-    setMode(MODE_TRAIN_WIFI_SCANNING);
-    
-    JsonDumperScanREsults.open();
+    setMode(MODE_TRAIN_WIFI_SCANNING);    
   }
 
   public void stop() {
@@ -91,7 +91,7 @@ public class WifiScanner extends BroadcastReceiver {
 
     mContext.unregisterReceiver(this);
     
-    JsonDumperScanREsults.close();
+    mJsonDumperWifi.close();
 
     mStarted = false;
   }
@@ -102,7 +102,7 @@ public void onReceive(Context c, Intent intent) {
 
     Collection<ScanResult> scanResults = getWifiManager().getScanResults();
     
-   JsonDumperScanREsults.dump(scanResults);//Note that all scan results are logged to file, whether rail indicators or not.
+   mJsonDumperWifi.dump(scanResults);//Note that all scan results are logged to file, whether rail indicators or not.
     
     boolean isTrainIndication = false;
     JSONArray wifiInfo = new JSONArray();

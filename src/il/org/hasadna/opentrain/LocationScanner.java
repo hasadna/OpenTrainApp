@@ -38,7 +38,7 @@ public class LocationScanner {
 
     LocationScanner(Context context) {
         init(context);
-        mLogJsonLocation= new JsonDumper(context, LOGTAG);
+        mLogJsonLocation= new JsonDumper(context, "raw.location");
         
     }
 
@@ -61,8 +61,8 @@ public class LocationScanner {
     }
 
     public void start() {
-        mLocationClient.connect();
         mLogJsonLocation.open();
+        mLocationClient.connect();
     }
 
     public void stop() {
@@ -71,7 +71,6 @@ public class LocationScanner {
         }
         mLocationClient.disconnect();
         mLogJsonLocation.close();
-
     }
 
     private GooglePlayServicesClient.ConnectionCallbacks connectionCallbacks = new GooglePlayServicesClient.ConnectionCallbacks() {

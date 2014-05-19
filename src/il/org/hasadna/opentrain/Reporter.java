@@ -248,7 +248,7 @@ class Reporter extends BroadcastReceiver {
 	        }
 	        USER_AGENT_STRING = NetworkUtils.getUserAgentString(mContext);
 	        
-	        mJsonDumper=new JsonDumper(Reporter.this.mContext, LOGTAG);
+	        mJsonDumper=new JsonDumper(Reporter.this.mContext, "out.reports");
     		mJsonDumper.open();
     
 			

@@ -2,8 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
         android:id="@+id/settings"
-        android:title="@string/settings"/>
-    <item
+        android:title="@string/settings_menu_item"/> 
+	<item
+        android:id="@+id/share_dump_files"
+        android:title="@string/share_dump_files_menu_item"/>
+	<item
         android:id="@+id/privacy_policy"
         android:title="@string/privacy_policy_menu_item"/>
+
 </menu>

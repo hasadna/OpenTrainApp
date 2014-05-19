@@ -48,6 +48,17 @@
     <string name="privacy_policy_menu_item">מדיניות פרטיות</string>
     <string name="privacy_policy_title">מדיניות פרטיות</string>
     <string name="pref_user_name">שם משתמש</string>
-    <string name="settings">הגדרות</string>
+    <string name="settings_menu_item">הגדרות</string>
+	<string name="share_dump_files_menu_item">שלח קבצי ריצה</string>
+	<string name="share_dump_files_activity_label">שליחת קבצי ריצה</string>
+	<string name="dump_files_path">מיקום קבצי ריצה:</string>
+	<string name="share_dump_files_button">שלח</string>
+	<string name="share_files_empty_folder_checkbox">רוקן תיקיה בגמר שליחה</string>
+	<string name="share_recent_n_files">שלח את 20 הקבצים החדשים ביותר</string>
+	
+		
+	
+	
+    
 
 </resources>

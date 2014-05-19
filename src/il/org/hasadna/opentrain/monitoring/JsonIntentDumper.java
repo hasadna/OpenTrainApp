@@ -24,7 +24,7 @@ public class JsonIntentDumper extends BroadcastReceiver{
 	private JsonDumper mJsonDumper= null;;
 	
 	public JsonIntentDumper(Context context) {
-		mJsonDumper= new JsonDumper(context, LOGTAG);
+		mJsonDumper= new JsonDumper(context,"inner.intent");
 		context.registerReceiver(this,new IntentFilter(ScannerService.MESSAGE_TOPIC));
 
 	}
@@ -66,6 +66,9 @@ public class JsonIntentDumper extends BroadcastReceiver{
 	
 	public void close(){
 		mJsonDumper.close();
+	}
+	public void flush(){
+		mJsonDumper.flush();
 	}
 
 }

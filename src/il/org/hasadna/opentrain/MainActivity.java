@@ -341,8 +341,12 @@ public final class MainActivity extends FragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.privacy_policy:
-                Intent i = new Intent(this, PrivacyPolicyActivity.class);
-                startActivity(i);
+                Intent privacyIntent = new Intent(this, PrivacyPolicyActivity.class);
+                startActivity(privacyIntent);
+                return true;
+            case R.id.share_dump_files:
+                Intent shareIntent = new Intent(this, ShareDumpFilesActivity.class);
+                startActivity(shareIntent);
                 return true;
             case R.id.settings:
                 Intent settings;

@@ -36,7 +36,6 @@
         android:glEsVersion="0x00020000"
         android:required="true" />
     
-<!-- EYALLIEBERMANN LOCAL ONLY android:debuggable="true"  -->
     <application
         android:name="il.org.hasadna.opentrain.application.MainApplication"
         android:allowBackup="true"
@@ -61,7 +60,7 @@
 
         <activity
             android:name=".PrivacyPolicyActivity"
-            android:label="@string/privacy_policy_title"
+            android:label="@string/privacy_policy_activity_label"
             android:theme="@android:style/Theme.Dialog"></activity>
 
         <activity
@@ -71,6 +70,10 @@
         <activity
             android:name="il.org.hasadna.opentrain.activity.SettingsActivityOlder"
             android:label="@string/settings"></activity>
+        
+	 <activity
+            android:name=".ShareDumpFilesActivity"
+            android:label="@string/share_dump_files_activity_label"></activity>
 
         <service
             android:name=".ScannerService"

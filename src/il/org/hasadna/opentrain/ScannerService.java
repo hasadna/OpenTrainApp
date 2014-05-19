@@ -43,8 +43,6 @@ public final class ScannerService extends Service {
     private BroadcastReceiver mPrefsChangedByUserReceiver;
 	private JsonIntentDumper mJsonIntentDumper;
 
-    
-    
 	
 	private final ScannerServiceInterface.Stub mBinder = new ScannerServiceInterface.Stub() {
 		@Override
@@ -151,6 +149,7 @@ public final class ScannerService extends Service {
         registerReceiver(mPrefsChangedByUserReceiver,new IntentFilter(ACTION_PREFS_UPDATED_BY_USER));
         
         mJsonIntentDumper= new JsonIntentDumper(getApplicationContext());
+		mJsonIntentDumper.open();
         
 		mReporter = new Reporter(this);
 		mScanner = new Scanner(this);
@@ -187,6 +186,9 @@ public final class ScannerService extends Service {
 		mReporter.shutdown();
 		mReporter = null;
 
+		mJsonIntentDumper.close();
+		mJsonIntentDumper = null;
+
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		nm.cancel(NOTIFICATION_ID);
 	}
@@ -219,9 +221,7 @@ public final class ScannerService extends Service {
 					postNotification(title, text,
 							Notification.FLAG_NO_CLEAR
 									| Notification.FLAG_ONGOING_EVENT);
-
-					mJsonIntentDumper.open();
-					
+				
 					mScanner.startScanning();
 					mReporter.triggerUpload(); 
 
@@ -265,7 +265,7 @@ public final class ScannerService extends Service {
 
 				mReporter.triggerUpload();
 				
-				mJsonIntentDumper.close();
+				mJsonIntentDumper.flush();
 
 			}
 		});
