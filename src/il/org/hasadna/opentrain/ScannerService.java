@@ -18,6 +18,7 @@ import android.util.Log;
 
 import java.util.Calendar;
 
+import il.org.hasadna.opentrain.activity.MainActivity;
 import il.org.hasadna.opentrain.monitoring.JsonIntentDumper;
 import il.org.hasadna.opentrain.preferences.Prefs;
 

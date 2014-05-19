@@ -1,4 +1,4 @@
-package il.org.hasadna.opentrain;
+package il.org.hasadna.opentrain.activity;
 
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
@@ -23,9 +23,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import il.org.hasadna.opentrain.activity.SettingsActivity;
-import il.org.hasadna.opentrain.activity.SettingsActivityOlder;
+import il.org.hasadna.opentrain.DateTimeUtils;
+import il.org.hasadna.opentrain.R;
+import il.org.hasadna.opentrain.Reporter;
+import il.org.hasadna.opentrain.ScannerService;
+import il.org.hasadna.opentrain.ScannerServiceInterface;
+import il.org.hasadna.opentrain.ShareDumpFilesActivity;
+import il.org.hasadna.opentrain.R.drawable;
+import il.org.hasadna.opentrain.R.id;
+import il.org.hasadna.opentrain.R.layout;
+import il.org.hasadna.opentrain.R.menu;
+import il.org.hasadna.opentrain.R.string;
+import il.org.hasadna.opentrain.ScannerServiceInterface.Stub;
 import il.org.hasadna.opentrain.preferences.PrefsUpdater;
 
 public final class MainActivity extends FragmentActivity {

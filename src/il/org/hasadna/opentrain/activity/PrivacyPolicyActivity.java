@@ -1,4 +1,9 @@
-package il.org.hasadna.opentrain;
+package il.org.hasadna.opentrain.activity;
+
+import il.org.hasadna.opentrain.R;
+import il.org.hasadna.opentrain.R.id;
+import il.org.hasadna.opentrain.R.layout;
+import il.org.hasadna.opentrain.R.raw;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

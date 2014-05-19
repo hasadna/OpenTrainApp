@@ -28,7 +28,7 @@ import java.util.Collection;
 import il.org.hasadna.opentrain.monitoring.JsonDumper;
 import il.org.hasadna.opentrain.preferences.Prefs;
 
-class Reporter extends BroadcastReceiver {
+public class Reporter extends BroadcastReceiver {
     private static final String LOGTAG = Reporter.class.getName();
 
     private final Context mContext;
