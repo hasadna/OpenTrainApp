@@ -59,4 +59,7 @@
 	<string name="dump_email_first_line">Thank you for sending us these dump files.</string>
 	<string name="dump_email_last_line">Simply send this mail. You can also describe any issue you have encountered below.</string>
 	<string name="dump_email_subject">OpenTrainApp user dump.</string>	    
+	<string name="no_activity_found_to_view_file">Error. No application found that can display this file. Please install a text viewer.</string>	    
+	
+	
 </resources>
