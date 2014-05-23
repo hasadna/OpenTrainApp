@@ -94,7 +94,7 @@ public class Reporter extends BroadcastReceiver {
 		}
 
 		String wifiData = "";
-		Collection<ScanResult> wifiScanResults=null;
+		//Collection<ScanResult> wifiScanResults=null;////EyalLiebermann TODO: Remove usage of string and rely on Parcelable ArrayList after dumps prove its reliable 
 
 		if (subject.equals(WifiScanner.WIFI_SCANNER_EXTRA_SUBJECT)) {
 			wifiData = data;//EyalLiebermann TODO: Remove usage of string and rely on Parcelable ArrayList after dumps prove its reliable 
@@ -248,8 +248,8 @@ public class Reporter extends BroadcastReceiver {
 			}
 			USER_AGENT_STRING = NetworkUtils.getUserAgentString(mContext);
 
-			mJsonDumper=new JsonDumper(Reporter.this.mContext, "out.reports");
-			mJsonDumper.open();
+//			mJsonDumper=new JsonDumper(Reporter.this.mContext, "out.reports");
+//			mJsonDumper.open();
 
 
 			start();
@@ -287,7 +287,7 @@ public class Reporter extends BroadcastReceiver {
 				public void run() {
 					broadcastStats();
 					Reporter.this.mPrefs.setReports(mReportArray.toString());
-					mJsonDumper.close();
+			//		mJsonDumper.close();
 					quit();//Messages pending in looper queue dropped. Consider ROI for fixing this. 
 				}
 			});
@@ -364,7 +364,7 @@ public class Reporter extends BroadcastReceiver {
 
 					r.close();
 
-					mJsonDumper.dump("sentReports",mReportArray);
+			//		mJsonDumper.dump("sentReports",mReportArray);
 
 
 					mReportArray =new JSONArray();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="il.org.hasadna.opentrain"
-    android:versionCode="69"
+    android:versionCode="74"
     android:versionName="0.7.6">
 
     <uses-sdk
