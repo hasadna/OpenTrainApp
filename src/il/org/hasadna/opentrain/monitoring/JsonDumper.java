@@ -78,19 +78,7 @@ public class JsonDumper {
 					mIsInitialized=false;
 				}
 			}
-		}
-		
-		public void flush() {
-			if(mIsInitialized){
-				try {
-					mFileWriter.flush();
-				} catch (IOException e) {
-					Log.e(LOGTAG_PER_DUMPER, "flush:", e);
-					e.printStackTrace();
-				}		
-			}			
-		}
-		
+		}		
 		
 		public static File getLogsDir(Context context){
 			if(isExternalStorageMounted()){
@@ -128,7 +116,7 @@ public class JsonDumper {
 						Log.e(LOGTAG_PER_DUMPER, "", jsonex);
 					}
 				 }
-				dump("hotspots",hotspots);				
+				dump("hotspots",hotspots);		
 			}		
 		}
 		

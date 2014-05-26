@@ -15,6 +15,7 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -185,7 +186,7 @@ public final class ScannerService extends Service {
 	
 	private void startScanning(){
 		Log.d(LOGTAG, "startScanning:");
-
+		
 		if (mScanner.isScanning()) {
 			if(mReporter!=null){
 				Log.i(LOGTAG, "startScanning: triggerUpload");
@@ -252,11 +253,7 @@ public final class ScannerService extends Service {
 				stopForeground(true);
 
 				mScanner.stopScanning();
-
 				mReporter.triggerUpload();
-				
-				mJsonIntentDumper.flush();
-
 			}
 		});
 	}

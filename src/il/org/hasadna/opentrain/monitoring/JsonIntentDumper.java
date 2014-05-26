@@ -67,8 +67,5 @@ public class JsonIntentDumper extends BroadcastReceiver{
 	public void close(){
 		mJsonDumper.close();
 	}
-	public void flush(){
-		mJsonDumper.flush();
-	}
 
 }
