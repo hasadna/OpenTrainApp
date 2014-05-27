@@ -28,31 +28,25 @@ import android.widget.Toast;
 public class ReportUploader extends HandlerThread {
 	private static final String LOGTAG = ReportUploader.class.getName();
 
-	Handler mHandler;
+	
+	private static final String LOCATION_URL = "http://opentrain.hasadna.org.il/reports/add/";
+	private static final String USER_AGENT_HEADER = "User-Agent";
+	private static final String DEVICE_ID_HEADER = "device_id";
+	private static final String TIMESTAMP_HEADER = "timestamp";
+	
+	private static final long DELAY_RETRY_UPLOAD_ON_FAILURE = 30 * 1000;// 30 seconds
+	private static final long DELAY_PERIODIC_UPLOAD = 5 * 60 * 1000;// 30 seconds
+	
+	private String USER_AGENT_STRING;
+
+	private Handler mHandler;
 
 	private JSONArray mReportArray;
 
 	private URL mURL;
 	// TODO make static once class is not more an innner class;
-	private final String LOCATION_URL = "http://192.241.154.128/reports/add/";// "http://54.221.246.54/reports/add/";//"https://location.services.mozilla.com/v1/submit";
-																				// //TODO:
-																				// hasadna
-																				// this
-																				// should
-																				// contain
-																				// our
-																				// own
-																				// url
-	private final String USER_AGENT_HEADER = "User-Agent";
-	private final String DEVICE_ID_HEADER = "device_id";
-	private final String TIMESTAMP_HEADER = "timestamp";
-	private String USER_AGENT_STRING;
-
 	private long mReportsSent = 0;
 	public long mLastUploadTime = 0;
-
-	private final long DELAY_RETRY_UPLOAD_ON_FAILURE = 30 * 1000;// 30 seconds
-	private final long DELAY_PERIODIC_UPLOAD = 5 * 60 * 1000;// 30 seconds
 
 	private JsonDumper mJsonDumper;
 
@@ -153,12 +147,6 @@ public class ReportUploader extends HandlerThread {
 		}
 	}
 
-	class TestException extends Exception {
-		public TestException() {
-			super();
-		}
-	};
-
 	private void upload() {
 		Log("Upload:");
 		if (0 == mReportArray.length()) {
@@ -190,12 +178,7 @@ public class ReportUploader extends HandlerThread {
 
 				urlConnection.setRequestProperty(TIMESTAMP_HEADER, timestamp);
 
-				String analyticsLogString = "timestamp=" + timestamp
-						+ ", device_id= " + deviceId + ", totalReportsSent="
-						+ mReportsSent + ", mReportArray.length="
-						+ mReportArray.length();
-				((MainApplication) mContext.getApplicationContext())
-						.trackEvent("upload", analyticsLogString);
+				
 
 				JSONObject wrapper = new JSONObject();
 				wrapper.put("items", mReportArray);
@@ -207,7 +190,23 @@ public class ReportUploader extends HandlerThread {
 				out.write(bytes);
 				out.flush();
 
-				mJsonDumper.dump("sentReports", mReportArray);
+				try{
+					mJsonDumper.dump("sentReports", mReportArray);
+					String analyticsLogString = "timestamp=" + timestamp
+						+ ", device_id= " + deviceId + ", totalReportsSent="
+						+ mReportsSent + ", mReportArray.length="
+						+ mReportArray.length();
+					((MainApplication) mContext.getApplicationContext())
+						.trackEvent("upload", analyticsLogString);
+				}catch(Exception e)
+				{
+					Log.w(LOGTAG,"upload: Excepton caught. ",e);
+					Toast.makeText(
+							mContext,
+							"Logging Error on upload method. Exception type="
+									+ e.getClass().getName(), Toast.LENGTH_LONG)
+							.show();
+				}
 
 				Log("Upload: uploaded wrapperData: " + wrapperData + " to "
 						+ mURL.toString());
