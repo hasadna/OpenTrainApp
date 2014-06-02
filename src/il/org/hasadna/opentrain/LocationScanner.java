@@ -1,6 +1,5 @@
 package il.org.hasadna.opentrain;
 
-import il.org.hasadna.opentrain.monitoring.JsonDumper;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -14,12 +13,13 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
 import il.org.hasadna.opentrain.application.MainApplication;
+import il.org.hasadna.opentrain.monitoring.JsonDumper;
 import il.org.hasadna.opentrain.preferences.Prefs;
 
 /**
  * Created by Noam.m on 3/6/14.
  */
-public class LocationScanner {
+public class LocationScanner implements Scanner.IScanner{
 
     private static final String LOGTAG = LocationScanner.class.getName();
 

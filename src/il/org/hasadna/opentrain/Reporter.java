@@ -5,27 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
-import android.net.wifi.ScanResult;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collection;
-
-import il.org.hasadna.opentrain.monitoring.JsonDumper;
 import il.org.hasadna.opentrain.preferences.Prefs;
 
 public class Reporter extends BroadcastReceiver {
@@ -41,7 +26,7 @@ public class Reporter extends BroadcastReceiver {
 	private ReportUploader mReporterThread;
 
 
-	Reporter(Context context) {
+	public Reporter(Context context) {
 
 		mContext = context;
 		mPrefs = Prefs.getInstance(context);
@@ -56,7 +41,7 @@ public class Reporter extends BroadcastReceiver {
 		}
 	}
 
-	void shutdown() {
+	public void shutdown() {
 		Log("shutdown");
 		mReporterThread.shutdown();
 		mContext.unregisterReceiver(this);

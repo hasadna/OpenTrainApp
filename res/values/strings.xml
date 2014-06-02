@@ -48,7 +48,6 @@
 	<string name="privacy_policy_menu_item">Privacy policy</string>
     <string name="privacy_policy_activity_label">Privacy policy</string>
 
-    <string name="pref_user_name">User Name</string>
 	<string name="settings_menu_item">Settings</string>
         
     <string name="share_dump_files_menu_item">Share dump files</string>

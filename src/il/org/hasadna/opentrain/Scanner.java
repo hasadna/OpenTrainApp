@@ -10,18 +10,30 @@ public class Scanner {
     private final Context mContext;
     private boolean mIsScanning;
 
-    private WifiScanner mWifiScanner;
-    private LocationScanner mLocationScanner;
+    private IScanner mWifiScanner;
+    private IScanner mLocationScanner;
 
-    Scanner(Context context) {
+    public interface IScanner{
+        public void start();
+        public void stop();
+    }
+
+    public Scanner(Context context) {
         mContext = context;
 
         mWifiScanner = new WifiScanner(context);
         mLocationScanner=new LocationScanner(context);
-        mWifiScanner.setLocationScanner(mLocationScanner);
+        ((WifiScanner)mWifiScanner).setLocationScanner(mLocationScanner);
     }
 
-    void startScanning() {
+    public Scanner(Context context,IScanner wifiScanner, IScanner locationScanner) {
+        //constructor with custom scanners.for testing.
+        mContext = context;
+        mWifiScanner =wifiScanner;
+        mLocationScanner=locationScanner;
+    }
+
+    public void startScanning() {
         if (mIsScanning) {
             return;
         }
@@ -42,7 +54,7 @@ public class Scanner {
         mWifiScanner.start();
     }
 
-    void stopScanning() {
+    public void stopScanning() {
         if (!mIsScanning) {
             return;
         }

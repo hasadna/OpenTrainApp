@@ -1,34 +1,29 @@
 package il.org.hasadna.opentrain;
 
-import android.util.Log;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
-import android.net.wifi.WifiManager.WifiLock;
-import android.os.Environment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.WifiLock;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import il.org.hasadna.opentrain.monitoring.JsonDumper;
-import il.org.hasadna.opentrain.preferences.Prefs;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class WifiScanner extends BroadcastReceiver {
+import il.org.hasadna.opentrain.monitoring.JsonDumper;
+import il.org.hasadna.opentrain.preferences.Prefs;
+
+public class WifiScanner extends BroadcastReceiver implements Scanner.IScanner {
   private static final String LOGTAG              = WifiScanner.class.getName();
   
   public static final String WIFI_SCANNER_EXTRA_SUBJECT = "WifiScanner";
@@ -39,7 +34,7 @@ public class WifiScanner extends BroadcastReceiver {
   private static final int MODE_TRAIN_WIFI_FOUND = 2;
   private int mode = MODE_TRAIN_WIFI_SCANNING;
   
-  private LocationScanner locationScanner;
+  private Scanner.IScanner locationScanner;
   
   private boolean                mStarted;
   private final Context          mContext;
@@ -52,7 +47,7 @@ public class WifiScanner extends BroadcastReceiver {
 
   private Prefs mPrefs;
   
-  WifiScanner(Context context) {
+  public WifiScanner(Context context) {
     mContext = context;
     mPrefs = Prefs.getInstance(context);
     mStarted = false;
@@ -224,8 +219,8 @@ public void onReceive(Context c, Intent intent) {
 		}
 	}
 
-	public void setLocationScanner(LocationScanner locationScanner) {
+	public void setLocationScanner(Scanner.IScanner locationScanner) {
 		this.locationScanner=locationScanner;
 	}
-	
+
 }
