@@ -300,6 +300,10 @@ public final class MainActivity extends FragmentActivity {
                 }
                 startActivity(settings);
                 return true;
+            case R.id.about:
+//            	Intent aboutIntent = new Intent(this,AboutActivity.class);
+//               	startActivity(aboutIntent);
+            	return true;
             default:
                 return false;
         }
