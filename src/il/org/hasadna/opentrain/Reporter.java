@@ -112,7 +112,11 @@ public class Reporter extends BroadcastReceiver {
 
 		try {
 			reportBuilder = new JSONObject();
-
+			long timestamp = System.currentTimeMillis();
+			reportBuilder.put("timestamp", timestamp);
+			reportBuilder.put("date",
+					DateTimeUtils.formatTimeForLocale(timestamp));
+			
 			reportBuilder.put("time", time);
 			if (location != null) {
 				JSONObject locAPIInfo = new JSONObject();

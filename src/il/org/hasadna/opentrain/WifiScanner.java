@@ -118,6 +118,7 @@ public void onReceive(Context c, Intent intent) {
     		  obj.put("key", scanResult.BSSID);
     		  obj.put("frequency", scanResult.frequency);
     		  obj.put("signal", scanResult.level);    		  
+    		  obj.put("timestamp", scanResult.timestamp);    	
     		  wifiInfo.put(obj);
     	  } catch (JSONException jsonex) {
     		  Log.e(LOGTAG, "", jsonex);
