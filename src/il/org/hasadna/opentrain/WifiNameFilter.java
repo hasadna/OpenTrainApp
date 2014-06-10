@@ -54,6 +54,7 @@ final class WifiNameFilter {
         // Transportation Wi-Fi
         "ISRAEL-RAILWAYS",
         "S-ISRAEL-RAILWAYS",
+        "keydars",
         "Galina",//EyalLiebermann debug network
         "CampusGuest" //TODO: Remove before launch!
     };
