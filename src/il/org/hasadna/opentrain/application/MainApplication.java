@@ -8,7 +8,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import il.org.hasadna.opentrain.R;
-import il.org.hasadna.opentrain.Scanner;
+import il.org.hasadna.opentrain.service.Scanner;
 
 /**
  * Created by Noam.m on 4/30/2014.

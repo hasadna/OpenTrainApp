@@ -29,9 +29,9 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="il.org.hasadna.opentrain.permission.MAPS_RECEIVE" />
 
-    <!--
+
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
-    -->
+
 
     <permission
         android:name="il.org.hasadna.opentrain.permission.MAPS_RECEIVE"
@@ -43,13 +43,13 @@
     <application
         android:name="il.org.hasadna.opentrain.application.MainApplication"
         android:allowBackup="true"
-        android:debuggable="false"
+        android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="il.org.hasadna.opentrain.activity.MainActivity"
+            android:name="il.org.hasadna.opentrain.client.activity.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -59,31 +59,36 @@
         </activity>
 
         <activity
-            android:name="il.org.hasadna.opentrain.activity.PrivacyPolicyActivity"
+            android:name=".client.activity.PrivacyPolicyActivity"
             android:label="@string/privacy_policy_activity_label"
             android:theme="@android:style/Theme.Dialog"></activity>
 
         <activity
-            android:name="il.org.hasadna.opentrain.activity.SettingsActivity"
-            android:label="@string/settings"
-            android:theme="@android:style/Theme.Dialog"></activity>
-
-        <activity
-            android:name="il.org.hasadna.opentrain.activity.SettingsActivityOlder"
+            android:name=".client.activity.SettingsActivity"
             android:label="@string/settings"></activity>
 
         <activity
-            android:name="il.org.hasadna.opentrain.activity.ShareDumpFilesActivity"
+            android:name=".client.activity.SettingsActivityOlder"
+            android:label="@string/settings"></activity>
+
+        <activity
+            android:name=".client.activity.ShareDumpFilesActivity"
             android:label="@string/share_dump_files_activity_label"
             android:theme="@android:style/Theme.Dialog"></activity>
 
-        <service
-            android:name=".ScannerService"
-            android:icon="@drawable/ic_launcher"
-            android:label="@string/service_name"
-            android:process=":.ScannerService"></service>
+        <receiver android:name="il.org.hasadna.opentrain.client.TurnOffReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BATTERY_LOW" />
+                <action android:name="il.org.hasadna.opentrain.turnMeOff" />
+            </intent-filter>
+        </receiver>
 
-        <service android:name="il.org.hasadna.opentrain.preferences.PrefsUpdaterService"></service>
+        <service
+            android:name="il.org.hasadna.opentrain.service.ScannerService"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/service_name"></service>
+
+        <service android:name=".application.preferences.PrefsUpdaterService"></service>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

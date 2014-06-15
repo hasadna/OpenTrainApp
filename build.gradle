@@ -1,10 +1,9 @@
-
 buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.+'
+        classpath 'com.android.tools.build:gradle:0.11.+'
     }
 }
 
@@ -12,12 +11,13 @@ apply plugin: 'android'
 apply plugin: 'eclipse'
 
 dependencies {
-  compile 'com.google.android.gms:play-services:3.2.25'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.google.android.gms:play-services:4.4.52'
 }
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '19'
+    buildToolsVersion '19.1.0'
 
     sourceSets {
         main {
@@ -32,16 +32,17 @@ android {
     }
 
     signingConfigs {
-      release
+        release
     }
 
     buildTypes {
+
         debug {
-            jniDebugBuild true
+            debuggable true
         }
 
         release {
-            debuggable true
+            debuggable false
             runProguard true
             proguardFile 'proguard.cfg'
             signingConfig signingConfigs.release
@@ -49,32 +50,6 @@ android {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.8'
-}
 
-tasks.withType(JavaCompile) {
-    options.compilerArgs = ['-Xlint:all', '-Werror', '-Xlint:-deprecation']
-}
 
-if (hasProperty('StoreFile')) {
-    android.signingConfigs.release.storeFile = file(StoreFile)
-    android.signingConfigs.release.storePassword = StorePassword
-    android.signingConfigs.release.keyAlias = KeyAlias
-    android.signingConfigs.release.keyPassword = KeyPassword
-} else {
-    android.buildTypes.release.signingConfig = null
-}
-
-// Generate AndroidManifest.xml
-String googleAPIKey = hasProperty('GoogleAPIKey') ? GoogleAPIKey : (hasProperty('APIKey') ? APIKey : "FAKE_GOOGLE_API_KEY");
-String hasadnaAPIKey = hasProperty('MozAPIKey') ? MozAPIKey : "FAKE_HASADNA_API_KEY";
-
-File manifest = file("./AndroidManifest.xml.in")
-String content = manifest.getText('UTF-8')
-content = content.replaceAll(/MY_GOOGLE_API_KEY/, googleAPIKey)
-content = content.replaceAll(/MY_HASADNA_API_KEY/, hasadnaAPIKey)
-
-manifest = file("./AndroidManifest.xml")
-manifest.write(content, 'UTF-8')
 
