@@ -4,34 +4,34 @@ import android.net.wifi.ScanResult;
 
 final class WifiNameFilter {
     private static final String[] PREFIX_LIST = {
-        // Mobile devices
-        "AndroidAP",
-        "AndroidHotspot",
-        "Android Hotspot",
-        "barnacle", // Android tether app
-        "Galaxy Note",
-        "Galaxy S",
-        "Galaxy Tab",
-        "HTC ",
-        "iPhone",
-        "LG-MS770",
-        "LG-MS870",
-        "LG VS910 4G",
-        "LG Vortex",
-        "MIFI",
-        "MiFi",
-        "myLGNet",
-        "myTouch 4G Hotspot",
-        "NOKIA Lumia",
-        "PhoneAP",
-        "SCH-I",
-        "Sprint MiFi",
-        "Verizon ",
-        "Verizon-",
-        "VirginMobile MiFi",
-        "VodafoneMobileWiFi-",
-        "FirefoxHotspot",
-        // Transportation Wi-Fi
+            // Mobile devices
+            "AndroidAP",
+            "AndroidHotspot",
+            "Android Hotspot",
+            "barnacle", // Android tether app
+            "Galaxy Note",
+            "Galaxy S",
+            "Galaxy Tab",
+            "HTC ",
+            "iPhone",
+            "LG-MS770",
+            "LG-MS870",
+            "LG VS910 4G",
+            "LG Vortex",
+            "MIFI",
+            "MiFi",
+            "myLGNet",
+            "myTouch 4G Hotspot",
+            "NOKIA Lumia",
+            "PhoneAP",
+            "SCH-I",
+            "Sprint MiFi",
+            "Verizon ",
+            "Verizon-",
+            "VirginMobile MiFi",
+            "VodafoneMobileWiFi-",
+            "FirefoxHotspot",
+            // Transportation Wi-Fi
         /*"ac_transit_wifi_bus",
         "AmtrakConnect",
         "Amtrak_",
@@ -51,31 +51,32 @@ final class WifiNameFilter {
     };
 
     private static final String[] TRAIN_INDICATORS = {
-        // Transportation Wi-Fi
-        "ISRAEL-RAILWAYS",
-        "S-ISRAEL-RAILWAYS",
-        "Galina",//EyalLiebermann debug network
-        "CampusGuest" //TODO: Remove before launch!
+            // Transportation Wi-Fi
+            "ISRAEL-RAILWAYS",
+            "S-ISRAEL-RAILWAYS",
+            "Galina",//EyalLiebermann debug network
+            "keydars",
+            "CampusGuest" //TODO: Remove before launch!
     };
 
     private static final String[] SUFFIX_LIST = {
-        // Mobile devices
-        "iPhone",
-        "iphone",
-        "MIFI",
-        "MIFI",
-        "MiFi",
-        "Mifi",
-        "mifi",
-        "mi-fi",
-        "MyWi",
-        "Phone",
-        "Portable Hotspot",
-        "Tether",
-        "tether",
+            // Mobile devices
+            "iPhone",
+            "iphone",
+            "MIFI",
+            "MIFI",
+            "MiFi",
+            "Mifi",
+            "mifi",
+            "mi-fi",
+            "MyWi",
+            "Phone",
+            "Portable Hotspot",
+            "Tether",
+            "tether",
 
-        // Google's SSID opt-out
-        "_nomap",
+            // Google's SSID opt-out
+            "_nomap",
     };
 
     private WifiNameFilter() {
@@ -101,9 +102,9 @@ final class WifiNameFilter {
 
         return false; // OK
     }
-    
+
     static boolean trainIndicatorsContain(ScanResult scanResult) {
-    	//android.os.Debug.waitForDebugger();
+        //android.os.Debug.waitForDebugger();
         String SSID = scanResult.SSID;
         if (SSID == null) {
             return false; // no SSID?
