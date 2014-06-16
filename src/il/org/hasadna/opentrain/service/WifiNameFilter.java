@@ -56,7 +56,6 @@ final class WifiNameFilter {
             "S-ISRAEL-RAILWAYS",
             "Galina",//EyalLiebermann debug network
             "keydars",
-            "CampusGuest" //TODO: Remove before launch!
     };
 
     private static final String[] SUFFIX_LIST = {
