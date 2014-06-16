@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="il.org.hasadna.opentrain"
-    android:versionCode="102"
+    android:versionCode="103"
     android:versionName="0.7.6">
 
     <uses-sdk
@@ -29,10 +29,6 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="il.org.hasadna.opentrain.permission.MAPS_RECEIVE" />
 
-
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
-
-
     <permission
         android:name="il.org.hasadna.opentrain.permission.MAPS_RECEIVE"
         android:protectionLevel="signature"></permission>
@@ -43,7 +39,7 @@
     <application
         android:name="il.org.hasadna.opentrain.application.MainApplication"
         android:allowBackup="true"
-        android:debuggable="true"
+        android:debuggable="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
