@@ -71,7 +71,6 @@ public class LocationScanner {
     };
 
     public void onConnected() {
-        reportLastLocation();
         mLocationClient.requestLocationUpdates(mLocationRequest, locationListener);
     }
 
@@ -91,15 +90,6 @@ public class LocationScanner {
             trackLocation(location);
         }
     };
-
-    private void reportLastLocation() {
-        if (mLocationClient != null && mLocationClient.isConnected()) {
-            Location lastKnownLocation = mLocationClient.getLastLocation();
-            if (lastKnownLocation != null) {
-                reportNewLocationReceived(lastKnownLocation);
-            }
-        }
-    }
 
     protected void reportNewLocationReceived(Location location) {
         Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
@@ -121,7 +111,7 @@ public class LocationScanner {
             float distance = mLastLocation.distanceTo(location);
             long interval = System.currentTimeMillis() - mLastLocationTime;
             if (distance > 2000 && interval < 5000) {
-                String reportString = "GPS error indication : " + mLastLocation.getLatitude() + "," + mLastLocation.getLongitude() + " and " + location.getLatitude() + "," + location.getLongitude();
+                String reportString = "Location scanner Erorr: distance of " + distance + " within " + interval;
                 ((MainApplication) mContext.getApplicationContext()).trackEvent("location", reportString);
             }
             mLastLocation = location;
