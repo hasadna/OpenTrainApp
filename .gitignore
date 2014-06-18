@@ -1,14 +1,11 @@
 .DS_Store
 .gradle
 .settings
-libs
 assets
 bin
 gen
 build
 gradle.properties
 *.keystore
-*.swp
-*.md~
-project.properties
-.gitignore~
+local.properties
+.idea
