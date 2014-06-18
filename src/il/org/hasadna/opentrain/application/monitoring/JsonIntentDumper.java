@@ -1,18 +1,16 @@
 package il.org.hasadna.opentrain.application.monitoring;
 
-import java.util.Collection;
-
-import il.org.hasadna.opentrain.service.WifiScanner;
-import il.org.hasadna.opentrain.service.LocationScanner;
-import il.org.hasadna.opentrain.service.ScannerService;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.util.Log;
+
+import java.util.Collection;
+
+import il.org.hasadna.opentrain.service.LocationScanner;
+import il.org.hasadna.opentrain.service.WifiScanner;
 
 public class JsonIntentDumper extends BroadcastReceiver{
 	
@@ -22,7 +20,6 @@ public class JsonIntentDumper extends BroadcastReceiver{
 	
 	public JsonIntentDumper(Context context) {
 		mJsonDumper= new JsonDumper(context,"inner");
-		context.registerReceiver(this,new IntentFilter(ScannerService.MESSAGE_TOPIC));
 
 	}
 	
@@ -31,11 +28,7 @@ public class JsonIntentDumper extends BroadcastReceiver{
 		 Log.d(LOGTAG,"onReceive:");
 		String action = intent.getAction();
 		
-		//Verify intent action is relevant
-		if (!action.equals(ScannerService.MESSAGE_TOPIC)) {
-		    Log.e(LOGTAG, "onReceive: Received an unknown intent. action="+action);
-		    return;
-		}
+
 		String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
 		String data = intent.getStringExtra("data");
 		
@@ -43,11 +36,11 @@ public class JsonIntentDumper extends BroadcastReceiver{
 			Log.d(LOGTAG,"onReceive: subject=" + subject + ", data=" + data);
 		}		
 		
-		if (subject.equals(WifiScanner.WIFI_SCANNER_EXTRA_SUBJECT)) {
+		if (action.equals(WifiScanner.ACTION_WIFIS_SCANNED)) {
 			Collection<ScanResult> railWifiScanResults = intent.getParcelableArrayListExtra(WifiScanner.WIFI_SCANNER_ARG_SCANRESULT);
 			mJsonDumper.dump(railWifiScanResults);
 		    Log.d(LOGTAG,"onReceive: Reporter data: wifi.");
-		}  else if (subject.equals(LocationScanner.LOCATION_SCANNER_EXTRA_SUBJECT)) {
+		}  else if (action.equals(LocationScanner.ACTION_GPS_UPDATED)) {
 			Location location = intent.getParcelableExtra(LocationScanner.LOCATION_SCANNER_ARG_LOCATION);
 		    Log.d(LOGTAG,"onReceive: Reporter data: Location=" + location);
 		    mJsonDumper.dump(location);

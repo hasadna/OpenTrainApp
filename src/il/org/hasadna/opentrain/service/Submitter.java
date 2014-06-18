@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import il.org.hasadna.opentrain.application.preferences.Prefs;
+import il.org.hasadna.opentrain.client.activity.MainActivity;
 
 /**
  * Created by noam on 08/06/2014.
@@ -131,7 +132,7 @@ public class Submitter {
                     r.close();
 
                     mLastUploadTime = System.currentTimeMillis();
-                    broadcastStats();
+                    broadcastReportsStats();
                 } catch (Exception ex) {
                     Log.d("", ex.toString());
                 } finally {
@@ -144,9 +145,8 @@ public class Submitter {
         }).start();
     }
 
-    private void broadcastStats() {
-        Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
-        i.putExtra(Intent.EXTRA_SUBJECT, "Scanner");
+    private void broadcastReportsStats() {
+        Intent i = new Intent(MainActivity.ACTION_UPDATE_UI);
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
     }
 

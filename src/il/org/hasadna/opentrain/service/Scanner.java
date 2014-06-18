@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import il.org.hasadna.opentrain.client.activity.MainActivity;
+
 public class Scanner {
     private static final String LOGTAG = Scanner.class.getName();
 
@@ -37,8 +39,7 @@ public class Scanner {
 
         mIsScanning = true;
 
-        Intent startIntent = new Intent(ScannerService.MESSAGE_TOPIC);
-        startIntent.putExtra(Intent.EXTRA_SUBJECT, "Scanner");
+        Intent startIntent = new Intent(MainActivity.ACTION_UPDATE_UI);
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(startIntent);
     }
 
@@ -54,9 +55,8 @@ public class Scanner {
 
         mIsScanning = false;
 
-        Intent stopIntent = new Intent(ScannerService.MESSAGE_TOPIC);
-        stopIntent.putExtra(Intent.EXTRA_SUBJECT, "Scanner");
-        LocalBroadcastManager.getInstance(mContext).sendBroadcast(stopIntent);
+        Intent startIntent = new Intent(MainActivity.ACTION_UPDATE_UI);
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(startIntent);
     }
 
     boolean isScanning() {

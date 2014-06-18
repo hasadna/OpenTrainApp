@@ -24,12 +24,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import il.org.hasadna.opentrain.service.DateTimeUtils;
 import il.org.hasadna.opentrain.R;
-import il.org.hasadna.opentrain.service.ScannerService;
 import il.org.hasadna.opentrain.R.id;
 import il.org.hasadna.opentrain.R.string;
 import il.org.hasadna.opentrain.application.preferences.PrefsUpdater;
+import il.org.hasadna.opentrain.service.DateTimeUtils;
+import il.org.hasadna.opentrain.service.ScannerService;
 
 public final class MainActivity extends FragmentActivity {
     private static final String LOGTAG = MainActivity.class.getName();
@@ -48,7 +48,6 @@ public final class MainActivity extends FragmentActivity {
         public void register() {
             if (!mReceiverIsRegistered) {
                 IntentFilter intentFilter = new IntentFilter();
-                intentFilter.addAction(ScannerService.MESSAGE_TOPIC);
                 intentFilter.addAction(ACTION_UPDATE_UI);
                 LocalBroadcastManager.getInstance(MainActivity.this).registerReceiver(this,
                         intentFilter);

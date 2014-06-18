@@ -11,7 +11,6 @@ import test.service.MockWifiScanner;
 
 public final class ScannerService extends Service {
 
-    public static final String MESSAGE_TOPIC = "il.org.hasadna.opentrain.serviceMessage";
     private static final String LOGTAG = ScannerService.class.getName();
 
     private Scanner mScanner;

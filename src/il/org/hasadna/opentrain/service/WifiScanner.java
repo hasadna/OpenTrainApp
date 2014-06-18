@@ -23,7 +23,7 @@ import il.org.hasadna.opentrain.application.preferences.Prefs;
 public class WifiScanner extends BroadcastReceiver {
     private static final String LOGTAG = WifiScanner.class.getName();
 
-    public static final String WIFI_SCANNER_EXTRA_SUBJECT = "WifiScanner";
+    public static final String ACTION_WIFIS_SCANNED="WIFIS_SCANNED";
     public static final String WIFI_SCANNER_ARG_SCANRESULT = "il.org.hasadna.opentrain.WifiScanner.ScanResult";
 
     private static final int MODE_TRAIN_WIFI_SCANNING = 1;
@@ -195,8 +195,7 @@ public class WifiScanner extends BroadcastReceiver {
     }
 
     private void reportScanResults(JSONArray wifiInfo, boolean isTrainIndication) {
-        Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
-        i.putExtra(Intent.EXTRA_SUBJECT, WifiScanner.WIFI_SCANNER_EXTRA_SUBJECT);
+        Intent i = new Intent(WifiScanner.ACTION_WIFIS_SCANNED);
         i.putExtra(WifiScanner.WIFI_SCANNER_ARG_SCANRESULT, wifiInfo.toString());
         i.putExtra("time", System.currentTimeMillis());
         i.putExtra("TrainIndication", isTrainIndication);

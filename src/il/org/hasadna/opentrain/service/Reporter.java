@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import il.org.hasadna.opentrain.application.preferences.Prefs;
+import il.org.hasadna.opentrain.client.activity.MainActivity;
 
 public class Reporter extends BroadcastReceiver {
     private static final String LOGTAG = Reporter.class.getName();
@@ -32,8 +33,11 @@ public class Reporter extends BroadcastReceiver {
         mPrefs = Prefs.getInstance(context);
         mLastTrainIndicationTime = 0;
         resetData();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiScanner.ACTION_WIFIS_SCANNED);
+        intentFilter.addAction(LocationScanner.ACTION_GPS_UPDATED);
         LocalBroadcastManager.getInstance(mContext).registerReceiver(this,
-                new IntentFilter(ScannerService.MESSAGE_TOPIC));
+                intentFilter);
     }
 
     private void resetData() {
@@ -54,11 +58,6 @@ public class Reporter extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
 
-        if (!action.equals(ScannerService.MESSAGE_TOPIC)) {
-            Log.e(LOGTAG, "Received an unknown intent");
-            return;
-        }
-
         long time = intent.getLongExtra("time", 0);
         String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
 
@@ -73,10 +72,10 @@ public class Reporter extends BroadcastReceiver {
             return;
         }
 
-        if (WifiScanner.WIFI_SCANNER_EXTRA_SUBJECT.equals(subject)) {
+        if (action.equals(WifiScanner.ACTION_WIFIS_SCANNED)) {
             String wifiInfoString = intent.getStringExtra(WifiScanner.WIFI_SCANNER_ARG_SCANRESULT);
             putWifiResults(wifiInfoString);
-        } else if (LocationScanner.LOCATION_SCANNER_EXTRA_SUBJECT.equals(subject)) {
+        } else if (action.equals(LocationScanner.ACTION_GPS_UPDATED)) {
             mGpsPosition = intent.getParcelableExtra(LocationScanner.LOCATION_SCANNER_ARG_LOCATION);
             return;
         } else {
@@ -140,15 +139,19 @@ public class Reporter extends BroadcastReceiver {
             report.put("time", System.currentTimeMillis());
 
             Submitter.getInstance(mContext).submit(report);
-
+            broadcastReportsPendingStats();
         } catch (Exception e) {
 
         }
     }
 
     private void broadcastTrainIndicationStats() {
-        Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
-        i.putExtra(Intent.EXTRA_SUBJECT, "Scanner");
+        Intent i = new Intent(MainActivity.ACTION_UPDATE_UI);
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
+    }
+
+    private void broadcastReportsPendingStats() {
+        Intent i = new Intent(MainActivity.ACTION_UPDATE_UI);
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
     }
 

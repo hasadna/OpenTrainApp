@@ -23,7 +23,7 @@ public class LocationScanner {
 
     private static final String LOGTAG = LocationScanner.class.getName();
 
-    public static final String LOCATION_SCANNER_EXTRA_SUBJECT = "LocationScanner";
+    public static final String ACTION_GPS_UPDATED ="GPS_UPDATED";
     public static final String LOCATION_SCANNER_ARG_LOCATION = "il.org.hasadna.opentrain.LocationScanner.location";
 
     protected LocationClient mLocationClient;
@@ -92,8 +92,7 @@ public class LocationScanner {
     };
 
     protected void reportNewLocationReceived(Location location) {
-        Intent i = new Intent(ScannerService.MESSAGE_TOPIC);
-        i.putExtra(Intent.EXTRA_SUBJECT, LOCATION_SCANNER_EXTRA_SUBJECT);
+        Intent i = new Intent(LocationScanner.ACTION_GPS_UPDATED);
         i.putExtra(LOCATION_SCANNER_ARG_LOCATION, location);
         i.putExtra("time", System.currentTimeMillis());
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
