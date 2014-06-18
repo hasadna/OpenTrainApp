@@ -6,7 +6,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import il.org.hasadna.opentrain.client.activity.MainActivity;
 import test.service.MockLocationScanner;
 import test.service.MockWifiScanner;
 
@@ -82,10 +81,8 @@ public final class ScannerService extends Service {
         super.onDestroy();
         Log.i(LOGTAG, "onDestroy");
 
-        mScanner.stopScanning();
-        mScanner = null;
-
         mReporter.shutdown();
+        mScanner = null;
         mReporter = null;
     }
 
