@@ -1,4 +1,4 @@
-package test.service;
+package il.org.hasadna.opentrain.tests.service;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -33,13 +33,13 @@ public class TestTrainTrip extends android.test.ActivityInstrumentationTestCase2
     private MainActivity activity;
     private CountDownLatch signal = new CountDownLatch(1);
     private String userName;
-    private static final String userTestName = "test71";
+    private static final String userTestName = "test105";
 
     private BroadcastReceiver mockLocationReciver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(MockLocationScanner.MOCK_LOCATION_SCANNER_EXTRA_SUBJECT)) {
+            if (action.equals(MockLocationScanner.ACTION_MOCK_LOCATION_DONE)) {
                 try {
                     activity.onClick_ToggleScanning(null);
                 } catch (RemoteException e) {
@@ -62,7 +62,7 @@ public class TestTrainTrip extends android.test.ActivityInstrumentationTestCase2
         intent.putExtra("testing", true);
         setActivityIntent(intent);
         activity = getActivity();
-        LocalBroadcastManager.getInstance(activity).registerReceiver(mockLocationReciver, new IntentFilter(MockLocationScanner.MOCK_LOCATION_SCANNER_EXTRA_SUBJECT));
+        LocalBroadcastManager.getInstance(activity).registerReceiver(mockLocationReciver, new IntentFilter(MockLocationScanner.ACTION_MOCK_LOCATION_DONE));
         userName = getUserName();
         setTesterName(userTestName);
     }
@@ -147,7 +147,7 @@ public class TestTrainTrip extends android.test.ActivityInstrumentationTestCase2
 
     private void alert(boolean success) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("Testing").setMessage("test " + (success ? "success!!" : "fail..")).setPositiveButton("Ok", null);
+        builder.setTitle("Testing").setMessage("il.org.hasadna.opentrain.test " + (success ? "success!!" : "fail..")).setPositiveButton("Ok", null);
         AlertDialog dialog = builder.create();
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override

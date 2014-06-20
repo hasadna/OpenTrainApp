@@ -1,4 +1,4 @@
-package test.service;
+package il.org.hasadna.opentrain.tests.service;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +14,7 @@ import il.org.hasadna.opentrain.service.LocationScanner;
 public class MockLocationScanner extends LocationScanner {
 
     public static final String LOCATION_PROVIDER = "fused";
-    public static final String MOCK_LOCATION_SCANNER_EXTRA_SUBJECT = "MockLocationScanner";
+    public static final String ACTION_MOCK_LOCATION_DONE = "MockLocationScanner";
 
     public MockLocationScanner(Context context) {
         super(context);
@@ -59,7 +59,7 @@ public class MockLocationScanner extends LocationScanner {
 
     };
 
-    // An array of longitudes for constructing test data
+    // An array of longitudes for constructing il.org.hasadna.opentrain.test data
     public static final double[] WAYPOINTS_LNG = {
             34.798299,
             34.797977,
@@ -71,7 +71,7 @@ public class MockLocationScanner extends LocationScanner {
             34.790086,
     };
 
-    // An array of accuracy values for constructing test data
+    // An array of accuracy values for constructing il.org.hasadna.opentrain.test data
     public static final float[] WAYPOINTS_ACCURACY = {
             3.0f,
             3.12f,
@@ -84,7 +84,7 @@ public class MockLocationScanner extends LocationScanner {
     };
 
     private void reportDone() {
-        Intent i = new Intent("MockLocationScanner");
+        Intent i = new Intent(ACTION_MOCK_LOCATION_DONE);
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
 }
 }

@@ -1,4 +1,4 @@
-package test.client;
+package il.org.hasadna.opentrain.tests.client;
 
 import android.test.ActivityUnitTestCase;
 import android.test.suitebuilder.annotation.SmallTest;

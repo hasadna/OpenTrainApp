@@ -1,4 +1,4 @@
-package test.service;
+package il.org.hasadna.opentrain.tests.service;
 
 import android.content.Context;
 import android.content.Intent;

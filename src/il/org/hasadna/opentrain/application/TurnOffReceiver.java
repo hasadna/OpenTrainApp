@@ -1,4 +1,4 @@
-package il.org.hasadna.opentrain.client;
+package il.org.hasadna.opentrain.application;
 
 
 import android.content.BroadcastReceiver;

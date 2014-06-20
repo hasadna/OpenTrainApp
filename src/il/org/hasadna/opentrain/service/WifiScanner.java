@@ -18,13 +18,14 @@ import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import il.org.hasadna.opentrain.application.SharedConstants;
 import il.org.hasadna.opentrain.application.preferences.Prefs;
 
 public class WifiScanner extends BroadcastReceiver {
     private static final String LOGTAG = WifiScanner.class.getName();
 
-    public static final String ACTION_WIFIS_SCANNED="WIFIS_SCANNED";
-    public static final String WIFI_SCANNER_ARG_SCANRESULT = "il.org.hasadna.opentrain.WifiScanner.ScanResult";
+    public static final String ACTION_WIFIS_SCANNED = SharedConstants.ACTION_NAMESPACE + ".WifiScanner.WifisScanned";
+    public static final String WIFI_SCANNER_ARG_SCANRESULT = SharedConstants.NAMESPACE + ".WifiScanner.ScanResult";
 
     private static final int MODE_TRAIN_WIFI_SCANNING = 1;
     private static final int MODE_TRAIN_WIFI_FOUND = 2;
@@ -197,7 +198,7 @@ public class WifiScanner extends BroadcastReceiver {
     private void reportScanResults(JSONArray wifiInfo, boolean isTrainIndication) {
         Intent i = new Intent(WifiScanner.ACTION_WIFIS_SCANNED);
         i.putExtra(WifiScanner.WIFI_SCANNER_ARG_SCANRESULT, wifiInfo.toString());
-        i.putExtra("time", System.currentTimeMillis());
+        i.putExtra(SharedConstants.NAME_TIME, System.currentTimeMillis());
         i.putExtra("TrainIndication", isTrainIndication);
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
     }

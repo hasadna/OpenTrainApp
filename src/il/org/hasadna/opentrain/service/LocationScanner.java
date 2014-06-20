@@ -14,6 +14,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
 import il.org.hasadna.opentrain.application.MainApplication;
+import il.org.hasadna.opentrain.application.SharedConstants;
 import il.org.hasadna.opentrain.application.preferences.Prefs;
 
 /**
@@ -23,8 +24,8 @@ public class LocationScanner {
 
     private static final String LOGTAG = LocationScanner.class.getName();
 
-    public static final String ACTION_GPS_UPDATED ="GPS_UPDATED";
-    public static final String LOCATION_SCANNER_ARG_LOCATION = "il.org.hasadna.opentrain.LocationScanner.location";
+    public static final String ACTION_GPS_UPDATED = SharedConstants.ACTION_NAMESPACE + ".LocationScanner.GpsUpdated";
+    public static final String LOCATION_SCANNER_ARG_LOCATION = SharedConstants.NAMESPACE + ".LocationScanner.Location";
 
     protected LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
@@ -94,7 +95,7 @@ public class LocationScanner {
     protected void reportNewLocationReceived(Location location) {
         Intent i = new Intent(LocationScanner.ACTION_GPS_UPDATED);
         i.putExtra(LOCATION_SCANNER_ARG_LOCATION, location);
-        i.putExtra("time", System.currentTimeMillis());
+        i.putExtra(SharedConstants.NAME_TIME, System.currentTimeMillis());
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
     }
 

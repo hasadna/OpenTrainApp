@@ -6,8 +6,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import test.service.MockLocationScanner;
-import test.service.MockWifiScanner;
+import il.org.hasadna.opentrain.tests.service.MockLocationScanner;
+import il.org.hasadna.opentrain.tests.service.MockWifiScanner;
 
 public final class ScannerService extends Service {
 
