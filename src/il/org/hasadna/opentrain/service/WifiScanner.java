@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import il.org.hasadna.opentrain.application.Logger;
 import il.org.hasadna.opentrain.application.SharedConstants;
 import il.org.hasadna.opentrain.application.preferences.Prefs;
 
@@ -114,6 +115,9 @@ public class WifiScanner extends BroadcastReceiver {
     }
 
     public void reportWifi(JSONArray wifiInfo, boolean isTrainIndication) {
+        if (Logger.logFlag) {
+            Logger.wifi(wifiInfo.toString());
+        }
         if (isTrainIndication) {
             mLastTrainIndicationTime = System.currentTimeMillis();
         }

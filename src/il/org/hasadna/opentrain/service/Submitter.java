@@ -18,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import il.org.hasadna.opentrain.application.Logger;
 import il.org.hasadna.opentrain.application.preferences.Prefs;
 import il.org.hasadna.opentrain.client.activity.MainActivity;
 
@@ -65,7 +66,9 @@ public class Submitter {
     }
 
     public void submit(JSONObject jsonObject) {
-        Log.i("Submitter", jsonObject.toString());
+        if (Logger.logFlag) {
+            Logger.submitter(jsonObject.toString());
+        }
         mReports.put(jsonObject);
         int count = mReports.length();
         if (count == 0) {

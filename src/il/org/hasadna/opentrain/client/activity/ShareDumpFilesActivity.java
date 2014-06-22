@@ -1,6 +1,7 @@
 package il.org.hasadna.opentrain.client.activity;
 
 import il.org.hasadna.opentrain.R;
+import il.org.hasadna.opentrain.application.Logger;
 import il.org.hasadna.opentrain.application.monitoring.JsonDumper;
 import il.org.hasadna.opentrain.application.preferences.Prefs;
 
@@ -75,7 +76,7 @@ public class ShareDumpFilesActivity extends Activity {
 
 		File logsDir;
 
-		logsDir = JsonDumper.getLogsDir(getApplicationContext());
+		logsDir = Logger.getLogsDir(getApplicationContext());
 		String logsPath = logsDir.getPath();
 		TextView textView = (TextView) findViewById(R.id.dump_files_path);
 		String title = getResources().getString(R.string.dump_files_path);

@@ -13,6 +13,7 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
+import il.org.hasadna.opentrain.application.Logger;
 import il.org.hasadna.opentrain.application.MainApplication;
 import il.org.hasadna.opentrain.application.SharedConstants;
 import il.org.hasadna.opentrain.application.preferences.Prefs;
@@ -93,6 +94,9 @@ public class LocationScanner {
     };
 
     protected void reportNewLocationReceived(Location location) {
+        if (Logger.logFlag) {
+            Logger.location(location.toString());
+        }
         Intent i = new Intent(LocationScanner.ACTION_GPS_UPDATED);
         i.putExtra(LOCATION_SCANNER_ARG_LOCATION, location);
         i.putExtra(SharedConstants.NAME_TIME, System.currentTimeMillis());

@@ -28,6 +28,7 @@ public class MainApplication extends Application {
 	private void init() {
 		GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
 		tracker = analytics.newTracker(R.xml.analytics);
+        Logger.init(this);
 	}
 
 	public void trackException(String description) {
