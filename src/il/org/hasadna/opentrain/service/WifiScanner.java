@@ -109,9 +109,7 @@ public class WifiScanner extends BroadcastReceiver {
             }
         }
 
-        if (wifiInfo.length() > 0) {
-            reportWifi(wifiInfo, isTrainIndication);
-        }
+        reportWifi(wifiInfo, isTrainIndication);
     }
 
     public void reportWifi(JSONArray wifiInfo, boolean isTrainIndication) {
@@ -121,7 +119,12 @@ public class WifiScanner extends BroadcastReceiver {
         if (isTrainIndication) {
             mLastTrainIndicationTime = System.currentTimeMillis();
         }
+
         checkForStateChange(isTrainIndication);
+
+        if (wifiInfo.length() == 0) {
+            return;
+        }
 
         long currentTime = System.currentTimeMillis();
         long timeDelta = currentTime - mLastUpdateTime;
