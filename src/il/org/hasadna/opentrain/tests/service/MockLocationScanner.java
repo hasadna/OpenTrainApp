@@ -27,19 +27,21 @@ public class MockLocationScanner extends LocationScanner {
             public void run() {
 
                 for (int i = 0; i < 7; i++) {
-                    mLocationClient.setMockMode(true);
-                    Location mockLocation = new Location(LOCATION_PROVIDER);
-                    mockLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
-                    mockLocation.setTime(System.currentTimeMillis());
-                    mockLocation.setAccuracy(WAYPOINTS_ACCURACY[i]);
-                    mockLocation.setLatitude(WAYPOINTS_LAT[i]);
-                    mockLocation.setLongitude(WAYPOINTS_LNG[i]);
-                    mLocationClient.setMockLocation(mockLocation);
-                    reportNewLocationReceived(mockLocation);
-                    try {
-                        Thread.sleep(1000 * 15);
-                    } catch (Exception e) {
+                    if (mLocationClient.isConnected()) {
+                        mLocationClient.setMockMode(true);
+                        Location mockLocation = new Location(LOCATION_PROVIDER);
+                        mockLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+                        mockLocation.setTime(System.currentTimeMillis());
+                        mockLocation.setAccuracy(WAYPOINTS_ACCURACY[i]);
+                        mockLocation.setLatitude(WAYPOINTS_LAT[i]);
+                        mockLocation.setLongitude(WAYPOINTS_LNG[i]);
+                        mLocationClient.setMockLocation(mockLocation);
+                        reportNewLocationReceived(mockLocation);
+                        try {
+                            Thread.sleep(1000 * 15);
+                        } catch (Exception e) {
 
+                        }
                     }
                 }
                 reportDone();
@@ -86,5 +88,5 @@ public class MockLocationScanner extends LocationScanner {
     private void reportDone() {
         Intent i = new Intent(ACTION_MOCK_LOCATION_DONE);
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
-}
+    }
 }

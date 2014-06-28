@@ -2,7 +2,7 @@ package il.org.hasadna.opentrain.service;
 
 import android.net.wifi.ScanResult;
 
-final class WifiNameFilter {
+public final class WifiNameFilter {
     private static final String[] PREFIX_LIST = {
             // Mobile devices
             "AndroidAP",
@@ -105,6 +105,18 @@ final class WifiNameFilter {
     static boolean trainIndicatorsContain(ScanResult scanResult) {
         //android.os.Debug.waitForDebugger();
         String SSID = scanResult.SSID;
+        if (SSID == null) {
+            return false; // no SSID?
+        }
+        for (String prefix : TRAIN_INDICATORS) {
+            if (SSID.startsWith(prefix)) {
+                return true; // Train indicator!
+            }
+        }
+        return false; // Not train indicator
+    }
+
+    public static boolean trainIndicatorsContain(String SSID) {
         if (SSID == null) {
             return false; // no SSID?
         }

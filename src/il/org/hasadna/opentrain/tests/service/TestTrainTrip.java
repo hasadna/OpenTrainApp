@@ -12,6 +12,8 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.test.suitebuilder.annotation.SmallTest;
+import android.widget.Button;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,8 +24,11 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.concurrent.CountDownLatch;
 
+import il.org.hasadna.opentrain.R;
 import il.org.hasadna.opentrain.client.activity.MainActivity;
 import il.org.hasadna.opentrain.application.preferences.Prefs;
+import il.org.hasadna.opentrain.service.Submitter;
+import il.org.hasadna.opentrain.service.WifiScanner;
 
 /**
  * Created by Noam.m on 6/12/2014.
@@ -33,19 +38,25 @@ public class TestTrainTrip extends android.test.ActivityInstrumentationTestCase2
     private MainActivity activity;
     private CountDownLatch signal = new CountDownLatch(1);
     private String userName;
-    private static final String userTestName = "test114";
+    private static final String userTestName = "test310";
+    private int mode;
 
     private BroadcastReceiver mockLocationReciver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(MockLocationScanner.ACTION_MOCK_LOCATION_DONE)) {
-                try {
-                    activity.onClick_ToggleScanning(null);
-                } catch (RemoteException e) {
-
-                }
                 checkServerResponseForTrip();
+            }
+        }
+    };
+
+    private BroadcastReceiver mScannigModeChangedReciver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(WifiScanner.ACTION_WIFIS_SCANNING_MODE_CHANGED)) {
+                mode = intent.getIntExtra(WifiScanner.WIFI_SCANNER_ARG_MODE, -1);
             }
         }
     };
@@ -63,6 +74,7 @@ public class TestTrainTrip extends android.test.ActivityInstrumentationTestCase2
         setActivityIntent(intent);
         activity = getActivity();
         LocalBroadcastManager.getInstance(activity).registerReceiver(mockLocationReciver, new IntentFilter(MockLocationScanner.ACTION_MOCK_LOCATION_DONE));
+        LocalBroadcastManager.getInstance(activity).registerReceiver(mScannigModeChangedReciver, new IntentFilter(WifiScanner.ACTION_WIFIS_SCANNING_MODE_CHANGED));
         userName = getUserName();
         setTesterName(userTestName);
     }
@@ -71,6 +83,7 @@ public class TestTrainTrip extends android.test.ActivityInstrumentationTestCase2
     protected void tearDown() throws Exception {
         setTesterName(userName);
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(mockLocationReciver);
+        LocalBroadcastManager.getInstance(activity).unregisterReceiver(mScannigModeChangedReciver);
         super.tearDown();
     }
 
@@ -133,21 +146,36 @@ public class TestTrainTrip extends android.test.ActivityInstrumentationTestCase2
             JSONObject jsonObject = new JSONObject(responseString.toString());
             JSONArray jsonArray = jsonObject.getJSONArray("objects");
             int size = jsonArray.length();
-            for (int i = 0; i < size; i++) {
-                JSONObject object = jsonArray.getJSONObject(i);
-                if (object != null) {
-                    return true;
-                }
-            }
-        } catch (Exception e) {
+            assertEquals(size > 0, true);
 
+            int submitterReportsSent = Submitter.getInstance(activity).reportSent();
+            int submitterReportsPending = Submitter.getInstance(activity).reportsPending();
+
+            TextView textViewReportSent = (TextView) activity.findViewById(R.id.reports_sent);
+            TextView textViewReportPending = (TextView) activity.findViewById(R.id.reports_pending);
+
+            String rs = textViewReportSent.getText().toString();
+            String aditionRs = activity.getString(R.string.reports_sent);
+            rs = rs.substring(aditionRs.length() + 1);
+            int activityReportsSent = Integer.parseInt(rs);
+            assertEquals(submitterReportsSent, activityReportsSent);
+
+            String rp = textViewReportPending.getText().toString();
+            String aditionRp = activity.getString(R.string.reports_pending);
+            rp = rp.substring(aditionRp.length() + 1);
+            int activityReportsPending = Integer.parseInt(rp);
+            assertEquals(submitterReportsPending, activityReportsPending);
+
+            assertEquals(mode, WifiScanner.MODE_TRAIN_WIFI_SCANNING);
+        } catch (Exception e) {
+            return false;
         }
-        return false;
+        return true;
     }
 
     private void alert(boolean success) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("Testing").setMessage("il.org.hasadna.opentrain.test " + (success ? "success!!" : "fail..")).setPositiveButton("Ok", null);
+        builder.setTitle("Testing").setMessage("test " + (success ? "success!!" : "fail..")).setPositiveButton("Ok", null);
         AlertDialog dialog = builder.create();
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override

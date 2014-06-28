@@ -27,9 +27,11 @@ public class WifiScanner extends BroadcastReceiver {
 
     public static final String ACTION_WIFIS_SCANNED = SharedConstants.ACTION_NAMESPACE + ".WifiScanner.WifisScanned";
     public static final String WIFI_SCANNER_ARG_SCANRESULT = SharedConstants.NAMESPACE + ".WifiScanner.ScanResult";
+    public static final String ACTION_WIFIS_SCANNING_MODE_CHANGED = SharedConstants.ACTION_NAMESPACE + ".WifiScanner.WifisScanningModeChanged";
+    public static final String WIFI_SCANNER_ARG_MODE = SharedConstants.NAMESPACE + ".WifiScanner.Mode";
 
-    private static final int MODE_TRAIN_WIFI_SCANNING = 1;
-    private static final int MODE_TRAIN_WIFI_FOUND = 2;
+    public static final int MODE_TRAIN_WIFI_SCANNING = 1;
+    public static final int MODE_TRAIN_WIFI_FOUND = 2;
     private int mode = MODE_TRAIN_WIFI_SCANNING;
 
     private LocationScanner locationScanner;
@@ -113,9 +115,6 @@ public class WifiScanner extends BroadcastReceiver {
     }
 
     public void reportWifi(JSONArray wifiInfo, boolean isTrainIndication) {
-        if (Logger.logFlag) {
-            Logger.wifi(wifiInfo.toString());
-        }
         if (isTrainIndication) {
             mLastTrainIndicationTime = System.currentTimeMillis();
         }
@@ -124,6 +123,10 @@ public class WifiScanner extends BroadcastReceiver {
 
         if (wifiInfo.length() == 0) {
             return;
+        }
+
+        if (Logger.logFlag) {
+            Logger.wifi(wifiInfo.toString());
         }
 
         long currentTime = System.currentTimeMillis();
@@ -195,6 +198,10 @@ public class WifiScanner extends BroadcastReceiver {
                 : MODE_TRAIN_WIFI_SCANNING;
         if (mode != newMode) {
             setMode(newMode);
+            broadcastModeChanged();
+            if (Logger.logFlag) {
+                Logger.wifi("mode changed: " + mode);
+            }
         }
     }
 
@@ -212,5 +219,11 @@ public class WifiScanner extends BroadcastReceiver {
 
     public long getmLastTrainIndicationTime() {
         return mLastTrainIndicationTime;
+    }
+
+    private void broadcastModeChanged() {
+        Intent i = new Intent(ACTION_WIFIS_SCANNING_MODE_CHANGED);
+        i.putExtra(WIFI_SCANNER_ARG_MODE, mode);
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
     }
 }
