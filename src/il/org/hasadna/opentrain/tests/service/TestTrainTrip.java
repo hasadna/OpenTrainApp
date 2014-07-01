@@ -38,14 +38,14 @@ public class TestTrainTrip extends android.test.ActivityInstrumentationTestCase2
     private MainActivity activity;
     private CountDownLatch signal = new CountDownLatch(1);
     private String userName;
-    private static final String userTestName = "test310";
+    private static final String userTestName = "test330";
     private int mode;
 
     private BroadcastReceiver mockLocationReciver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(MockLocationScanner.ACTION_MOCK_LOCATION_DONE)) {
+            if (action.equals(LocationTestUtils.ACTION_MOCK_LOCATION_DONE)) {
                 checkServerResponseForTrip();
             }
         }
@@ -73,7 +73,7 @@ public class TestTrainTrip extends android.test.ActivityInstrumentationTestCase2
         intent.putExtra("testing", true);
         setActivityIntent(intent);
         activity = getActivity();
-        LocalBroadcastManager.getInstance(activity).registerReceiver(mockLocationReciver, new IntentFilter(MockLocationScanner.ACTION_MOCK_LOCATION_DONE));
+        LocalBroadcastManager.getInstance(activity).registerReceiver(mockLocationReciver, new IntentFilter(LocationTestUtils.ACTION_MOCK_LOCATION_DONE));
         LocalBroadcastManager.getInstance(activity).registerReceiver(mScannigModeChangedReciver, new IntentFilter(WifiScanner.ACTION_WIFIS_SCANNING_MODE_CHANGED));
         userName = getUserName();
         setTesterName(userTestName);

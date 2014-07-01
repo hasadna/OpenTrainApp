@@ -90,7 +90,7 @@ public final class ScannerService extends Service {
         if (intent != null) {
             mTesting = intent.getBooleanExtra("testing", false);
             if (mTesting) {
-                mScanner.setMockScanners(new MockWifiScanner(this), new MockLocationScanner(this));
+                mScanner.setMockScanners();
             }
         }
         // keep running!

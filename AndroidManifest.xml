@@ -31,7 +31,7 @@
 
     <!--
      <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
-    -->
+    --><uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
 
     <permission
         android:name="il.org.hasadna.opentrain.permission.MAPS_RECEIVE"
@@ -43,7 +43,7 @@
     <application
         android:name="il.org.hasadna.opentrain.application.MainApplication"
         android:allowBackup="true"
-        android:debuggable="false"
+        android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"

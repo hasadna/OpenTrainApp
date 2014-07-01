@@ -6,6 +6,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import il.org.hasadna.opentrain.client.activity.MainActivity;
+import il.org.hasadna.opentrain.tests.service.MockGPSScanncer;
+import il.org.hasadna.opentrain.tests.service.MockLocationScanner;
+import il.org.hasadna.opentrain.tests.service.MockWifiScanner;
 
 public class Scanner {
     private static final String LOGTAG = Scanner.class.getName();
@@ -23,9 +26,9 @@ public class Scanner {
         mWifiScanner.setLocationScanner(mLocationScanner);
     }
 
-    public void setMockScanners(WifiScanner wifiScanner, LocationScanner locationScanner) {
-        mWifiScanner = wifiScanner;
-        mLocationScanner = locationScanner;
+    public void setMockScanners() {
+        mWifiScanner = new MockWifiScanner(mContext);
+        mLocationScanner = new MockGPSScanncer(mContext);
         mWifiScanner.setLocationScanner(mLocationScanner);
     }
 
