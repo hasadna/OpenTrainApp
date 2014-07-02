@@ -18,7 +18,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import il.org.hasadna.opentrain.application.Logger;
 import il.org.hasadna.opentrain.application.SharedConstants;
 
-public class GPSScanner extends LocationScanner implements LocationListener {
+public class GPSScanner implements LocationListener {
 
     public static final String ACTION_GPS_UPDATED = SharedConstants.ACTION_NAMESPACE + ".GPSScanner.GpsUpdated";
     public static final String GPS_SCANNER_ARG_LOCATION = "location";
@@ -33,6 +33,7 @@ public class GPSScanner extends LocationScanner implements LocationListener {
     private static final float GEO_MIN_UPDATE_DISTANCE = 10;
     private static final int MIN_SAT_USED_IN_FIX = 3;
 
+    protected final Context mContext;
     private GpsStatus.Listener mGPSListener;
 
     private int mLocationCount;
@@ -40,7 +41,7 @@ public class GPSScanner extends LocationScanner implements LocationListener {
     private double mLongitude;
 
     public GPSScanner(Context context) {
-        super(context);
+        mContext = context;
     }
 
     public void start() {
@@ -167,5 +168,16 @@ public class GPSScanner extends LocationScanner implements LocationListener {
             i.putExtra(SharedConstants.NAME_TIME, System.currentTimeMillis());
             LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
         }
+    }
+
+    protected void reportNewLocationReceived(Location location) {
+        if (Logger.logFlag) {
+            Logger.location("GpsScanner-NewLocationReceived" + "," + mLocationCount + ":" + mLatitude + "," + mLongitude);
+        }
+        Intent i = new Intent(ACTION_GPS_UPDATED);
+        i.putExtra(Intent.EXTRA_SUBJECT, SUBJECT_NEW_LOCATION);
+        i.putExtra(GPS_SCANNER_ARG_LOCATION, location);
+        i.putExtra(SharedConstants.NAME_TIME, System.currentTimeMillis());
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
     }
 }

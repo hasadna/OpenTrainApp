@@ -35,7 +35,7 @@ public class Reporter extends BroadcastReceiver {
         resetData();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiScanner.ACTION_WIFIS_SCANNED);
-        intentFilter.addAction(LocationScanner.ACTION_GPS_UPDATED);
+        intentFilter.addAction(GPSScanner.ACTION_GPS_UPDATED);
         LocalBroadcastManager.getInstance(mContext).registerReceiver(this,
                 intentFilter);
     }
@@ -75,8 +75,8 @@ public class Reporter extends BroadcastReceiver {
         if (action.equals(WifiScanner.ACTION_WIFIS_SCANNED)) {
             String wifiInfoString = intent.getStringExtra(WifiScanner.WIFI_SCANNER_ARG_SCANRESULT);
             putWifiResults(wifiInfoString);
-        } else if (action.equals(LocationScanner.ACTION_GPS_UPDATED)) {
-            mGpsPosition = intent.getParcelableExtra(LocationScanner.LOCATION_SCANNER_ARG_LOCATION);
+        } else if (action.equals(GPSScanner.ACTION_GPS_UPDATED)) {
+            mGpsPosition = intent.getParcelableExtra(GPSScanner.GPS_SCANNER_ARG_LOCATION);
             return;
         } else {
             Log.d(LOGTAG, "Intent ignored with Subject: " + subject);

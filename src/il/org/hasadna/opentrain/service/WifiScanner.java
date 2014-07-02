@@ -34,7 +34,7 @@ public class WifiScanner extends BroadcastReceiver {
     public static final int MODE_TRAIN_WIFI_FOUND = 2;
     private int mode = MODE_TRAIN_WIFI_SCANNING;
 
-    private LocationScanner locationScanner;
+    private GPSScanner gpsScanner;
 
     private boolean mStarted;
     private final Context mContext;
@@ -165,12 +165,12 @@ public class WifiScanner extends BroadcastReceiver {
         this.mode = mode;
         if (MODE_TRAIN_WIFI_SCANNING == mode) {
             schedulemWifiScanTimer(mPrefs.WIFI_MODE_TRAIN_SCANNIG_PERIOD);
-            if (locationScanner != null)
-                locationScanner.stop();
+            if (gpsScanner != null)
+                gpsScanner.stop();
         } else if (MODE_TRAIN_WIFI_FOUND == mode) {
             schedulemWifiScanTimer(mPrefs.WIFI_MODE_TRAIN_FOUND_PERIOD);
-            if (locationScanner != null)
-                locationScanner.start();
+            if (gpsScanner != null)
+                gpsScanner.start();
         }
     }
 
@@ -205,8 +205,8 @@ public class WifiScanner extends BroadcastReceiver {
         }
     }
 
-    public void setLocationScanner(LocationScanner locationScanner) {
-        this.locationScanner = locationScanner;
+    public void setGPSScanner(GPSScanner gpsScanner) {
+        this.gpsScanner = gpsScanner;
     }
 
     private void reportScanResults(JSONArray wifiInfo, boolean isTrainIndication) {

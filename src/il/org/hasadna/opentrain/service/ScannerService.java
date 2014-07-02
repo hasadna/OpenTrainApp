@@ -6,9 +6,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import il.org.hasadna.opentrain.tests.service.MockLocationScanner;
-import il.org.hasadna.opentrain.tests.service.MockWifiScanner;
-
 public final class ScannerService extends Service {
 
     private static final String LOGTAG = ScannerService.class.getName();

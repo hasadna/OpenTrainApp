@@ -38,7 +38,7 @@ public class TestTrainTrip extends android.test.ActivityInstrumentationTestCase2
     private MainActivity activity;
     private CountDownLatch signal = new CountDownLatch(1);
     private String userName;
-    private static final String userTestName = "test330";
+    private static final String userTestName = "test340";
     private int mode;
 
     private BroadcastReceiver mockLocationReciver = new BroadcastReceiver() {

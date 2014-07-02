@@ -7,7 +7,6 @@ import android.util.Log;
 
 import il.org.hasadna.opentrain.client.activity.MainActivity;
 import il.org.hasadna.opentrain.tests.service.MockGPSScanncer;
-import il.org.hasadna.opentrain.tests.service.MockLocationScanner;
 import il.org.hasadna.opentrain.tests.service.MockWifiScanner;
 
 public class Scanner {
@@ -17,19 +16,19 @@ public class Scanner {
     private boolean mIsScanning;
 
     private WifiScanner mWifiScanner;
-    private LocationScanner mLocationScanner;
+    private GPSScanner mGpsScanner;
 
     public Scanner(Context context) {
         mContext = context;
         mWifiScanner = new WifiScanner(context);
-        mLocationScanner = new LocationScanner(context);
-        mWifiScanner.setLocationScanner(mLocationScanner);
+        mGpsScanner = new GPSScanner(context);
+        mWifiScanner.setGPSScanner(mGpsScanner);
     }
 
     public void setMockScanners() {
         mWifiScanner = new MockWifiScanner(mContext);
-        mLocationScanner = new MockGPSScanncer(mContext);
-        mWifiScanner.setLocationScanner(mLocationScanner);
+        mGpsScanner = new MockGPSScanncer(mContext);
+        mWifiScanner.setGPSScanner(mGpsScanner);
     }
 
     public void startScanning() {
@@ -54,7 +53,7 @@ public class Scanner {
         Log.d(LOGTAG, "Scanning stopped");
 
         mWifiScanner.stop();
-        mLocationScanner.stop();
+        mGpsScanner.stop();
 
         mIsScanning = false;
 
