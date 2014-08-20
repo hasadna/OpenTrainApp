@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="il.org.hasadna.opentrain"
-    android:versionCode="109"
-    android:versionName="0.7.9">
+    android:versionCode="110"
+    android:versionName="0.8.0">
 
     <uses-sdk
         android:minSdkVersion="9"

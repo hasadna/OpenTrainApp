@@ -145,6 +145,7 @@ public final class MainActivity extends FragmentActivity {
         long lastReport = mConnectionRemote.lastReport();
         int reportsSent = mConnectionRemote.reportsSent();
         int reportsPending = mConnectionRemote.reportsPending();
+        String stationName=mConnectionRemote.stationName();
 
         String lastTrainIndicationTimeString = (lastOnTrain > 0) ? DateTimeUtils
                 .formatTimeForLocale(lastOnTrain) : "";
@@ -156,6 +157,7 @@ public final class MainActivity extends FragmentActivity {
                 lastUploadTimeString);
         formatTextView(id.reports_sent, string.reports_sent, String.valueOf(reportsSent));
         formatTextView(id.reports_pending, string.reports_pending, String.valueOf(reportsPending));
+        formatTextView(id.station_name, string.station_name, stationName);
     }
 
     public void onClick_ToggleScanning(View v) throws RemoteException {

@@ -48,5 +48,6 @@
     <string name="dump_email_last_line">פשוט שלח אימייל זה. אם ניתקלת בתקלות או התנהגות לא ברורה תאר אותה כאן.</string>
     <string name="no_activity_found_to_view_file">תקלה. לא נמצאה אפליקציה להצגת קובץ זה. התקן בבקשה אפליקציה לפתיחת קובצי טקסט.</string>
     <string name="about_menu_item">אודות</string>
+    <string name="station_name">שם התחנה:</string>
 
 </resources>

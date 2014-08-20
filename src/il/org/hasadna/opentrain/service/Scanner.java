@@ -80,4 +80,8 @@ public class Scanner {
     public int reportsPending() {
         return Submitter.getInstance(mContext).reportsPending();
     }
+
+    public String stationName() {
+        return mWifiScanner.getmStationName();
+    }
 }

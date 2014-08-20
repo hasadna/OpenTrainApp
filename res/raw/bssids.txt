@@ -1,0 +1,142 @@
+#eran_d57316d7c8610535:
+b4c799a3dbf0 400 Modiin Center 1
+b4c799a3ddb0 400 Modiin Center 2
+b4c799a3de90 400 Modiin Center 3
+b4c7998313c0 400 Modiin Center 4
+b4c7999c5b80 300 Modiin 1
+b4c7998307e0 8600 Ben Gurion Airport 1
+b4c799830f70 8600 Ben Gurion Airport 2
+b4c79982b960 4900 Tel Aviv HaHagana 1
+b4c79982b7c0 4900 Tel Aviv HaHagana 2
+b4c79982b700 4900 Tel Aviv HaHagana 3
+b4c79982ff70 4900 Tel Aviv HaHagana 4
+b4c79982ba10 4600 Tel Aviv HaShalom 1
+b4c799828010 4600 Tel Aviv HaShalom 2
+b4c799828920 4600 Tel Aviv HaShalom 3
+#ofer_a805c254139a38e9:
+b4c7991ff120 5200 Rehovot E. Hadar 1
+b4c7991ffd00 5200 Rehovot E. Hadar 2
+b4c79982fff0 5200 Rehovot E. Hadar 3
+b4c79982bd50 5000 Lod 1
+b4c7998312e0 5000 Lod 2
+#ofer_995357870c491cad
+b4c79982bbf0 5000 Lod 3
+b4c79982ab10 3100 Hadera West 1
+b4c79982a110 3100 Hadera West 2
+b4c799830e80 4600 Tel Aviv HaShalom 4
+b4c79982bcf0 5300 Be'er Ya'akov 1
+b4c7991ff160 5300 Be'er Ya'akov 2
+b4c7990bc960 3700 Tel Aviv Center - Savidor 1
+b4c7990be070 3700 Tel Aviv Center - Savidor 2
+b4c7990bc070 3700 Tel Aviv Center - Savidor 3
+b4c7990bdce0 3700 Tel Aviv Center - Savidor 4
+b4c7990bdd70 3700 Tel Aviv Center - Savidor 5
+b4c7990bd7c0 3600 Tel Aviv - University 1
+b4c7990bd490 3600 Tel Aviv - University 2
+b4c7990baac1 3600 Tel Aviv - University 3
+b4c799a3dd90 3400 Bet Yehoshua 1
+b4c799a3db40 3400 Bet Yehoshua 2
+b4c79982a160 3300 Natanya 1
+b4c799a3dc90 3300 Natanya 2
+b4c799a3dee0 3300 Natanya 3
+#b4c79982bab0 5000 Lod 4
+#b4c7999bc010 5000 Lod 5
+b4c7999bbf00 3500 Herzliyya 1
+b4c799be1fe0 3500 Herzliyya 2
+b4c799a3dd60 5150 Lod Ganey Aviv 1
+# Log 1-2-3 seem to be together and separate than 5000 Lod 4-5-5b and another group is 5000 Lod 6
+# Rishon might be the other station
+#ofer_b3b994f2ff17f4be
+#b4c79982bb40 5000 Lod 5b
+b4c7999bc1b0 5000 Lod 7?
+b4c7991ffcd0 5000 Lod 4b
+#992d69efe920047a
+b4c799a3e120 300 Modiin 2
+#6a469b18
+b4c79982b730 4100 Bne Brak 1
+b4c79982b660 4100 Bne Brak 2
+b4c79982bae0 4170 Petah Tikva   Kiryat Arye 1
+b4c799830e90 4170 Petah Tikva   Kiryat Arye 2
+b4c79982b780 4250 Petah Tikva Sgulla 1
+b4c79982ba60 4250 Petah Tikva Sgulla 2
+b4c799830ee0 8800 Rosh Ha'Ayin North 1
+b4c79982ba00 8800 Rosh Ha'Ayin North 2
+b4c79982a1b0 8700 Kfar Sava 1
+b4c79982b6d0 8700 Kfar Sava 2
+b4c79982fe40 8700 Kfar Sava 3
+#ee568383
+b4c7990bd5c0 3600 Tel Aviv - University 4
+b4c7990bd750 3600 Tel Aviv - University 5
+#8890d50b
+b4c799828000 4640 Holon Junction 1
+b4c799827fa0 4640 Holon Junction 2
+b4c79982be10 4660 Holon - Wolfson 1
+b4c79982b630 4660 Holon - Wolfson 2
+b4c79982bc80 4680 Bat Yam - Yoseftal 1
+b4c79982b690 4680 Bat Yam - Yoseftal 2
+b4c7998310b0 4680 Bat Yam - Yoseftal 3
+b4c79982b840 9200 Hod HaSharon 1
+b4c79982b990 9200 Hod HaSharon 2
+b4c7990be410 3700 Tel Aviv Center - Savidor 6
+#00f6d726
+b4c799830690 9200 Hod HaSharon 3
+#d4065eef85aa51b8
+b4c799a3de10 7320 Be'er Sheva Center 1
+b4c799a3e030 7320 Be'er Sheva Center 2
+b4c7999c4ef0 7320 Be'er Sheva Center 3
+b4c799831350 7320 Be'er Sheva Center 4
+b4c799a3dd20 7300 Be'er Sheva North University 1
+b4c799a3df10 7300 Be'er Sheva North University 2
+b4c79982aad0 5010 Ramla 1?
+#5dc40476ad438414
+b4c7990bde41 3700 Tel Aviv Center - Savidor 6
+#9bc75282
+b4c79982bdb0 9100 Rishon LeTsiyyon HaRishonim 1?
+b4c79982bd70 9100 Rishon LeTsiyyon HaRishonim 2?
+b4c79982be20 9100 Rishon LeTsiyyon HaRishonim 3?
+b4c7999c5a60 9100 Rishon LeTsiyyon HaRishonim 4?
+b4c79982bd60 9100 Rishon LeTsiyyon HaRishonim 5?
+b4c7998313e0 9100 Rishon LeTsiyyon HaRishonim 6?
+b4c799830e70 9000 Yavne - West 1
+b4c799a3de60 9000 Yavne - West 2
+b4c799a3df90 9000 Yavne - West 3
+b4c7999bbdb0 5800 Ashdod Ad Halom 1
+b4c799a3ddd0 5800 Ashdod Ad Halom 2
+b4c79982b970 5900 Ashkelon 1
+b4c79982b8a0 5900 Ashkelon 2
+b4c7998313d0 9600 Sderot 1
+b4c799d11c50 9600 Sderot 2
+b4c799d16400 9600 Sderot 3
+b4c799830f40 4660 Holon - Wolfson 3
+#Amit_e5066b39c330e434
+#ofer_e402a16800ea3cc9
+b4c79982aaa0 2300 Haifa Hof HaKarmel (Razi'el) 1
+b4c79982b980 2300 Haifa Hof HaKarmel (Razi'el) 2
+b4c79982bc30 2300 Haifa Hof HaKarmel (Razi'el) 3
+b4c79982b980 2300 Haifa Hof HaKarmel (Razi'el) 4
+b4c799830850 2300 Haifa Hof HaKarmel (Razi'el) 5
+b4c79982ba70 2800 Binyamina 1
+b4c79982b7d0 2800 Binyamina 2
+b4c79982abc0 2800 Binyamina 3
+b4c799a3dd40 2820 Kesariyya - Pardes Hanna 1?
+b4c799a3e170 2820 Kesariyya - Pardes Hanna 2?
+#1fbbe499fee0a8f4
+b4c7991ffd10 1220 Leb Hmifratz 1
+b4c79982bcd0 1220 Leb Hmifratz 2
+b4c7998286b0 2100 Haifa Center HaShmona 1
+b4c7999c5200 2100 Haifa Center HaShmona 2
+#ofer_a805c254139a38e9
+#940e3161c577f921
+b4c7998250c0 700 Kiryat Hayyim 1
+b4c79982aac0 700 Kiryat Hayyim 2
+b4c7999c43d0 700 Kiryat Hayyim 3
+b4c79982aab0 800 Kiryat Motzkin 1
+b4c79982b950 800 Kiryat Motzkin 2
+b4c7999c4e50 1500 Akko 1
+b4c799a3e1d0 1500 Akko 2
+b4c7999c59c0 1500 Akko 3
+b4c7998311f0 1500 Akko 4
+b4c799825300 2200 Haifa Bat Gallim 1
+b4c79982a1a0 2200 Haifa Bat Gallim 2
+b4c79982bd90 2200 Haifa Bat Gallim 3
+b4c799830840 2200 Haifa Bat Gallim 4

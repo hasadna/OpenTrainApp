@@ -15,7 +15,6 @@ public final class ScannerService extends Service {
 
     private final IBinder mBinder = new ScannerBinder();
     private boolean mIsBound;
-    private boolean mTesting;
 
     public final class ScannerBinder extends Binder {
         public ScannerService getService() {
@@ -63,11 +62,15 @@ public final class ScannerService extends Service {
         return mScanner.reportsPending();
     }
 
+    public String stationName() {
+        return mScanner.stationName();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         Log.i(LOGTAG, "onCreate:");
-
+        BssidUtils.init(getApplicationContext());
         mReporter = new Reporter(this);
         mScanner = new Scanner(this);
     }
@@ -85,8 +88,7 @@ public final class ScannerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
-            mTesting = intent.getBooleanExtra("testing", false);
-            if (mTesting) {
+            if (intent.getBooleanExtra("testing", false)) {
                 mScanner.setMockScanners();
             }
         }

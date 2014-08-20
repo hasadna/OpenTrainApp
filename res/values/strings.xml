@@ -49,5 +49,6 @@
     <string name="dump_email_subject">OpenTrainApp user dump.</string>
     <string name="no_activity_found_to_view_file">Error. No application found that can display this file. Please install a text viewer.</string>
     <string name="about_menu_item">About</string>
+    <string name="station_name">Station name:</string>
 
 </resources>
