@@ -104,6 +104,7 @@ public class WifiScanner extends BroadcastReceiver {
 
         JSONArray wifiInfo = new JSONArray();
         boolean isTrainIndication = false;
+        boolean isStationIndication = false;
 
         Collection<ScanResult> scanResults = getWifiManager().getScanResults();
         long timestamp = System.currentTimeMillis();
@@ -115,6 +116,7 @@ public class WifiScanner extends BroadcastReceiver {
             if (isTrainIndication(scanResult)) {
                 isTrainIndication = true;
                 if ("S-ISRAEL-RAILWAYS".equals(scanResult.SSID)) {
+                    isStationIndication = true;
                     String stationName = BssidUtils.getName(scanResult.BSSID);
                     if (!stationName.equals(mStationName)) {
                         mStationName = stationName;
@@ -134,12 +136,15 @@ public class WifiScanner extends BroadcastReceiver {
             }
         }
 
-        reportWifi(wifiInfo, isTrainIndication);
+        reportWifi(wifiInfo, isTrainIndication, isStationIndication);
     }
 
-    public void reportWifi(JSONArray wifiInfo, boolean isTrainIndication) {
+    public void reportWifi(JSONArray wifiInfo, boolean isTrainIndication, boolean isStationIndication) {
         if (isTrainIndication) {
             mLastTrainIndicationTime = System.currentTimeMillis();
+        }
+        if (!isStationIndication) {
+            mStationName = "";
         }
 
         checkForStateChange(isTrainIndication);

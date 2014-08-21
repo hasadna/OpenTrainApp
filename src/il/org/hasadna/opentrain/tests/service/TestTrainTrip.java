@@ -148,24 +148,6 @@ public class TestTrainTrip extends android.test.ActivityInstrumentationTestCase2
             int size = jsonArray.length();
             assertEquals(size > 0, true);
 
-            int submitterReportsSent = Submitter.getInstance(activity).reportSent();
-            int submitterReportsPending = Submitter.getInstance(activity).reportsPending();
-
-            TextView textViewReportSent = (TextView) activity.findViewById(R.id.reports_sent);
-            TextView textViewReportPending = (TextView) activity.findViewById(R.id.reports_pending);
-
-            String rs = textViewReportSent.getText().toString();
-            String aditionRs = activity.getString(R.string.reports_sent);
-            rs = rs.substring(aditionRs.length() + 1);
-            int activityReportsSent = Integer.parseInt(rs);
-            assertEquals(submitterReportsSent, activityReportsSent);
-
-            String rp = textViewReportPending.getText().toString();
-            String aditionRp = activity.getString(R.string.reports_pending);
-            rp = rp.substring(aditionRp.length() + 1);
-            int activityReportsPending = Integer.parseInt(rp);
-            assertEquals(submitterReportsPending, activityReportsPending);
-
             assertEquals(mode, WifiScanner.MODE_TRAIN_WIFI_SCANNING);
         } catch (Exception e) {
             return false;

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import il.org.hasadna.opentrain.service.WifiNameFilter;
@@ -15,6 +14,16 @@ import il.org.hasadna.opentrain.service.WifiScanner;
  */
 public class MockWifiScanner extends WifiScanner {
 
+    public static final String[] WIFIS = {
+            "S-ISRAEL-RAILWAYS",
+            "S-ISRAEL-RAILWAYS",
+            "ISRAEL-RAILWAYS",
+            "ISRAEL-RAILWAYS",
+            "S-ISRAEL-RAILWAYS",
+            "NO_TRAIN",
+            "NO_TRAIN",
+            "NO_TRAIN",
+    };
     private int index = 0;
 
     public MockWifiScanner(Context context) {
@@ -26,6 +35,7 @@ public class MockWifiScanner extends WifiScanner {
         //override parent and mock scan result
         JSONArray wifiInfo = new JSONArray();
         boolean isTrainIndication = false;
+        boolean isStationIndication = false;
         long timestamp = System.currentTimeMillis();
         try {
             String ssid = WIFIS[index];
@@ -41,22 +51,14 @@ public class MockWifiScanner extends WifiScanner {
                 obj.put("timestamp", timestamp);
                 wifiInfo.put(obj);
                 isTrainIndication = true;
+                if ("S-ISRAEL-RAILWAYS".equals(ssid)) {
+                    isStationIndication = true;
+                }
             }
         } catch (Exception ex) {
 
         }
-        reportWifi(wifiInfo, isTrainIndication);
+        reportWifi(wifiInfo, isTrainIndication, isStationIndication);
     }
-
-    public static final String[] WIFIS = {
-            "S-ISRAEL-RAILWAYS",
-            "S-ISRAEL-RAILWAYS",
-            "ISRAEL-RAILWAYS",
-            "ISRAEL-RAILWAYS",
-            "S-ISRAEL-RAILWAYS",
-            "NO_TRAIN",
-            "NO_TRAIN",
-            "NO_TRAIN",
-    };
 
 }

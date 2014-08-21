@@ -1,86 +1,170 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
-    android:focusableInTouchMode="true"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity" >
-
-    <TextView
-        android:id="@+id/last_train"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/last_train"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white" />
-
-
-    <TextView
-        android:id="@+id/last_upload_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/last_train"
-        android:text="@string/last_upload_time"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white" />
-
-    <TextView
-        android:id="@+id/reports_sent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/last_upload_time"
-        android:text="@string/reports_sent"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white" />
-
-      <TextView
-        android:id="@+id/reports_pending"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-		android:layout_below="@+id/reports_sent"        
-        android:text="@string/reports_pending"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white"/>
-
-    <TextView
-        android:id="@+id/station_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/reports_pending"
-        android:text="@string/station_name"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white"/>
-    
-    <TextView
-        android:id="@+id/status_text"
-        android:layout_width="wrap_content"
-        android:layout_height="128dp"
-        android:layout_below="@+id/station_name"
-        android:paddingLeft="6dp"
-        android:paddingRight="6dp"
-        android:paddingTop="32dp"
-        android:text="@string/status_off"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white" />
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/status_text" >
+        android:layout_height="0dp"
+        android:layout_weight="0.5">
+
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:text="Thank you for helping us\nimprove israeli train"
+            android:textColor="#ff4d4d4d"
+            android:textSize="24sp" />
 
         <Button
             android:id="@+id/toggle_scanning"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="180dp"
+            android:layout_height="58dp"
+            android:layout_below="@id/status_text"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/green_button"
-            android:onClick="onClick_ToggleScanning"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:layout_marginTop="13dp"
+            android:background="@drawable/switch_on"
+            android:onClick="onClick_ToggleScanning" />
+
     </RelativeLayout>
 
-</RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:background="#ffe6e6e6">
+
+        <LinearLayout
+            android:id="@+id/info1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/toggle_scanning"
+            android:layout_marginTop="30.0dip"
+            android:background="#ffe6e6e6"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/last_train"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:lines="1"
+                    android:text="13:07"
+                    android:textColor="#ff4d4d4d"
+                    android:textSize="25.0sp" />
+
+                <TextView
+                    android:id="@+id/last_train"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/last_train"
+                    android:textColor="#ff666666"
+                    android:textSize="15.0sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/last_upload_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:lines="1"
+                    android:text="12:32"
+                    android:textColor="#ff4d4d4d"
+                    android:textSize="25.0sp" />
+
+                <TextView
+                    android:id="@+id/last_upload_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/last_upload_time"
+                    android:textColor="#ff666666"
+                    android:textSize="15.0sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info1"
+            android:layout_marginTop="40.0dip"
+            android:background="#ffe6e6e6"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/reports_sent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:lines="1"
+                    android:text="20:27"
+                    android:textColor="#ff4d4d4d"
+                    android:textSize="35.0sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/reports_sent"
+                    android:textColor="#ff666666"
+                    android:textSize="15.0sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/station_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:lines="1"
+                    android:text="16:20"
+                    android:textColor="#ff4d4d4d"
+                    android:textSize="35.0sp" />
+
+                <TextView
+                    android:id="@+id/station_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/station_name"
+                    android:textColor="#ff666666"
+                    android:textSize="15.0sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>
