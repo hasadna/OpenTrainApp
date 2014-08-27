@@ -9,7 +9,10 @@ import java.io.InputStreamReader;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.webkit.WebView;
+import android.widget.TextView;
 
 
 public class AboutActivity extends Activity {
@@ -17,37 +20,9 @@ public class AboutActivity extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.privacy_policy);
-
-
-//        Bundle extras = getIntent().getExtras();
-//        String inputString = extras.getString("build_number");
-       
-        
-        WebView webView = (WebView) findViewById(R.id.privacy_policy_view);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadData(readTextFromResource(R.raw.privacy_policy_base64),"text/html; charset=utf-8", "base64");
-        
-    }
-    
-    private String readTextFromResource(int resourceID)
-    {
-		StringBuilder total = new StringBuilder();
-
-    	try{
-    		InputStream inputStream = getResources().openRawResource(resourceID);
-    		BufferedReader r = new BufferedReader(new InputStreamReader(inputStream));
-    		String line;
-    		while ((line = r.readLine()) != null) {
-	           total.append(line);
-    		}
-    	}     
-       catch (IOException e){
-    	   e.printStackTrace();
-       }
-     
-       return total.toString();
-     
+        setContentView(R.layout.activity_about);
+        TextView textView=(TextView)findViewById(R.id.textView_about);
+        Linkify.addLinks(textView, Linkify.ALL);
     }
 
 }

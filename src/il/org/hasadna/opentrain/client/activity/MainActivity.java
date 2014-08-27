@@ -45,7 +45,6 @@ public final class MainActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(LOGTAG, "onCreate:");
         enableStrictMode();
         setContentView(R.layout.activity_main);
         PrefsUpdater.scheduleUpdate(this);
@@ -53,7 +52,6 @@ public final class MainActivity extends FragmentActivity {
         textViewLastreport = (TextView) findViewById(R.id.last_upload_time);
         textViewReportsSent = (TextView) findViewById(R.id.reports_sent);
         textViewStationName = (TextView) findViewById(R.id.station_name);
-        ActionBar actionBar = getActionBar();
     }
 
     @Override
@@ -86,8 +84,6 @@ public final class MainActivity extends FragmentActivity {
         intent.putExtra("testing", testing);
         startService(intent);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-
-        Log.d(LOGTAG, "onStart");
     }
 
     @Override
@@ -98,7 +94,6 @@ public final class MainActivity extends FragmentActivity {
         mConnectionRemote = null;
         mReceiver.unregister();
         mReceiver = null;
-        Log.d(LOGTAG, "onStop");
     }
 
     protected void updateUI() {
@@ -181,6 +176,10 @@ public final class MainActivity extends FragmentActivity {
                     settings = new Intent(this, SettingsActivity.class);
                 }
                 startActivity(settings);
+                return true;
+            case R.id.about:
+                Intent about= new Intent(this, AboutActivity.class);;
+                startActivity(about);
                 return true;
             default:
                 return false;

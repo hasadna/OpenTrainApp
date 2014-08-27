@@ -3,20 +3,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_weight="1.0"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.5">
+        android:layout_weight="0.4">
 
         <TextView
             android:id="@+id/status_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="40dp"
             android:gravity="center"
-            android:text="Thank you for helping us\nimprove israeli train"
+            android:lines="2"
+            android:text="@string/status_on"
             android:textColor="#ff4d4d4d"
             android:textSize="24sp" />
 
@@ -36,7 +40,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.5"
+        android:layout_weight="0.6"
         android:background="#ffe6e6e6">
 
         <LinearLayout
@@ -63,7 +67,7 @@
                     android:lines="1"
                     android:text="13:07"
                     android:textColor="#ff4d4d4d"
-                    android:textSize="25.0sp" />
+                    android:textSize="35.0sp" />
 
                 <TextView
                     android:id="@+id/last_train"
@@ -90,7 +94,7 @@
                     android:lines="1"
                     android:text="12:32"
                     android:textColor="#ff4d4d4d"
-                    android:textSize="25.0sp" />
+                    android:textSize="35.0sp" />
 
                 <TextView
                     android:id="@+id/last_upload_time"

@@ -9,6 +9,7 @@ import java.util.TimeZone;
 
 public final class DateTimeUtils {
     private static final DateFormat mISO8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+    private static final DateFormat uiFormat = new SimpleDateFormat("HH:mm");
 
     static final long MILLISECONDS_PER_DAY = 86400000;  // milliseconds/day
 
@@ -29,6 +30,6 @@ public final class DateTimeUtils {
     }
 
     public static String formatTimeForLocale(long time) {
-        return DateFormat.getDateTimeInstance().format(time);
+        return uiFormat.format(time);
     }
 }

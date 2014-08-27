@@ -60,8 +60,7 @@
 
         <activity
             android:name=".client.activity.PrivacyPolicyActivity"
-            android:label="@string/privacy_policy_activity_label"
-            android:theme="@android:style/Theme.Dialog" />
+            android:label="@string/privacy_policy_activity_label" />
 
         <activity
             android:name=".client.activity.SettingsActivity"
@@ -73,8 +72,11 @@
 
         <activity
             android:name=".client.activity.ShareDumpFilesActivity"
-            android:label="@string/share_dump_files_activity_label"
-            android:theme="@android:style/Theme.Dialog" />
+            android:label="@string/share_dump_files_activity_label" />
+
+        <activity
+            android:name=".client.activity.AboutActivity"
+            android:label="@string/action_about" />
 
         <receiver android:name=".application.TurnOffReceiver">
             <intent-filter>

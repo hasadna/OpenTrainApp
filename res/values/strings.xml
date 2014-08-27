@@ -28,8 +28,8 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="about_version">Version %1$s</string>
-    <string name="status_off">Inactive. Click the button to engage. Help us monitor Israel Railways activity through its hotspots.</string>
-    <string name="status_on">Engaged. Monitoring Israel Railways hotspots. Sending location and hotspot information when relevant.</string>
+    <string name="status_off">Inactive.</string>
+    <string name="status_on">Thank you for helping us, sending reports.</string>
     <string name="notification_close">Stop scannig</string>
     <string name="alert_dialog_confirm_exit">Stop scannig before exit?</string>
     <string name="alert_dialog_ok">Yes</string>
@@ -50,5 +50,6 @@
     <string name="no_activity_found_to_view_file">Error. No application found that can display this file. Please install a text viewer.</string>
     <string name="about_menu_item">About</string>
     <string name="station_name">Station name:</string>
+    <string name="about_text">This app was developed as part of the Open Train project in the Public Knowledge Workshop. For more information: opentrain.hasadna.org.il.</string>
 
 </resources>
