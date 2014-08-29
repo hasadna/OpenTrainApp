@@ -50,5 +50,6 @@
     <string name="about_menu_item">אודות</string>
     <string name="station_name">שם התחנה:</string>
     <string name="about_text">האפליקציה פותחה במסגרת פרויקט רכבת פתוחה של הסדנא לידע ציבורי. לפרטים נוספים: opentrain.hasadna.org.il.</string>
+    <string name="last_station_name">שם תחנה אחרונה:</string>
 
 </resources>

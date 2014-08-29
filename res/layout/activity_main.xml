@@ -150,7 +150,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/station_name"
+                    android:id="@+id/station_name_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -160,7 +160,7 @@
                     android:textSize="35.0sp" />
 
                 <TextView
-                    android:id="@+id/station_name"
+                    android:id="@+id/station_name_key"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"

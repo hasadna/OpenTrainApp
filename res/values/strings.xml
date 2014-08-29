@@ -51,5 +51,6 @@
     <string name="about_menu_item">About</string>
     <string name="station_name">Station name:</string>
     <string name="about_text">This app was developed as part of the Open Train project in the Public Knowledge Workshop. For more information: opentrain.hasadna.org.il.</string>
+    <string name="last_station_name">Last Station name:</string>
 
 </resources>

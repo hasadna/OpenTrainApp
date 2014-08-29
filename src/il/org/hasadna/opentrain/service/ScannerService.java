@@ -8,8 +8,6 @@ import android.util.Log;
 
 public final class ScannerService extends Service {
 
-    private static final String LOGTAG = ScannerService.class.getName();
-
     private Scanner mScanner;
     private Reporter mReporter;
 
@@ -22,7 +20,6 @@ public final class ScannerService extends Service {
         }
     }
 
-
     public boolean isScanning() {
         return mScanner.isScanning();
     }
@@ -33,7 +30,6 @@ public final class ScannerService extends Service {
         }
         mScanner.startScanning();
     }
-
 
     public void stopScanning() {
         if (mScanner.isScanning()) {
@@ -62,15 +58,21 @@ public final class ScannerService extends Service {
         return mScanner.reportsPending();
     }
 
-    public String stationName() {
-        return mScanner.stationName();
+    public String lastStationName() {
+        return mScanner.lastStationName();
+    }
+
+    public boolean isStationIndication(){
+        return mScanner.isStationIndication();
+    }
+
+    public String lastBSSID() {
+        return mScanner.lastBSSID();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i(LOGTAG, "onCreate:");
-        BssidUtils.init(getApplicationContext());
         mReporter = new Reporter(this);
         mScanner = new Scanner(this);
     }
@@ -78,8 +80,6 @@ public final class ScannerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i(LOGTAG, "onDestroy");
-
         mReporter.shutdown();
         mScanner = null;
         mReporter = null;
@@ -93,20 +93,17 @@ public final class ScannerService extends Service {
             }
         }
         // keep running!
-        Log.d(LOGTAG, "onStartCommand:");
         return Service.START_STICKY;
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         mIsBound = true;
-        Log.d(LOGTAG, "onBind:");
         return mBinder;
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.d(LOGTAG, "onUnbind");
         if (!mScanner.isScanning()) {
             stopSelf();
         }
@@ -117,6 +114,5 @@ public final class ScannerService extends Service {
     @Override
     public void onRebind(Intent intent) {
         mIsBound = true;
-        Log.d(LOGTAG, "onRebind");
     }
 }

@@ -1,6 +1,6 @@
 package il.org.hasadna.opentrain.client.activity;
 
-import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -9,8 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -38,9 +36,19 @@ public final class MainActivity extends FragmentActivity {
     private static final int NOTIFICATION_ID = 1;
     private static final String INTENT_TURN_OFF = "il.org.hasadna.opentrain.turnMeOff";
     private ScannerService mConnectionRemote;
+    private View.OnClickListener onStationNameClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (mConnectionRemote != null && mConnectionRemote.isStationIndication()) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setMessage("Station BSSID:  " + mConnectionRemote.lastBSSID())
+                        .show();
+            }
+        }
+    };
     private ServiceConnection mConnection;
     private ServiceBroadcastReceiver mReceiver;
-    private TextView textViewLastOnTrain, textViewLastreport, textViewReportsSent, textViewStationName;
+    private TextView textViewLastOnTrain, textViewLastreport, textViewReportsSent, textViewStationNameKey, textViewStationNameValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +59,9 @@ public final class MainActivity extends FragmentActivity {
         textViewLastOnTrain = (TextView) findViewById(R.id.last_train);
         textViewLastreport = (TextView) findViewById(R.id.last_upload_time);
         textViewReportsSent = (TextView) findViewById(R.id.reports_sent);
-        textViewStationName = (TextView) findViewById(R.id.station_name);
+        textViewStationNameKey = (TextView) findViewById(R.id.station_name_key);
+        textViewStationNameValue = (TextView) findViewById(R.id.station_name_value);
+        textViewStationNameValue.setOnClickListener(onStationNameClick);
     }
 
     @Override
@@ -119,7 +129,8 @@ public final class MainActivity extends FragmentActivity {
         long lastReport = mConnectionRemote.lastReport();
         int reportsSent = mConnectionRemote.reportsSent();
         int reportsPending = mConnectionRemote.reportsPending();
-        String stationName = mConnectionRemote.stationName();
+        String lastStationName = mConnectionRemote.lastStationName();
+        boolean isStationIndication = mConnectionRemote.isStationIndication();
 
         String lastTrainIndicationTimeString = (lastOnTrain > 0) ? DateTimeUtils
                 .formatTimeForLocale(lastOnTrain) : "--";
@@ -127,12 +138,18 @@ public final class MainActivity extends FragmentActivity {
                 .formatTimeForLocale(lastReport) : "--";
         String reportsSentString = String.valueOf(reportsSent);
         String reportsPendingString = String.valueOf(reportsPending);
-        String stationNameString = stationName != null && stationName.length() > 0 ? stationName : "--";
+        String lastStationNameString = lastStationName != null && lastStationName.length() > 0 ? lastStationName : "--";
 
         textViewLastOnTrain.setText(lastTrainIndicationTimeString);
         textViewLastreport.setText(lastUploadTimeString);
         textViewReportsSent.setText(reportsSentString);
-        textViewStationName.setText(stationNameString);
+        textViewStationNameValue.setText(lastStationNameString);
+
+        if (isStationIndication) {
+            textViewStationNameKey.setText(R.string.station_name);
+        } else {
+            textViewStationNameKey.setText(R.string.last_station_name);
+        }
     }
 
     public void onClick_ToggleScanning(View v) throws RemoteException {
@@ -178,7 +195,8 @@ public final class MainActivity extends FragmentActivity {
                 startActivity(settings);
                 return true;
             case R.id.about:
-                Intent about= new Intent(this, AboutActivity.class);;
+                Intent about = new Intent(this, AboutActivity.class);
+                ;
                 startActivity(about);
                 return true;
             default:

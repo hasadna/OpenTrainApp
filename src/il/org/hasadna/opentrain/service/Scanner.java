@@ -81,7 +81,15 @@ public class Scanner {
         return Submitter.getInstance(mContext).reportsPending();
     }
 
-    public String stationName() {
-        return mWifiScanner.getmStationName();
+    public String lastStationName() {
+        return mWifiScanner.getmLastStationName();
+    }
+
+    public boolean isStationIndication() {
+        return mWifiScanner.isStationIndication();
+    }
+
+    public String lastBSSID() {
+        return mWifiScanner.getmLastBSSID();
     }
 }
