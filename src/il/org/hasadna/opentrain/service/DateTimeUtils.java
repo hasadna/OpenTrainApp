@@ -32,4 +32,16 @@ public final class DateTimeUtils {
     public static String formatTimeForLocale(long time) {
         return uiFormat.format(time);
     }
+
+    public static String formatTimeForLocale(String strDate) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'+00:00'");
+            Date date = format.parse(strDate);
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            strDate = sdf.format(date);
+        } catch (Exception e) {
+
+        }
+        return strDate;
+    }
 }

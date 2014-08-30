@@ -131,9 +131,8 @@ public class Submitter {
                     while ((line = r.readLine()) != null) {
                         total.append(line);
                     }
-
                     r.close();
-
+                    DataManager.getInstance().getTripInfo(total.toString());
                     mLastUploadTime = System.currentTimeMillis();
                     broadcastReportsStats();
                 } catch (Exception ex) {

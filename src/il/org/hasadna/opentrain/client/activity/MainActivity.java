@@ -1,6 +1,7 @@
 package il.org.hasadna.opentrain.client.activity;
 
-import android.app.AlertDialog;
+import android.app.ActionBar;
+import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -14,20 +15,25 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.StrictMode;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import il.org.hasadna.opentrain.R;
 import il.org.hasadna.opentrain.application.preferences.PrefsUpdater;
-import il.org.hasadna.opentrain.service.DateTimeUtils;
+import il.org.hasadna.opentrain.client.fragment.MainFragment;
+import il.org.hasadna.opentrain.client.fragment.TripFragment;
 import il.org.hasadna.opentrain.service.ScannerService;
 
 public final class MainActivity extends FragmentActivity {
@@ -36,32 +42,58 @@ public final class MainActivity extends FragmentActivity {
     private static final int NOTIFICATION_ID = 1;
     private static final String INTENT_TURN_OFF = "il.org.hasadna.opentrain.turnMeOff";
     private ScannerService mConnectionRemote;
-    private View.OnClickListener onStationNameClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (mConnectionRemote != null && mConnectionRemote.isStationIndication()) {
-                new AlertDialog.Builder(MainActivity.this)
-                        .setMessage("Station BSSID:  " + mConnectionRemote.lastBSSID())
-                        .show();
-            }
-        }
-    };
+
     private ServiceConnection mConnection;
     private ServiceBroadcastReceiver mReceiver;
-    private TextView textViewLastOnTrain, textViewLastreport, textViewReportsSent, textViewStationNameKey, textViewStationNameValue;
+
+    private PagerAdapter mPagerAdapter;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         enableStrictMode();
         setContentView(R.layout.activity_main);
+
+        mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mPagerAdapter);
+
+        if (Build.VERSION.SDK_INT >= 11) {
+            setupTab();
+        }
         PrefsUpdater.scheduleUpdate(this);
-        textViewLastOnTrain = (TextView) findViewById(R.id.last_train);
-        textViewLastreport = (TextView) findViewById(R.id.last_upload_time);
-        textViewReportsSent = (TextView) findViewById(R.id.reports_sent);
-        textViewStationNameKey = (TextView) findViewById(R.id.station_name_key);
-        textViewStationNameValue = (TextView) findViewById(R.id.station_name_value);
-        textViewStationNameValue.setOnClickListener(onStationNameClick);
+    }
+
+    private void setupTab() {
+        final ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+            ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+                public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+                    mViewPager.setCurrentItem(tab.getPosition());
+                }
+
+                public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+                    // hide the given tab
+                }
+
+                public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+                    // probably ignore this event
+                }
+            };
+            actionBar.addTab(actionBar.newTab().setText(R.string.tab_main_title).setTabListener(tabListener));
+            actionBar.addTab(actionBar.newTab().setText(R.string.tab_trip_title).setTabListener(tabListener));
+
+            mViewPager.setOnPageChangeListener(
+                    new ViewPager.SimpleOnPageChangeListener() {
+                        @Override
+                        public void onPageSelected(int position) {
+                            getActionBar().setSelectedNavigationItem(position);
+                        }
+                    });
+        }
+
     }
 
     @Override
@@ -104,52 +136,6 @@ public final class MainActivity extends FragmentActivity {
         mConnectionRemote = null;
         mReceiver.unregister();
         mReceiver = null;
-    }
-
-    protected void updateUI() {
-
-        if (mConnectionRemote == null) {
-            return;
-        }
-
-        Log.d(LOGTAG, "UpdateUI:");
-        boolean scanning = mConnectionRemote.isScanning();
-
-        Button scanningBtn = (Button) findViewById(R.id.toggle_scanning);
-        TextView status = (TextView) findViewById(R.id.status_text);
-        if (scanning) {
-            status.setText(R.string.status_on);
-            scanningBtn.setBackgroundResource(R.drawable.switch_on);
-        } else {
-            status.setText(R.string.status_off);
-            scanningBtn.setBackgroundResource(R.drawable.switch_off);
-        }
-
-        long lastOnTrain = mConnectionRemote.lastOnTrain();
-        long lastReport = mConnectionRemote.lastReport();
-        int reportsSent = mConnectionRemote.reportsSent();
-        int reportsPending = mConnectionRemote.reportsPending();
-        String lastStationName = mConnectionRemote.lastStationName();
-        boolean isStationIndication = mConnectionRemote.isStationIndication();
-
-        String lastTrainIndicationTimeString = (lastOnTrain > 0) ? DateTimeUtils
-                .formatTimeForLocale(lastOnTrain) : "--";
-        String lastUploadTimeString = (lastReport > 0) ? DateTimeUtils
-                .formatTimeForLocale(lastReport) : "--";
-        String reportsSentString = String.valueOf(reportsSent);
-        String reportsPendingString = String.valueOf(reportsPending);
-        String lastStationNameString = lastStationName != null && lastStationName.length() > 0 ? lastStationName : "--";
-
-        textViewLastOnTrain.setText(lastTrainIndicationTimeString);
-        textViewLastreport.setText(lastUploadTimeString);
-        textViewReportsSent.setText(reportsSentString);
-        textViewStationNameValue.setText(lastStationNameString);
-
-        if (isStationIndication) {
-            textViewStationNameKey.setText(R.string.station_name);
-        } else {
-            textViewStationNameKey.setText(R.string.last_station_name);
-        }
     }
 
     public void onClick_ToggleScanning(View v) throws RemoteException {
@@ -196,7 +182,6 @@ public final class MainActivity extends FragmentActivity {
                 return true;
             case R.id.about:
                 Intent about = new Intent(this, AboutActivity.class);
-                ;
                 startActivity(about);
                 return true;
             default:
@@ -246,6 +231,33 @@ public final class MainActivity extends FragmentActivity {
                         getString(R.string.notification_close), pendingIntent)
                 .build();
 
+    }
+
+    private void updateUI() {
+        ((MainFragment) mPagerAdapter.getItem(0)).updateUI(mConnectionRemote);
+        ((TripFragment) mPagerAdapter.getItem(1)).updateUI();
+    }
+
+    private static class PagerAdapter extends FragmentPagerAdapter {
+
+        private ArrayList<Fragment> fragementsList;
+
+        public PagerAdapter(FragmentManager fm) {
+            super(fm);
+            fragementsList = new ArrayList<Fragment>();
+            fragementsList.add(new MainFragment());
+            fragementsList.add(new TripFragment());
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return fragementsList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragementsList != null ? fragementsList.size() : 0;
+        }
     }
 
     private class ServiceBroadcastReceiver extends BroadcastReceiver {
