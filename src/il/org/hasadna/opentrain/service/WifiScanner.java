@@ -68,6 +68,10 @@ public class WifiScanner extends BroadcastReceiver {
         return false;
     }
 
+    private static boolean isStationIndication(ScanResult scanResult) {
+        return "S-ISRAEL-RAILWAYS".equals(scanResult.SSID);
+    }
+
     public void start() {
         if (mStarted) {
             return;
@@ -117,7 +121,7 @@ public class WifiScanner extends BroadcastReceiver {
             }
             if (isTrainIndication(scanResult)) {
                 isTrainIndication = true;
-                if ("S-ISRAEL-RAILWAYS".equals(scanResult.SSID)) {
+                if (isStationIndication(scanResult)) {
                     isStationIndication = true;
                     mLastStationName = DataManager.getInstance().getName(scanResult.BSSID);
                     mLastBSSID = scanResult.BSSID;

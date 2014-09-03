@@ -41,11 +41,10 @@ public final class MainActivity extends FragmentActivity {
     private static final String LOGTAG = MainActivity.class.getName();
     private static final int NOTIFICATION_ID = 1;
     private static final String INTENT_TURN_OFF = "il.org.hasadna.opentrain.turnMeOff";
+    public boolean isRTL;
     private ScannerService mConnectionRemote;
-
     private ServiceConnection mConnection;
     private ServiceBroadcastReceiver mReceiver;
-
     private PagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
 
@@ -54,15 +53,28 @@ public final class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         enableStrictMode();
         setContentView(R.layout.activity_main);
-
+        isRTL = getResources().getBoolean(R.bool.rtl);
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        ArrayList<Fragment> fragementsList = new ArrayList<Fragment>();
+        fragementsList.add(new MainFragment());
+        fragementsList.add(new TripFragment());
+        mPagerAdapter.setFragementsList(fragementsList);
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mPagerAdapter);
 
         if (Build.VERSION.SDK_INT >= 11) {
             setupTab();
         }
+
         PrefsUpdater.scheduleUpdate(this);
+    }
+
+    private int getItemIndex(int position) {
+        if (isRTL) {
+            return 2 - 1 - position;
+        } else {
+            return position;
+        }
     }
 
     private void setupTab() {
@@ -71,7 +83,7 @@ public final class MainActivity extends FragmentActivity {
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
             ActionBar.TabListener tabListener = new ActionBar.TabListener() {
                 public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-                    mViewPager.setCurrentItem(tab.getPosition());
+                    mViewPager.setCurrentItem(getItemIndex(tab.getPosition()));
                 }
 
                 public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
@@ -89,7 +101,7 @@ public final class MainActivity extends FragmentActivity {
                     new ViewPager.SimpleOnPageChangeListener() {
                         @Override
                         public void onPageSelected(int position) {
-                            getActionBar().setSelectedNavigationItem(position);
+                            getActionBar().setSelectedNavigationItem(getItemIndex(position));
                         }
                     });
         }
@@ -110,16 +122,16 @@ public final class MainActivity extends FragmentActivity {
                 Log.i(LOGTAG, "ServiceConnection.onServiceConnected:");
                 ScannerService.ScannerBinder serviceBinder = (ScannerService.ScannerBinder) binder;
                 mConnectionRemote = serviceBinder.getService();
-                ((MainFragment) mPagerAdapter.getItem(0)).setScannerService(mConnectionRemote);
+                mPagerAdapter.getMainFragment().setScannerService(mConnectionRemote);
                 startScanning();
-                updateUI();
+                mPagerAdapter.updateUI();
             }
 
             @Override
             public void onServiceDisconnected(ComponentName className) {
                 Log.i(LOGTAG, "ServiceConnection.onServiceDisconnected:");
                 mConnectionRemote = null;
-                ((MainFragment) mPagerAdapter.getItem(0)).setScannerService(mConnectionRemote);
+                mPagerAdapter.getMainFragment().setScannerService(null);
             }
         };
 
@@ -235,25 +247,30 @@ public final class MainActivity extends FragmentActivity {
 
     }
 
-    private void updateUI() {
-        ((MainFragment) mPagerAdapter.getItem(0)).updateUI();
-        ((TripFragment) mPagerAdapter.getItem(1)).updateUI();
-    }
-
-    private static class PagerAdapter extends FragmentPagerAdapter {
+    private class PagerAdapter extends FragmentPagerAdapter {
 
         private ArrayList<Fragment> fragementsList;
 
         public PagerAdapter(FragmentManager fm) {
             super(fm);
-            fragementsList = new ArrayList<Fragment>();
-            fragementsList.add(new MainFragment());
-            fragementsList.add(new TripFragment());
+        }
+
+        public MainFragment getMainFragment() {
+            return (MainFragment) getItem(getItemIndex(0));
+        }
+
+        private void updateUI() {
+            ((MainFragment) getItem(getItemIndex(0))).updateUI();
+            ((TripFragment) getItem(getItemIndex(1))).updateUI();
+        }
+
+        public void setFragementsList(ArrayList<Fragment> fragementsList) {
+            this.fragementsList = fragementsList;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return fragementsList.get(position);
+            return fragementsList.get(getItemIndex(position));
         }
 
         @Override
@@ -284,7 +301,7 @@ public final class MainActivity extends FragmentActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            updateUI();
+            mPagerAdapter.updateUI();
         }
     }
 }

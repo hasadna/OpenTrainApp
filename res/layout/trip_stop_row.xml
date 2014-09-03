@@ -7,7 +7,8 @@
     <TextView
         android:id="@+id/textView1"
         style="@style/textViewTripRow"
-        android:layout_marginLeft="10dp" />
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp" />
 
     <TextView
         android:id="@+id/textView2"
@@ -17,6 +18,8 @@
     <TextView
         android:id="@+id/textView3"
         style="@style/textViewTripRow"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp" />
 </RelativeLayout>
