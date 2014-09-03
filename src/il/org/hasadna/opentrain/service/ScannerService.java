@@ -4,21 +4,15 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
+
+import java.util.ArrayList;
 
 public final class ScannerService extends Service {
 
+    private final IBinder mBinder = new ScannerBinder();
     private Scanner mScanner;
     private Reporter mReporter;
-
-    private final IBinder mBinder = new ScannerBinder();
     private boolean mIsBound;
-
-    public final class ScannerBinder extends Binder {
-        public ScannerService getService() {
-            return ScannerService.this;
-        }
-    }
 
     public boolean isScanning() {
         return mScanner.isScanning();
@@ -62,12 +56,17 @@ public final class ScannerService extends Service {
         return mScanner.lastStationName();
     }
 
-    public boolean isStationIndication(){
+    public boolean isStationIndication() {
         return mScanner.isStationIndication();
     }
 
     public String lastBSSID() {
         return mScanner.lastBSSID();
+    }
+
+    public boolean isTripDetected() {
+        ArrayList<DataManager.Stop> list = DataManager.getInstance().getTripStopList();
+        return list != null && list.size() > 0;
     }
 
     @Override
@@ -114,5 +113,11 @@ public final class ScannerService extends Service {
     @Override
     public void onRebind(Intent intent) {
         mIsBound = true;
+    }
+
+    public final class ScannerBinder extends Binder {
+        public ScannerService getService() {
+            return ScannerService.this;
+        }
     }
 }

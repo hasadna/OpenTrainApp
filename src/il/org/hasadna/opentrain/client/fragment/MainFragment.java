@@ -1,6 +1,7 @@
 package il.org.hasadna.opentrain.client.fragment;
 
 import android.app.AlertDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -78,6 +79,7 @@ public class MainFragment extends Fragment {
         int reportsPending = mConnectionRemote.reportsPending();
         String lastStationName = mConnectionRemote.lastStationName();
         boolean isStationIndication = mConnectionRemote.isStationIndication();
+        boolean isTripDetected = mConnectionRemote.isTripDetected();
 
         String lastTrainIndicationTimeString = (lastOnTrain > 0) ? DateTimeUtils
                 .formatTimeForLocale(lastOnTrain) : "--";
@@ -104,6 +106,11 @@ public class MainFragment extends Fragment {
             textViewStationNameKey.setText(R.string.station_name);
         } else {
             textViewStationNameKey.setText(R.string.last_station_name);
+        }
+        if (isTripDetected) {
+            textViewStationNameKey.setTextColor(Color.RED);
+        } else {
+            textViewStationNameKey.setTextColor(Color.parseColor("#ff666666"));
         }
     }
 
