@@ -57,7 +57,7 @@ public class DataManager {
 
     public void getTripInfo(String response) {
         String trip_id = parseUploadResponse(response);
-        if (trip_id != null && !trip_id.equals(tripId)) {
+        if (trip_id != null && !trip_id.equals("null") && !trip_id.equals(tripId)) {
             tripId = trip_id;
             if (!tripIdTaskFlag) {
                 tripIdTaskFlag = true;
@@ -67,7 +67,13 @@ public class DataManager {
     }
 
     private String parseUploadResponse(String response) {
-        return "210714_00234";
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            return jsonObject.getString("cur_gtfs_trip_id");
+        } catch (Exception e) {
+
+        }
+        return null;
     }
 
     public ArrayList<Stop> getTripStopList() {
@@ -107,7 +113,7 @@ public class DataManager {
                     String key = iter.next();
                     try {
                         JSONObject value = (JSONObject) jsonObject.get(key);
-                        String stop_name = value.getString("stop_name");
+                        String stop_name = value.getString("stop_short_name");
                         bssids.put(key, stop_name);
                     } catch (JSONException e) {
                         // Something went wrong!

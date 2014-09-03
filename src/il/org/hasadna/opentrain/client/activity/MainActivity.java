@@ -110,6 +110,7 @@ public final class MainActivity extends FragmentActivity {
                 Log.i(LOGTAG, "ServiceConnection.onServiceConnected:");
                 ScannerService.ScannerBinder serviceBinder = (ScannerService.ScannerBinder) binder;
                 mConnectionRemote = serviceBinder.getService();
+                ((MainFragment) mPagerAdapter.getItem(0)).setScannerService(mConnectionRemote);
                 startScanning();
                 updateUI();
             }
@@ -118,6 +119,7 @@ public final class MainActivity extends FragmentActivity {
             public void onServiceDisconnected(ComponentName className) {
                 Log.i(LOGTAG, "ServiceConnection.onServiceDisconnected:");
                 mConnectionRemote = null;
+                ((MainFragment) mPagerAdapter.getItem(0)).setScannerService(mConnectionRemote);
             }
         };
 
@@ -234,7 +236,7 @@ public final class MainActivity extends FragmentActivity {
     }
 
     private void updateUI() {
-        ((MainFragment) mPagerAdapter.getItem(0)).updateUI(mConnectionRemote);
+        ((MainFragment) mPagerAdapter.getItem(0)).updateUI();
         ((TripFragment) mPagerAdapter.getItem(1)).updateUI();
     }
 

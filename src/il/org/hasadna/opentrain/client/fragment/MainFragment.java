@@ -1,5 +1,6 @@
 package il.org.hasadna.opentrain.client.fragment;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -20,6 +21,32 @@ public class MainFragment extends Fragment {
     private TextView textViewLastOnTrain, textViewLastreport, textViewReportsSent, textViewStationNameKey, textViewStationNameValue;
     private Button scanningBtn;
     private TextView status;
+    private ScannerService mConnectionRemote;
+    private View.OnClickListener onStationClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (mConnectionRemote != null) {
+                String bssid = mConnectionRemote.lastBSSID();
+                String message;
+                if (bssid != null) {
+                    if (mConnectionRemote.isStationIndication()) {
+                        message = "Station BSSID " + bssid;
+                    } else {
+                        message = "Last Station BSSID " + bssid;
+                    }
+                } else {
+                    message = "BSSID Not found yet..";
+                }
+                new AlertDialog.Builder(getActivity())
+                        .setMessage(message)
+                        .show();
+            }
+        }
+    };
+
+    public void setScannerService(ScannerService scannerService) {
+        mConnectionRemote = scannerService;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,17 +56,18 @@ public class MainFragment extends Fragment {
         textViewReportsSent = (TextView) view.findViewById(R.id.reports_sent);
         textViewStationNameKey = (TextView) view.findViewById(R.id.station_name_key);
         textViewStationNameValue = (TextView) view.findViewById(R.id.station_name_value);
+        textViewStationNameValue.setOnClickListener(onStationClickListener);
         scanningBtn = (Button) view.findViewById(R.id.toggle_scanning);
         status = (TextView) view.findViewById(R.id.status_text);
         return view;
     }
 
-    public void updateUI(ScannerService mConnectionRemote) {
+    public void updateUI() {
 
         if (mConnectionRemote == null) {
             return;
         }
-        if(status==null){
+        if (getView() == null) {
             return;
         }
 
