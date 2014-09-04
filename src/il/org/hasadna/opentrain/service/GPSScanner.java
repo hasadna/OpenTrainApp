@@ -174,6 +174,14 @@ public class GPSScanner implements LocationListener {
         if (Logger.logFlag) {
             Logger.location("GpsScanner-NewLocationReceived" + "," + mLocationCount + ":" + mLatitude + "," + mLongitude);
         }
+        if (location != null) {
+            long now = System.currentTimeMillis();
+            long locationTime = location.getTime();
+            long since = now - locationTime;
+            if (since > 1000 * 60 * 60) {
+                return;
+            }
+        }
         Intent i = new Intent(ACTION_GPS_UPDATED);
         i.putExtra(Intent.EXTRA_SUBJECT, SUBJECT_NEW_LOCATION);
         i.putExtra(GPS_SCANNER_ARG_LOCATION, location);
