@@ -42,6 +42,7 @@ public class WifiScanner extends BroadcastReceiver {
     private String mLastStationName;
     private boolean mIsStationIndication;
     private String mLastBSSID;
+    private boolean turnOffAfterScan;
 
     public WifiScanner(Context context) {
         mContext = context;
@@ -141,6 +142,11 @@ public class WifiScanner extends BroadcastReceiver {
         }
 
         reportWifi(wifiInfo, isTrainIndication, isStationIndication);
+
+        if (turnOffAfterScan) {
+            getWifiManager().setWifiEnabled(false);
+            turnOffAfterScan = false;
+        }
     }
 
     public void reportWifi(JSONArray wifiInfo, boolean isTrainIndication, boolean isStationIndication) {
@@ -197,6 +203,7 @@ public class WifiScanner extends BroadcastReceiver {
                 boolean enable = wm.isWifiEnabled();
                 if (!enable) {
                     wm.setWifiEnabled(true);
+                    turnOffAfterScan = true;
                 }
                 getWifiManager().startScan();
             }
