@@ -27,15 +27,11 @@
     <uses-feature android:name="android.hardware.wifi" />
 
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission android:name="il.org.hasadna.opentrain.permission.MAPS_RECEIVE" />
 
     <!-- for testing
      <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
     -->
 
-    <permission
-        android:name="il.org.hasadna.opentrain.permission.MAPS_RECEIVE"
-        android:protectionLevel="signature" />
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
