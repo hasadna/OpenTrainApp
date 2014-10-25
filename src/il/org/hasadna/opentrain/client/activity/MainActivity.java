@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.StrictMode;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import il.org.hasadna.opentrain.R;
 import il.org.hasadna.opentrain.application.preferences.PrefsUpdater;
 import il.org.hasadna.opentrain.client.fragment.MainFragment;
+import il.org.hasadna.opentrain.client.fragment.StationsFragment;
 import il.org.hasadna.opentrain.client.fragment.TripFragment;
 import il.org.hasadna.opentrain.service.ScannerService;
 
@@ -303,5 +305,20 @@ public final class MainActivity extends FragmentActivity {
         public void onReceive(Context context, Intent intent) {
             mPagerAdapter.updateUI();
         }
+    }
+
+    private void showDialog() {
+        // DialogFragment.show() will take care of adding the fragment
+        // in a transaction.  We also want to remove any currently showing
+        // dialog, so make our own transaction and take care of that here.
+        android.support.v4.app.FragmentTransaction ft= getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+        // Create and show the dialog.
+        DialogFragment newFragment = StationsFragment.newInstance();
+        newFragment.show(ft, "dialog");
     }
 }

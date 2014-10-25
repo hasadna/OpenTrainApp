@@ -1,15 +1,18 @@
 package il.org.hasadna.opentrain.service;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,7 +32,9 @@ public class DataManager {
     private String tripId;
     private boolean tripIdTaskFlag;
     private ArrayList<Stop> tripStops;
+    private ArrayList<Stop> stops;
     private TaskCallBack tripCallBack;
+    private TaskCallBack stopsCallBack;
 
     public static DataManager getInstance() {
         if (mInstance == null) {
@@ -88,6 +93,27 @@ public class DataManager {
         this.tripCallBack = null;
     }
 
+    public void unRegisterStationResult() {
+        this.stopsCallBack = null;
+    }
+
+    public void getStopsList(TaskCallBack taskCallBack) {
+        this.stopsCallBack = taskCallBack;
+        if (stops == null) {
+            new GetStopsTask().execute();
+        } else {
+            taskCallBack.onTaskDone();
+        }
+    }
+
+    public ArrayList<Stop> getStopsList() {
+        return stops;
+    }
+
+    public void sendStopToServer(Stop selected) {
+        new SendStopToServer().execute(selected);
+    }
+
     public interface TaskCallBack {
         public void onTaskDone();
     }
@@ -98,7 +124,7 @@ public class DataManager {
         protected String doInBackground(String... strings) {
             HttpURLConnection urlConnection = null;
             try {
-                URL url = new URL(URLsUtils.URLStops);
+                URL url = new URL(URLsUtils.URLStopsBssids);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 BufferedReader r = new BufferedReader(new InputStreamReader(in));
@@ -129,6 +155,58 @@ public class DataManager {
             }
             bssidTaskFlag = false;
             return null;
+        }
+    }
+
+    class GetStopsTask extends AsyncTask<String, Void, ArrayList<Stop>> {
+
+        @Override
+        protected ArrayList<Stop> doInBackground(String... strings) {
+            HttpURLConnection urlConnection = null;
+            try {
+                URL url = new URL(URLsUtils.URLStops);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                BufferedReader r = new BufferedReader(new InputStreamReader(in));
+                StringBuilder total = new StringBuilder();
+                String line;
+                while ((line = r.readLine()) != null) {
+                    total.append(line);
+                }
+                JSONArray jsonArray = new JSONArray(total.toString());
+                ArrayList<Stop> result = new ArrayList<Stop>();
+                for (int i = 0, j = jsonArray.length(); i < j; i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    Stop stop = new Stop();
+                    stop.stopShortName = jsonObject.optString("stop_short_name");
+                    stop.stopName = jsonObject.optString("stop_name");
+                    stop.gtfsStopId = jsonObject.optString("gtfs_stop_id");
+                    JSONArray bssids = jsonObject.optJSONArray("bssids");
+                    if (bssids != null) {
+                        stop.bssids = new ArrayList<String>();
+                        for (int k = 0; k < bssids.length(); k++) {
+                            String bssid = bssids.getString(k);
+                            stop.bssids.add(bssid);
+                        }
+                    }
+                    result.add(stop);
+                }
+                return result;
+            } catch (Exception e) {
+                return null;
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Stop> result) {
+            stops = result;
+            if (stopsCallBack != null) {
+                stopsCallBack.onTaskDone();
+            }
         }
     }
 
@@ -184,9 +262,80 @@ public class DataManager {
         }
     }
 
+    class SendStopToServer extends AsyncTask<Stop, Void, String> {
+
+        @Override
+        protected String doInBackground(Stop... param) {
+
+            Stop stop = param[0];
+            HttpURLConnection urlConnection = null;
+            try {
+                URL url = new URL(URLsUtils.URLAddStop);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setDoOutput(true);
+
+                JSONObject wrapper = new JSONObject();
+                wrapper.put("items", stop.toJsonObject());
+                String wrapperData = wrapper.toString();
+                byte[] bytes = wrapperData.getBytes();
+                urlConnection.setFixedLengthStreamingMode(bytes.length);
+                OutputStream out = new BufferedOutputStream(
+                        urlConnection.getOutputStream());
+                out.write(bytes);
+                out.flush();
+
+                int responseCode = urlConnection.getResponseCode();
+                if (responseCode >= 200 && responseCode <= 299) {
+
+                }
+
+                InputStream in = new BufferedInputStream(
+                        urlConnection.getInputStream());
+                BufferedReader r = new BufferedReader(new InputStreamReader(in));
+                StringBuilder total = new StringBuilder(in.available());
+                String line;
+                while ((line = r.readLine()) != null) {
+                    total.append(line);
+                }
+                r.close();
+            } catch (Exception ex) {
+                Log.d("", ex.toString());
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+            }
+            return "";
+        }
+    }
+
     public class Stop {
         public String stopName;
+        public String stopShortName;
+        public String gtfsStopId;
+        public String lat;
+        public String lon;
+        public ArrayList<String> bssids;
         public String expDeparture;
         public String expArrival;
+        public boolean isChecked;
+
+        public JSONObject toJsonObject() {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("gtfs_stop_id", gtfsStopId);
+                jsonObject.put("stop_name", stopName);
+                if (bssids != null) {
+                    JSONArray bssidsJsonArray = new JSONArray();
+                    for (String bssid : bssids) {
+                        bssidsJsonArray.put(bssid);
+                    }
+                    jsonObject.put("bssids", bssidsJsonArray);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return jsonObject;
+        }
     }
 }
