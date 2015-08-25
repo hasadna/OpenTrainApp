@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">OpenTrain</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_clear">Clear list</string>
+    <string name="action_load_from_server">Load BSSIDs from server</string>
+    <string name="action_edit_server">Send BSSID to server</string>
+    <string name="action_set_ssid_search_name">Set SSID name</string>
+    <string name="action_clear_log_list">Clear logs</string>
+    <string name="action_refresh_log_list">Refresh log items</string>
+    <string name="action_view_logs">View logs</string>
+    <string name="action_test_trip">Run Testing Trip</string>
+</resources>
