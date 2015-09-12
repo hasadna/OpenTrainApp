@@ -13,10 +13,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,7 @@ import com.opentrain.app.testing.MockWifiScanner;
 import com.opentrain.app.utils.Logger;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -196,11 +199,16 @@ public class MainActivity extends AppCompatActivity {
 
         alert.setTitle("Edit Station:");
 
-        View view = this.getLayoutInflater().inflate(R.layout.dialog_layout, null);
+        View view = this.getLayoutInflater().inflate(R.layout.edit_station_name, null);
 
 
-        // Set an EditText view to get user input
-        final EditText stationName = (EditText) view.findViewById(R.id.editText_station_name);
+        final Spinner spinner = (Spinner) view.findViewById(R.id.stations_spinner);
+        List<Station> list = MainModel.getInstance().getStationList();
+
+        ArrayAdapter<Station> dataAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(dataAdapter);
 
         final EditText stationRouters = (EditText) view.findViewById(R.id.editText_station_routers);
         stationRouters.setEnabled(enableEditBSSIDs);
@@ -210,7 +218,8 @@ public class MainActivity extends AppCompatActivity {
 
         alert.setPositiveButton("Edit server", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                String value = stationName.getText().toString();
+                Station selectedStation = (Station) spinner.getAdapter().getItem(spinner.getSelectedItemPosition());
+                String value = selectedStation.stationName;
                 if (value.length() > 0) {
                     station.stationName = value;
                     if (enableEditBSSIDs) {
