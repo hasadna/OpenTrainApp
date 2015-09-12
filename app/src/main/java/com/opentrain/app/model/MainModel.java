@@ -20,6 +20,7 @@ public class MainModel {
 
     private HashMap<String, String> map = new HashMap<>();
     private ArrayList<ArrayList<ScanResultItem>> mockResultsList = new ArrayList<>();
+    private ArrayList<Station> mStationList = new ArrayList<>();
 
     public void updateMap(HashMap<String, String> results) {
         for (Map.Entry<String, String> serverEntry : results.entrySet()) {
@@ -37,5 +38,15 @@ public class MainModel {
 
     public void setMockResultsList(ArrayList<ArrayList<ScanResultItem>> mockResultsList) {
         this.mockResultsList = mockResultsList;
+    }
+
+    public void setStationList(ArrayList<Station> stationList) {
+        if (stationList != null && stationList.size() > 0) {
+            this.mStationList = stationList;
+        }
+    }
+
+    public ArrayList<Station> getStationList() {
+        return mStationList;
     }
 }

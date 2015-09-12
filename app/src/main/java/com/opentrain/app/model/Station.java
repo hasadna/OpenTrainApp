@@ -164,4 +164,9 @@ public class Station {
 
         return jsonObject;
     }
+
+    @Override
+    public String toString() {
+        return this.stationName;
+    }
 }
