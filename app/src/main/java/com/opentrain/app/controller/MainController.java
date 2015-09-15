@@ -21,5 +21,6 @@ public class MainController {
     public void init(Context context) {
         NetowrkManager.getInstance().init(context);
         NetowrkManager.getInstance().getStopsFromServer(null);
+        NetowrkManager.getInstance().getMapFromServer(null);
     }
 }

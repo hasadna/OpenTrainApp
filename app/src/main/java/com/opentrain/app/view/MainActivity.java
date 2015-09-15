@@ -280,9 +280,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clearList() {
-        if (mBoundService != null) {
-            mBoundService.clearItems();
-        }
+        MainModel.getInstance().clearScannedItems();
+        onScanResult();
     }
 
     public void getMapFromServer() {
@@ -367,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onScanResult() {
         if (mBoundService != null) {
-            stationsListAdapter.setItems(mBoundService.getScanningItems());
+            stationsListAdapter.setItems(MainModel.getInstance().getScannedStationList());
         }
     }
 
@@ -412,7 +411,7 @@ public class MainActivity extends AppCompatActivity {
         mockResult.put("4", "Station 4");
         MainModel.getInstance().updateMap(mockResult);
 
-        mBoundService.clearItems();
+        MainModel.getInstance().clearScannedItems();
         stopScanning();
         mBoundService.setTestWifiScanner();
         Settings.setTestSettings();

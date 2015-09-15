@@ -32,7 +32,6 @@ public class MockWifiScanner extends WifiScanner {
 
         index = 0;
 
-        map = MainModel.getInstance().getMap();
     }
 
     public void startScanning() {

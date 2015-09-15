@@ -21,6 +21,7 @@ public class MainModel {
     private HashMap<String, String> map = new HashMap<>();
     private ArrayList<ArrayList<ScanResultItem>> mockResultsList = new ArrayList<>();
     private ArrayList<Station> mStationList = new ArrayList<>();
+    private ArrayList<Station> mScannedStationsList = new ArrayList<>();
 
     public void updateMap(HashMap<String, String> results) {
         for (Map.Entry<String, String> serverEntry : results.entrySet()) {
@@ -48,5 +49,13 @@ public class MainModel {
 
     public ArrayList<Station> getStationList() {
         return mStationList;
+    }
+
+    public ArrayList<Station> getScannedStationList() {
+        return mScannedStationsList;
+    }
+
+    public void clearScannedItems() {
+        mScannedStationsList.clear();
     }
 }

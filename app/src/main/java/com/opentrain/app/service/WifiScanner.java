@@ -11,11 +11,9 @@ import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.ScanResultItem;
 import com.opentrain.app.model.Settings;
 import com.opentrain.app.model.Station;
-import com.opentrain.app.network.NetowrkManager;
 import com.opentrain.app.utils.Logger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +25,6 @@ public class WifiScanner extends BroadcastReceiver {
     WifiManager mainWifi;
     boolean registered;
     boolean wasStation;
-    protected HashMap<String, String> map = new HashMap<>();
-    ArrayList<Station> stationsListItems = new ArrayList<>();
     private ScanningListener scanningListener;
 
     public WifiScanner(Context context) {
@@ -38,8 +34,6 @@ public class WifiScanner extends BroadcastReceiver {
         if (!mainWifi.isWifiEnabled()) {
             mainWifi.setWifiEnabled(true);
         }
-
-        getMapFromServer();
     }
 
     public void startScanning() {
@@ -91,6 +85,7 @@ public class WifiScanner extends BroadcastReceiver {
         if (scanResults != null && scanResults.size() > 0) {
 
             boolean isStation = isStation(scanResults);
+            ArrayList<Station> stationsListItems = MainModel.getInstance().getScannedStationList();
 
             if (isStation) {
 
@@ -142,7 +137,7 @@ public class WifiScanner extends BroadcastReceiver {
                     station = new Station();
                 }
 
-                station.bssids.put(scanResult.BSSID, map.get(scanResult.BSSID));
+                station.bssids.put(scanResult.BSSID, MainModel.getInstance().getMap().get(scanResult.BSSID));
             }
         }
 
@@ -158,35 +153,7 @@ public class WifiScanner extends BroadcastReceiver {
             }
         }
 
-        station.stationName = "Not found fo any BSSID";
-    }
-
-    private Station updateBssidMapping(Station station) {
-        if (map != null) {
-            for (Map.Entry<String, String> entry : station.bssids.entrySet()) {
-                station.bssids.put(entry.getKey(), map.get(entry.getKey()));
-            }
-        }
-        return station;
-    }
-
-    public void getMapFromServer() {
-
-        NetowrkManager.getInstance().getMapFromServer(new NetowrkManager.RequestListener() {
-            @Override
-            public void onResponse(Object response) {
-                map = MainModel.getInstance().getMap();
-                for (Station station : stationsListItems) {
-                    updateBssidMapping(station);
-                    setName(station);
-                }
-            }
-
-            @Override
-            public void onError() {
-
-            }
-        });
+        station.stationName = "Not found for any BSSID";
     }
 
     public void setScanningListener(ScanningListener scanningListener) {
