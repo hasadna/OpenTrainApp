@@ -281,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void clearList() {
         MainModel.getInstance().clearScannedItems();
+        onScanResult();
     }
 
     public void getMapFromServer() {
