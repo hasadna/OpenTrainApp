@@ -67,7 +67,9 @@ public class NetowrkManager {
                         try {
                             HashMap<String, String> mapFromString = getMapFromString(response);
                             MainModel.getInstance().updateMap(mapFromString);
-                            requestListener.onResponse(mapFromString);
+                            if (requestListener != null) {
+                                requestListener.onResponse(mapFromString);
+                            }
                             Logger.logMap(mapFromString);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -77,7 +79,9 @@ public class NetowrkManager {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                requestListener.onError();
+                if (requestListener != null) {
+                    requestListener.onError();
+                }
                 Logger.log("Error while getting map from server " + error.getMessage());
             }
         });

@@ -39,17 +39,6 @@ public class ScannerService extends Service {
         return isScanning;
     }
 
-    public ArrayList<Station> getScanningItems() {
-        return wifiScanner != null ? wifiScanner.stationsListItems : null;
-    }
-
-    public void clearItems() {
-        if (wifiScanner != null) {
-            wifiScanner.stationsListItems.clear();
-            notifyScanResults();
-        }
-    }
-
     public void onResume() {
         cancelSchecdleSelfStopScannig();
     }
