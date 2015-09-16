@@ -67,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listView);
         listView.setEmptyView(findViewById(android.R.id.empty));
 
+        // Add header to the listView
+        View header = getLayoutInflater().inflate(R.layout.station_list_raw, null);
+        listView.addHeaderView(header);
+
         stationsListAdapter = new StationsListAdapter(this);
         listView.setAdapter(stationsListAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -248,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
         TextView routers = (TextView) view.findViewById(R.id.textView2);
         routers.setVisibility(View.INVISIBLE);
 
-        TextView current = (TextView) view.findViewById(R.id.textView1);
+        TextView current = (TextView) view.findViewById(R.id.stationName);
         current.setText("Current Search String: " + Settings.stationSSID);
 
         // Set an EditText view to get user input
@@ -406,9 +410,14 @@ public class MainActivity extends AppCompatActivity {
 
         HashMap<String, String> mockResult = new HashMap<>();
         mockResult.put("1", "Station 1");
-        mockResult.put("2", "Station 2");
-        mockResult.put("3", "Station 3");
-        mockResult.put("4", "Station 4");
+        mockResult.put("2", "St2");
+        mockResult.put("3", "Station3Name mane");
+        mockResult.put("4", "Station 4 veryvery long name");
+        mockResult.put("5", "Station 5");
+        mockResult.put("6", "Station 6 long name");
+        mockResult.put("7", "Station 7 long name");
+        mockResult.put("8", "Station 8");
+
         MainModel.getInstance().updateMap(mockResult);
 
         MainModel.getInstance().clearScannedItems();

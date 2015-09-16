@@ -51,18 +51,18 @@ public class StationsListAdapter extends BaseAdapter {
         if (stationViewHolder == null) {
             stationViewHolder = new StationViewHolder();
 
-            stationViewHolder.textView1 = (TextView) convertView.findViewById(R.id.textView1);
-            stationViewHolder.textView2 = (TextView) convertView.findViewById(R.id.textView2);
-            stationViewHolder.textView3 = (TextView) convertView.findViewById(R.id.textView3);
+            stationViewHolder.stationName = (TextView) convertView.findViewById(R.id.stationName);
+            stationViewHolder.EnterTime = (TextView) convertView.findViewById(R.id.EnterTime);
+            stationViewHolder.ExitTime = (TextView) convertView.findViewById(R.id.ExitTime);
 
             convertView.setTag(stationViewHolder);
         }
 
         Station station = stationsListItems.get(position);
 
-        stationViewHolder.textView1.setText("Station name: " + station.stationName);
-        stationViewHolder.textView2.setText(station.arriveStr != null ? "Enter time : " + station.arriveStr : "");
-        stationViewHolder.textView3.setText(station.departureStr != null ? "Exit time :" + station.departureStr : "");
+        stationViewHolder.stationName.setText(station.stationName);
+        stationViewHolder.EnterTime.setText(station.arriveStr != null ? station.arriveStr : "");
+        stationViewHolder.ExitTime.setText(station.departureStr != null ? station.departureStr : "");
 
         return convertView;
     }
@@ -76,8 +76,8 @@ public class StationsListAdapter extends BaseAdapter {
     }
 
     static class StationViewHolder {
-        TextView textView1;
-        TextView textView2;
-        TextView textView3;
+        TextView stationName;
+        TextView EnterTime;
+        TextView ExitTime;
     }
 }
