@@ -59,9 +59,8 @@ public class WifiScanner extends BroadcastReceiver {
         ArrayList<ScanResultItem> scanResultItems = new ArrayList<>();
         if (results != null && results.size() > 0) {
             for (ScanResult scanResult : results) {
-                ScanResultItem scanResultItem = new ScanResultItem();
-                scanResultItem.BSSID = scanResult.BSSID;
-                scanResultItem.SSID = scanResult.SSID;
+                ScanResultItem scanResultItem =
+                        new ScanResultItem(scanResult.BSSID, scanResult.SSID);
                 scanResultItems.add(scanResultItem);
             }
         }

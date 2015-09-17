@@ -193,9 +193,7 @@ public class NetowrkManager {
                     }
                     if ("S-ISRAEL-RAILWAYS".equals(value) || "ISRAEL-RAILWAYS".equals(value)) {
                         ArrayList<ScanResultItem> scanResultList = new ArrayList<>();
-                        ScanResultItem scanResultItem = new ScanResultItem();
-                        scanResultItem.SSID = value;
-                        scanResultItem.BSSID = key;
+                        ScanResultItem scanResultItem = new ScanResultItem(key, value);
                         scanResultList.add(scanResultItem);
                         list.add(scanResultList);
                     }
