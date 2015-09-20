@@ -3,6 +3,9 @@ package com.opentrain.app;
 import android.test.InstrumentationTestCase;
 import com.opentrain.app.model.Station;
 import com.opentrain.app.network.NetowrkManager;
+
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -34,10 +37,11 @@ public class ServerRequestsTest extends InstrumentationTestCase {
 
     public void test2AddMappingToServer() throws Throwable {
 
-        Station station = new Station();
-        station.stationName = "StationNameTest";
-        station.bssids.put("b4:c7:99:0b:aa:c1", null);
-        station.bssids.put("b4:c7:99:0b:d4:90", null);
+        Set<String> bssids = new HashSet<>();
+        bssids.add("b4:c7:99:0b:aa:c1");
+        bssids.add("b4:c7:99:0b:d4:90");
+
+        Station station = new Station(bssids, System.currentTimeMillis());
 
         NetowrkManager.getInstance().addMappingToServer(station.getPostParam(), new NetowrkManager.RequestListener() {
             @Override

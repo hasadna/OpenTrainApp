@@ -8,9 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.opentrain.app.R;
+import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.Station;
-
-import java.util.ArrayList;
+import com.opentrain.app.utils.TimeUtils;
 
 /**
  * Created by noam on 25/05/15.
@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class StationsListAdapter extends BaseAdapter {
 
     LayoutInflater layoutInflater;
-    ArrayList<Station> stationsListItems = new ArrayList<>();
 
     public StationsListAdapter(Context context) {
         layoutInflater = LayoutInflater.from(context);
@@ -26,12 +25,12 @@ public class StationsListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return stationsListItems != null ? stationsListItems.size() : 0;
+        return MainModel.getInstance().getScannedStationList().size();
     }
 
     @Override
     public Object getItem(int position) {
-        return stationsListItems.get(position);
+        return MainModel.getInstance().getScannedStationList().get(position);
     }
 
     @Override
@@ -58,21 +57,14 @@ public class StationsListAdapter extends BaseAdapter {
             convertView.setTag(stationViewHolder);
         }
 
-        Station station = stationsListItems.get(position);
+        Station station = MainModel.getInstance().getScannedStationList().get(position);
 
-        stationViewHolder.stationName.setText(station.stationName);
-        stationViewHolder.EnterTime.setText(station.arriveStr != null ? station.arriveStr : "");
-        stationViewHolder.ExitTime.setText(station.departureStr != null ? station.departureStr : "");
+        stationViewHolder.stationName.setText(station.getName());
+        stationViewHolder.EnterTime.setText(TimeUtils.getFormattedTime(station.enterUnixTimeMs));
+        stationViewHolder.ExitTime.setText(station.exitUnixTimeMs != null ?
+                TimeUtils.getFormattedTime(station.exitUnixTimeMs) : "");
 
         return convertView;
-    }
-
-    public void setItems(ArrayList<Station> items) {
-        if (items == null) {
-            return;
-        }
-        stationsListItems = items;
-        notifyDataSetChanged();
     }
 
     static class StationViewHolder {

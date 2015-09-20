@@ -10,8 +10,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.opentrain.app.model.ScanResultItem;
-import com.opentrain.app.model.Station;
+import com.opentrain.app.model.WifiScanResultItem;
 import com.opentrain.app.utils.Logger;
 import com.opentrain.app.model.Settings;
 import com.opentrain.app.model.MainModel;
@@ -143,7 +142,7 @@ public class NetowrkManager {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            ArrayList<ArrayList<ScanResultItem>> list = getTestFromString(response);
+                            ArrayList<ArrayList<WifiScanResultItem>> list = getTestFromString(response);
                             MainModel.getInstance().setMockResultsList(list);
                             requestListener.onResponse(list);
                             Logger.logList(list);
@@ -163,9 +162,9 @@ public class NetowrkManager {
         requestQueue.add(stringRequest);
     }
 
-    private ArrayList<ArrayList<ScanResultItem>> getTestFromString(String response) throws Exception {
+    private ArrayList<ArrayList<WifiScanResultItem>> getTestFromString(String response) throws Exception {
 
-        ArrayList<ArrayList<ScanResultItem>> list = new ArrayList<>();
+        ArrayList<ArrayList<WifiScanResultItem>> list = new ArrayList<>();
 
         InputStream stream = new ByteArrayInputStream(response.getBytes("UTF-8"));
         BufferedReader reader = new BufferedReader(new
@@ -192,9 +191,9 @@ public class NetowrkManager {
                         }
                     }
                     if ("S-ISRAEL-RAILWAYS".equals(value) || "ISRAEL-RAILWAYS".equals(value)) {
-                        ArrayList<ScanResultItem> scanResultList = new ArrayList<>();
-                        ScanResultItem scanResultItem = new ScanResultItem(key, value);
-                        scanResultList.add(scanResultItem);
+                        ArrayList<WifiScanResultItem> scanResultList = new ArrayList<>();
+                        WifiScanResultItem wifiScanResultItem = new WifiScanResultItem(key, value);
+                        scanResultList.add(wifiScanResultItem);
                         list.add(scanResultList);
                     }
                 }
@@ -215,16 +214,12 @@ public class NetowrkManager {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        ArrayList<Station> stations = new ArrayList<>();
+                        ArrayList<String> stations = new ArrayList<>();
                         try {
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject stop = (JSONObject) response.get(i);
                                 String name = new String(stop.getString("name").getBytes("ISO-8859-1"), "UTF-8");
-
-                                Station station = new Station();
-                                station.stationName = name;
-
-                                stations.add(station);
+                                stations.add(name);
 
                             }
                             MainModel.getInstance().setStationList(stations);
