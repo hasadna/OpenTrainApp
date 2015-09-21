@@ -40,10 +40,11 @@ public class ServerRequestsTest extends InstrumentationTestCase {
         Set<String> bssids = new HashSet<>();
         bssids.add("b4:c7:99:0b:aa:c1");
         bssids.add("b4:c7:99:0b:d4:90");
+        String stationName = "StationNameTest";
 
         Station station = new Station(bssids, System.currentTimeMillis());
 
-        NetowrkManager.getInstance().addMappingToServer(station.getPostParam(), new NetowrkManager.RequestListener() {
+        NetowrkManager.getInstance().addMappingToServer(station.getPostParam(stationName), new NetowrkManager.RequestListener() {
             @Override
             public void onResponse(Object response) {
 

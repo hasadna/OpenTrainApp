@@ -86,7 +86,7 @@ public class Station {
 //        }
 //    }
 
-    public JSONObject getPostParam() {
+    public JSONObject getPostParam(String stationId) {
 
         JSONArray routerArray = new JSONArray();
         for (String entry : bssids) {
@@ -94,7 +94,7 @@ public class Station {
         }
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("name", getName());
+            jsonObject.put("name", stationId);
             jsonObject.put("bssid", routerArray.get(0));
         } catch (JSONException e) {
             Logger.log(e.toString());
