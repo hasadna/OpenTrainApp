@@ -6,7 +6,6 @@ import com.opentrain.app.model.LogItem;
 import com.opentrain.app.model.WifiScanResultItem;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,7 +30,7 @@ public class Logger {
         logItems.clear();
     }
 
-    public static void logMap(HashMap<String, String> mapFromString) {
+    public static void logMap(Map<String, String> mapFromString) {
         if (mapFromString != null) {
             StringBuilder sb = new StringBuilder();
             for (Map.Entry<String, String> entry : mapFromString.entrySet()) {

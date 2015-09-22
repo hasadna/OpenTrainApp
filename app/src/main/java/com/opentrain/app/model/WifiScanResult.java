@@ -17,31 +17,6 @@ public class WifiScanResult {
         this.unixTimeMs = unixTimeMs;
     }
 
-    // Returns false iff there are two bssids mapped to different stations.
-    // TODO: Extract isConsistent and hasUnmappedBssid into new BssidUtils class under utils folder.
-    public boolean isConsistent(Map<String, String> bssidMap) {
-        String stationId = null;
-        for (WifiScanResultItem scanItem : wifiScanResultItems) {
-            if (bssidMap.containsKey(scanItem.BSSID)) {
-                if (stationId == null) {
-                    stationId = bssidMap.get(scanItem.BSSID);
-                } else if (stationId != bssidMap.get(scanItem.BSSID)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public boolean hasUnmappedBssid(Map<String, String> bssidMap) {
-        for (WifiScanResultItem scanItem : wifiScanResultItems) {
-            if (!bssidMap.containsKey(scanItem.BSSID)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public WifiScanResult buildWithItems(List<WifiScanResultItem> wifiScanResultItems) {
         return new WifiScanResult(wifiScanResultItems, unixTimeMs);
     }

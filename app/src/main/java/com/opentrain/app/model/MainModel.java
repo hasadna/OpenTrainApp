@@ -44,8 +44,7 @@ public class MainModel {
         this.bssidMap = bssidMap;
     }
 
-    // TODO: it is currently used and not set - look at comment in startTestTrip()
-    public void updateMap(HashMap<String, String> results) {
+    public void updateMap(Map<String, String> results) {
         for (Map.Entry<String, String> serverEntry : results.entrySet()) {
             bssidMap.put(serverEntry.getKey(), serverEntry.getValue());
         }
@@ -80,7 +79,7 @@ public class MainModel {
         inStation = true;
     }
 
-    public void setStationList(List<Station> scannedStationList) {
+    public void setScannedStationList(List<Station> scannedStationList) {
         this.scannedStationList = scannedStationList;
     }
 

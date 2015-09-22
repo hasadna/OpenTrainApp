@@ -69,6 +69,7 @@ public class WifiScanner extends BroadcastReceiver {
     public void reportScanResult(ArrayList<WifiScanResultItem> results) {
         if (results != null && results.size() > 0) {
             for (WifiScanResultItem wifiScanResultItem : results) {
+                // TODO: Remove from the log the wifiScanResultItem of routers that are not stations
                 Logger.log("scan result: " + wifiScanResultItem.toString());
             }
         }

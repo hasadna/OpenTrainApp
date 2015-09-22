@@ -36,6 +36,7 @@ import com.opentrain.app.utils.Logger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
@@ -198,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
     private void editServer() {
         onStationItemClick(null);
     }
-    
+
     private void onStationItemClick(final Station station) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
@@ -373,8 +374,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onScanResult() {
-        //stationsListAdapter.setItems();
-        stationsListAdapter.notifyDataSetChanged();
+        stationsListAdapter.setItems(MainModel.getInstance().getScannedStationList());
     }
 
     private void toast(String str) {
@@ -421,7 +421,6 @@ public class MainActivity extends AppCompatActivity {
         mockResult.put("7", "Station 7 long name");
         mockResult.put("8", "Station 8");
 
-        // TODO: update the map inside the test (here) and then only use setBssidMap.
         MainModel.getInstance().updateMap(mockResult);
 
         MainModel.getInstance().clearScannedItems();

@@ -8,9 +8,11 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.opentrain.app.R;
-import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.Station;
 import com.opentrain.app.utils.TimeUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by noam on 25/05/15.
@@ -18,19 +20,21 @@ import com.opentrain.app.utils.TimeUtils;
 public class StationsListAdapter extends BaseAdapter {
 
     LayoutInflater layoutInflater;
+    List<Station> stationsListItems;
 
     public StationsListAdapter(Context context) {
         layoutInflater = LayoutInflater.from(context);
+        stationsListItems = new ArrayList<>();
     }
 
     @Override
     public int getCount() {
-        return MainModel.getInstance().getScannedStationList().size();
+        return stationsListItems != null ? stationsListItems.size() : 0;
     }
 
     @Override
     public Object getItem(int position) {
-        return MainModel.getInstance().getScannedStationList().get(position);
+        return stationsListItems.get(position);
     }
 
     @Override
@@ -57,7 +61,7 @@ public class StationsListAdapter extends BaseAdapter {
             convertView.setTag(stationViewHolder);
         }
 
-        Station station = MainModel.getInstance().getScannedStationList().get(position);
+        Station station = stationsListItems.get(position);
 
         stationViewHolder.stationName.setText(station.getName());
         stationViewHolder.EnterTime.setText(TimeUtils.getFormattedTime(station.enterUnixTimeMs));
@@ -65,6 +69,14 @@ public class StationsListAdapter extends BaseAdapter {
                 TimeUtils.getFormattedTime(station.exitUnixTimeMs) : "");
 
         return convertView;
+    }
+
+    public void setItems(List<Station> items) {
+        if (items == null) {
+            return;
+        }
+        stationsListItems = items;
+        notifyDataSetChanged();
     }
 
     static class StationViewHolder {

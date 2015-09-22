@@ -65,7 +65,7 @@ public class NetowrkManager {
                     public void onResponse(String response) {
                         try {
                             HashMap<String, String> mapFromString = getMapFromString(response);
-                            MainModel.getInstance().updateMap(mapFromString);
+                            MainModel.getInstance().setBssidMap(mapFromString);
                             if (requestListener != null) {
                                 requestListener.onResponse(mapFromString);
                             }

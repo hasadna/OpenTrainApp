@@ -1,5 +1,6 @@
 package com.opentrain.app.model;
 
+import com.opentrain.app.utils.BssidUtils;
 import com.opentrain.app.utils.Logger;
 
 import org.json.JSONArray;
@@ -15,6 +16,7 @@ import java.util.Set;
 public class Station {
 
     public static final String UNKNOWN_STOP_ID = null;
+    public static final String UNKNOWN_STATION_NAME = "לא ידוע";
     // The bssids are from the first ScanResult that created the station.
     public Set<String> bssids = new HashSet<>();
     // The stationId (name) shall be taken from the mapping in the MainModel
@@ -74,6 +76,10 @@ public class Station {
         return stringBuilderUnMapped.toString();
     }
 
+    public Set<String> getBssidsSet() {
+        return bssids;
+    }
+
 //    public void setUnMappedBSSIDs(String str) {
 //
 //        try {
@@ -103,26 +109,35 @@ public class Station {
         return jsonObject;
     }
 
-    // TODO: This function should return UNKNOWN_STOP_ID if not isConsistent or hasUnmappedBssid.
+    // TODO: Review
+    // This function should return UNKNOWN_STOP_ID if not isConsistent or hasUnmappedBssid.
     public String getId() {
-        return "";
+
+        boolean hasUnmappedBssid = BssidUtils.hasUnmappedBssid(MainModel.getInstance().getBssidMap(), bssids);
+        boolean scanResultConsistent = BssidUtils.isConsistent(MainModel.getInstance().getBssidMap(), bssids);
+        if ((!scanResultConsistent) || (hasUnmappedBssid)) {
+            return UNKNOWN_STOP_ID;
+        } else {
+            for (String scanBssid : bssids) {
+                return MainModel.getInstance().getBssidMap().get(scanBssid);
+            }
+            return UNKNOWN_STOP_ID;
+        }
     }
 
-    // Returns name, or UNKNOWN_STATION_NAME if station is unknown.
-    // TODO: Implement according to comment. Station name is unknown if getId() is UNKNOWN_STOP_ID, else it is getId();
+    // TODO: Review
+    // Station name is UNKNOWN_STATION_NAME if getId() is UNKNOWN_STOP_ID, else it is getId();
     public String getName() {
-        // Get first BSSID in the set:
-        String entry = new String();
-        if (bssids.iterator().hasNext())
-            entry = bssids.iterator().next();
-        // Get station name from MainModel:
-        String name = new String();
-        if (!entry.isEmpty())
-            name = MainModel.getInstance().getBssidMap().get(entry);
-        return name;
+        String id = getId();
+        if (id == UNKNOWN_STOP_ID)
+            return UNKNOWN_STATION_NAME;
+        else
+            return id;
     }
-//    @Override
-//    public String toString() {
-//        return this.stationName;
-//    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
+
 }
