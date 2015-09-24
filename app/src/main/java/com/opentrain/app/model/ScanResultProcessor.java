@@ -11,7 +11,7 @@ import com.opentrain.app.utils.Logger;
  * Created by Elina on 9/20/2015.
  */
 public class ScanResultProcessor {
-    public static Settings DEFAULT_SETTINGS = new Settings("S-ISRAEL-RAILWAYS", 60);
+    public static Settings DEFAULT_SETTINGS = new Settings("S-ISRAEL-RAILWAYS", 60 * 1000);
 
     // The processor modifies @model according to @scanResult.
     public static void process(MainModel model, WifiScanResult scanResult, Settings settings) {

@@ -14,9 +14,13 @@ public class MainModel {
 
     public static MainModel getInstance() {
         if (mInstance == null) {
-            mInstance = new MainModel();
+            reset();
         }
         return mInstance;
+    }
+
+    public static void reset() {
+        mInstance = new MainModel();
     }
 
     // Map of BSSIDs to station names (future: change to station_id):

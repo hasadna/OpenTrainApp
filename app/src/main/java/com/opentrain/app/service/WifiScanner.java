@@ -8,6 +8,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
 import com.opentrain.app.model.MainModel;
+import com.opentrain.app.model.Settings;
 import com.opentrain.app.model.WifiScanResultItem;
 import com.opentrain.app.model.ScanResultProcessor;
 import com.opentrain.app.model.WifiScanResult;
@@ -69,8 +70,9 @@ public class WifiScanner extends BroadcastReceiver {
     public void reportScanResult(ArrayList<WifiScanResultItem> results) {
         if (results != null && results.size() > 0) {
             for (WifiScanResultItem wifiScanResultItem : results) {
-                // TODO: Remove from the log the wifiScanResultItem of routers that are not stations
-                Logger.log("scan result: " + wifiScanResultItem.toString());
+                // TODO: Check if shows only wifiScanResultItem of routers that are stations
+                if (wifiScanResultItem.SSID.equals(Settings.stationSSID))
+                    Logger.log("scan result: " + wifiScanResultItem.toString());
             }
         }
         WifiScanResult scanResult = new WifiScanResult(results, System.currentTimeMillis());
