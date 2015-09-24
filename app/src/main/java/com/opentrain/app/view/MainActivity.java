@@ -317,6 +317,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Object response) {
                 toast("Succes!");
+                // TODO: get updated map from server!
                 onRequestDone();
             }
 
@@ -412,14 +413,14 @@ public class MainActivity extends AppCompatActivity {
     private void startTestTrip() {
 
         HashMap<String, String> mockResult = new HashMap<>();
-        mockResult.put("1", "Station 1");
-        mockResult.put("2", "St2");
-        mockResult.put("3", "Station3Name mane");
-        mockResult.put("4", "Station 4 veryvery long name");
-        mockResult.put("5", "Station 5");
-        mockResult.put("6", "Station 6 long name");
-        mockResult.put("7", "Station 7 long name");
-        mockResult.put("8", "Station 8");
+        mockResult.put("1", "תחנה 1");
+        mockResult.put("2", "תח2");
+        mockResult.put("3", "תחנה 3 בעברית");
+        mockResult.put("4", "תחנה רביעית עם שםארוךארוך");
+        mockResult.put("5", "תחנהחמישית מס5");
+        mockResult.put("6", "תחנה שישיתשישית");
+        mockResult.put("7", "תחנה 7");
+        mockResult.put("8", "תחנה מספר8 מספר8");
 
         MainModel.getInstance().updateMap(mockResult);
 

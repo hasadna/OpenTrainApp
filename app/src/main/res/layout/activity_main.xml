@@ -42,8 +42,7 @@
         android:layout_below="@+id/button"
         android:layout_centerHorizontal="true"
         android:paddingTop="10dp"
-        android:divider="@null"
-        android:dividerHeight="0dp" />
+        android:headerDividersEnabled="true" />
 
     <TextView
         android:id="@android:id/empty"

@@ -8,10 +8,10 @@ import java.util.Date;
 public class TimeUtils {
 
     public static String getFormattedTime() {
-        return android.text.format.DateFormat.format("HH:mm:ss dd-MM-yyyy", new Date()).toString();
+        return android.text.format.DateFormat.format("HH:mm:ss", new Date()).toString();
     }
 
     public static String getFormattedTime(long unixTimeMs) {
-        return android.text.format.DateFormat.format("HH:mm:ss dd-MM-yyyy", new Date(unixTimeMs)).toString();
+        return android.text.format.DateFormat.format("HH:mm:ss", new Date(unixTimeMs)).toString();
     }
 }
