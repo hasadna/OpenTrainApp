@@ -8,14 +8,14 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
 import com.opentrain.app.model.MainModel;
-import com.opentrain.app.model.ScanResultItem;
 import com.opentrain.app.model.Settings;
-import com.opentrain.app.model.Station;
+import com.opentrain.app.model.WifiScanResultItem;
+import com.opentrain.app.model.ScanResultProcessor;
+import com.opentrain.app.model.WifiScanResult;
 import com.opentrain.app.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by noam on 18/05/15.
@@ -56,111 +56,49 @@ public class WifiScanner extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         List<ScanResult> results = mainWifi.getScanResults();
-        ArrayList<ScanResultItem> scanResultItems = new ArrayList<>();
+        ArrayList<WifiScanResultItem> wifiScanResultItems = new ArrayList<>();
         if (results != null && results.size() > 0) {
             for (ScanResult scanResult : results) {
-                ScanResultItem scanResultItem = new ScanResultItem();
-                scanResultItem.BSSID = scanResult.BSSID;
-                scanResultItem.SSID = scanResult.SSID;
-                scanResultItems.add(scanResultItem);
+                WifiScanResultItem wifiScanResultItem =
+                        new WifiScanResultItem(scanResult.BSSID, scanResult.SSID);
+                wifiScanResultItems.add(wifiScanResultItem);
             }
         }
-        reportScanResult(scanResultItems);
+        reportScanResult(wifiScanResultItems);
     }
 
-    public void reportScanResult(ArrayList<ScanResultItem> results) {
+    public void reportScanResult(ArrayList<WifiScanResultItem> results) {
         if (results != null && results.size() > 0) {
-            for (ScanResultItem scanResultItem : results) {
-                Logger.log("scan result: " + scanResultItem.toString());
+            for (WifiScanResultItem wifiScanResultItem : results) {
+                // TODO: Check if shows only wifiScanResultItem of routers that are stations
+                if (wifiScanResultItem.SSID.equals(Settings.stationSSID))
+                    Logger.log("scan result: " + wifiScanResultItem.toString());
             }
         }
-        onSanningResults(results);
+        WifiScanResult scanResult = new WifiScanResult(results, System.currentTimeMillis());
+        ScanResultProcessor.process(MainModel.getInstance(), scanResult);
         if (scanningListener != null) {
-            scanningListener.onSannResult();
+            scanningListener.onScanResult();
         }
     }
 
-
-    public void onSanningResults(List<ScanResultItem> scanResults) {
-        if (scanResults != null && scanResults.size() > 0) {
-
-            boolean isStation = isStation(scanResults);
-            ArrayList<Station> stationsListItems = MainModel.getInstance().getScannedStationList();
-
-            if (isStation) {
-
-                Station station = getStation(scanResults);
-                setName(station);
-
-                if (!wasStation) {
-                    station.setArrive(System.currentTimeMillis());
-                    stationsListItems.add(station);
-                    Logger.log("enter to station: " + station.stationName);
-                } else {
-                    Logger.log("remain in station: " + station.stationName);
-                }
-            } else {
-                if (wasStation) {
-                    if (stationsListItems.size() > 0) {
-                        Station s = stationsListItems.get(stationsListItems.size() - 1);
-                        s.setDeparture(System.currentTimeMillis());
-                    }
-                    Logger.log("exit from station!");
-                } else {
-                    Logger.log("not station!");
-                }
-            }
-
-            wasStation = isStation;
-        }
-    }
-
-    public boolean isStation(List<ScanResultItem> scanResults) {
-
-        for (ScanResultItem scanResult : scanResults) {
-            if (Settings.stationSSID.equals(scanResult.SSID)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public Station getStation(List<ScanResultItem> scanResults) {
-
-        Station station = null;
-        for (ScanResultItem scanResult : scanResults) {
-
-            if (Settings.stationSSID.equals(scanResult.SSID)) {
-
-                if (station == null) {
-                    station = new Station();
-                }
-
-                station.bssids.put(scanResult.BSSID, MainModel.getInstance().getMap().get(scanResult.BSSID));
-            }
-        }
-
-        return station;
-    }
-
-    public void setName(Station station) {
-
-        for (Map.Entry<String, String> entry : station.bssids.entrySet()) {
-            if (entry.getValue() != null) {
-                station.stationName = entry.getValue();
-                return;
-            }
-        }
-
-        station.stationName = "Not found for any BSSID";
-    }
+//    public void setName(Station station) {
+//
+//        for (Map.Entry<String, String> entry : station.bssids.entrySet()) {
+//            if (entry.getValue() != null) {
+//                station.stationName = entry.getValue();
+//                return;
+//            }
+//        }
+//
+//        station.stationName = "Not found for any BSSID";
+//    }
 
     public void setScanningListener(ScanningListener scanningListener) {
         this.scanningListener = scanningListener;
     }
 
     public interface ScanningListener {
-        void onSannResult();
+        void onScanResult();
     }
 }

@@ -34,7 +34,10 @@ import com.opentrain.app.testing.MockWifiScanner;
 import com.opentrain.app.utils.Logger;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Add header to the listView
         View header = getLayoutInflater().inflate(R.layout.station_list_raw, null);
-        listView.addHeaderView(header);
+        listView.addHeaderView(header, null, false);
 
         stationsListAdapter = new StationsListAdapter(this);
         listView.setAdapter(stationsListAdapter);
@@ -77,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Station station = (Station) parent.getAdapter().getItem(position);
-                onStationItemClick(station, false);
+                onStationItemClick(station);
             }
         });
 
@@ -194,11 +197,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void editServer() {
-        Station station = new Station();
-        onStationItemClick(station, true);
+        onStationItemClick(null);
     }
 
-    private void onStationItemClick(final Station station, final boolean enableEditBSSIDs) {
+    private void onStationItemClick(final Station station) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle("Edit Station:");
@@ -207,30 +209,33 @@ public class MainActivity extends AppCompatActivity {
 
 
         final Spinner spinner = (Spinner) view.findViewById(R.id.stations_spinner);
-        List<Station> list = MainModel.getInstance().getStationList();
+        List<String> list = MainModel.getInstance().getStationList();
 
-        ArrayAdapter<Station> dataAdapter = new ArrayAdapter<>(this,
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
 
         final EditText stationRouters = (EditText) view.findViewById(R.id.editText_station_routers);
-        stationRouters.setEnabled(enableEditBSSIDs);
-        stationRouters.setText(station.getBSSIDs());
+        stationRouters.setEnabled(station == null);
+        stationRouters.setText(station != null ? station.getBSSIDs() : null);
 
         alert.setView(view);
 
         alert.setPositiveButton("Edit server", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                Station selectedStation = (Station) spinner.getAdapter().getItem(spinner.getSelectedItemPosition());
-                String value = selectedStation.stationName;
-                if (value.length() > 0) {
-                    station.stationName = value;
-                    if (enableEditBSSIDs) {
+                String staionId = (String) spinner.getAdapter().getItem(spinner.getSelectedItemPosition());
+                if (staionId.length() > 0) {
+                    if (station == null) {
                         String bssids = stationRouters.getText().toString();
-                        station.setUnMappedBSSIDs(bssids);
+
+                        Set<String> bssidsSet = new HashSet<>();
+                        bssidsSet.add(bssids);
+                        Station newStation = new Station(bssidsSet, System.currentTimeMillis());
+                        addMapToServer(newStation, staionId);
+                    } else {
+                        addMapToServer(station, staionId);
                     }
-                    addMapToServer(station);
                 }
             }
         });
@@ -306,12 +311,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void addMapToServer(Station station) {
+    public void addMapToServer(Station station, String stationId) {
         onRequestStart();
-        NetowrkManager.getInstance().addMappingToServer(station.getPostParam(), new NetowrkManager.RequestListener() {
+        NetowrkManager.getInstance().addMappingToServer(station.getPostParam(stationId), new NetowrkManager.RequestListener() {
             @Override
             public void onResponse(Object response) {
                 toast("Succes!");
+                // TODO: get updated map from server!
                 onRequestDone();
             }
 
@@ -369,9 +375,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onScanResult() {
-        if (mBoundService != null) {
-            stationsListAdapter.setItems(MainModel.getInstance().getScannedStationList());
-        }
+        stationsListAdapter.setItems(MainModel.getInstance().getScannedStationList());
     }
 
     private void toast(String str) {
@@ -409,14 +413,14 @@ public class MainActivity extends AppCompatActivity {
     private void startTestTrip() {
 
         HashMap<String, String> mockResult = new HashMap<>();
-        mockResult.put("1", "Station 1");
-        mockResult.put("2", "St2");
-        mockResult.put("3", "Station3Name mane");
-        mockResult.put("4", "Station 4 veryvery long name");
-        mockResult.put("5", "Station 5");
-        mockResult.put("6", "Station 6 long name");
-        mockResult.put("7", "Station 7 long name");
-        mockResult.put("8", "Station 8");
+        mockResult.put("1", "תחנה 1");
+        mockResult.put("2", "תח2");
+        mockResult.put("3", "תחנה 3 בעברית");
+        mockResult.put("4", "תחנה רביעית עם שםארוךארוך");
+        mockResult.put("5", "תחנהחמישית מס5");
+        mockResult.put("6", "תחנה שישיתשישית");
+        mockResult.put("7", "תחנה 7");
+        mockResult.put("8", "תחנה מספר8 מספר8");
 
         MainModel.getInstance().updateMap(mockResult);
 

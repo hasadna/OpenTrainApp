@@ -9,8 +9,10 @@ import android.widget.TextView;
 
 import com.opentrain.app.R;
 import com.opentrain.app.model.Station;
+import com.opentrain.app.utils.TimeUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by noam on 25/05/15.
@@ -18,10 +20,11 @@ import java.util.ArrayList;
 public class StationsListAdapter extends BaseAdapter {
 
     LayoutInflater layoutInflater;
-    ArrayList<Station> stationsListItems = new ArrayList<>();
+    List<Station> stationsListItems;
 
     public StationsListAdapter(Context context) {
         layoutInflater = LayoutInflater.from(context);
+        stationsListItems = new ArrayList<>();
     }
 
     @Override
@@ -60,14 +63,15 @@ public class StationsListAdapter extends BaseAdapter {
 
         Station station = stationsListItems.get(position);
 
-        stationViewHolder.stationName.setText(station.stationName);
-        stationViewHolder.EnterTime.setText(station.arriveStr != null ? station.arriveStr : "");
-        stationViewHolder.ExitTime.setText(station.departureStr != null ? station.departureStr : "");
+        stationViewHolder.stationName.setText(station.getName());
+        stationViewHolder.EnterTime.setText(TimeUtils.getFormattedTime(station.enterUnixTimeMs));
+        stationViewHolder.ExitTime.setText(station.exitUnixTimeMs != null ?
+                TimeUtils.getFormattedTime(station.exitUnixTimeMs) : "");
 
         return convertView;
     }
 
-    public void setItems(ArrayList<Station> items) {
+    public void setItems(List<Station> items) {
         if (items == null) {
             return;
         }

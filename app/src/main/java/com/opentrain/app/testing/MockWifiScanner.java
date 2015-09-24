@@ -3,7 +3,7 @@ package com.opentrain.app.testing;
 import android.content.Context;
 
 import com.opentrain.app.model.MainModel;
-import com.opentrain.app.model.ScanResultItem;
+import com.opentrain.app.model.WifiScanResultItem;
 import com.opentrain.app.service.WifiScanner;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class MockWifiScanner extends WifiScanner {
         void onScanDone();
     }
 
-    ArrayList<ArrayList<ScanResultItem>> mockResultsList;
+    ArrayList<ArrayList<WifiScanResultItem>> mockResultsList;
     private int index;
     public static MockWifiScanListener mockWifiScanListener;
 
@@ -52,7 +52,7 @@ public class MockWifiScanner extends WifiScanner {
         index++;
     }
 
-    private ArrayList<ScanResultItem> getScanResult() {
+    private ArrayList<WifiScanResultItem> getScanResult() {
         if (mockResultsList.size() > index) {
             return mockResultsList.get(index);
         }

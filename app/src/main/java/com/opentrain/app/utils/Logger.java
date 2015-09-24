@@ -3,10 +3,9 @@ package com.opentrain.app.utils;
 import android.util.Log;
 
 import com.opentrain.app.model.LogItem;
-import com.opentrain.app.model.ScanResultItem;
+import com.opentrain.app.model.WifiScanResultItem;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,7 +30,7 @@ public class Logger {
         logItems.clear();
     }
 
-    public static void logMap(HashMap<String, String> mapFromString) {
+    public static void logMap(Map<String, String> mapFromString) {
         if (mapFromString != null) {
             StringBuilder sb = new StringBuilder();
             for (Map.Entry<String, String> entry : mapFromString.entrySet()) {
@@ -46,11 +45,11 @@ public class Logger {
         }
     }
 
-    public static void logList(ArrayList<ArrayList<ScanResultItem>> list) {
+    public static void logList(ArrayList<ArrayList<WifiScanResultItem>> list) {
         if (list != null) {
             StringBuilder sb = new StringBuilder();
-            for (ArrayList<ScanResultItem> scanList : list) {
-                for (ScanResultItem scanResult : scanList) {
+            for (ArrayList<WifiScanResultItem> scanList : list) {
+                for (WifiScanResultItem scanResult : scanList) {
                     sb.append(scanResult.SSID);
                     sb.append("/");
                     sb.append(scanResult.BSSID);

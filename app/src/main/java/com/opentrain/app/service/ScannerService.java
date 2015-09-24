@@ -94,7 +94,7 @@ public class ScannerService extends Service {
 
     private WifiScanner.ScanningListener scannResultListener = new WifiScanner.ScanningListener() {
         @Override
-        public void onSannResult() {
+        public void onScanResult() {
             notifyScanResults();
         }
     };
