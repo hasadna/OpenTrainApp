@@ -27,12 +27,14 @@ import com.opentrain.app.adapter.StationsListAdapter;
 import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.Settings;
 import com.opentrain.app.model.Station;
+import com.opentrain.app.model.WifiScanResultItem;
 import com.opentrain.app.network.NetowrkManager;
 import com.opentrain.app.service.ScannerService;
 import com.opentrain.app.service.ServiceBroadcastReceiver;
 import com.opentrain.app.testing.MockWifiScanner;
 import com.opentrain.app.utils.Logger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -186,6 +188,9 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.action_test_trip) {
             onTestClick();
+            return true;
+        }else if (id == R.id.action_test_trip_from_local) {
+            onLocalTestClick();
             return true;
         }
 
@@ -408,6 +413,34 @@ public class MainActivity extends AppCompatActivity {
                 onRequestDone();
             }
         });
+    }
+
+    private void onLocalTestClick() {
+        ArrayList<ArrayList<WifiScanResultItem>> list = new ArrayList<>();
+
+        ArrayList<WifiScanResultItem> scanResultList1 = new ArrayList<>();
+        WifiScanResultItem wifiScanResultItem1 = new WifiScanResultItem("1", "S-ISRAEL-RAILWAYS");
+        scanResultList1.add(wifiScanResultItem1);
+
+        ArrayList<WifiScanResultItem> scanResultList2 = new ArrayList<>();
+        WifiScanResultItem wifiScanResultItem2 = new WifiScanResultItem("2", "S-ISRAEL-RAILWAYS");
+        scanResultList2.add(wifiScanResultItem2);
+
+        ArrayList<WifiScanResultItem> scanResultList3 = new ArrayList<>();
+        WifiScanResultItem wifiScanResultItem3 = new WifiScanResultItem("3", "S-ISRAEL-RAILWAYS");
+        scanResultList3.add(wifiScanResultItem3);
+
+        list.add(scanResultList1);
+        list.add(new ArrayList<WifiScanResultItem>());
+        list.add(scanResultList2);
+        list.add(new ArrayList<WifiScanResultItem>());
+        list.add(scanResultList3);
+        list.add(new ArrayList<WifiScanResultItem>());
+
+        MainModel.getInstance().setMockResultsList(list);
+
+        startTestTrip();
+
     }
 
     private void startTestTrip() {
