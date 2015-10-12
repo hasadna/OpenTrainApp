@@ -318,6 +318,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Object response) {
                 toast("Succes!");
                 // TODO: get updated map from server!
+                NetowrkManager.getInstance().getMapFromServer(null);
                 onRequestDone();
             }
 

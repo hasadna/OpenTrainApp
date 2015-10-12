@@ -71,8 +71,14 @@ public class WifiScanner extends BroadcastReceiver {
         if (results != null && results.size() > 0) {
             for (WifiScanResultItem wifiScanResultItem : results) {
                 // TODO: Check if shows only wifiScanResultItem of routers that are stations
-                if (wifiScanResultItem.SSID.equals(Settings.stationSSID))
-                    Logger.log("scan result: " + wifiScanResultItem.toString());
+                if (wifiScanResultItem.SSID.equals(Settings.stationSSID)) {
+                    String mapping = "Unmapped";
+                    // TODO: Elina, note I added a mapping to the log.
+                    if (MainModel.getInstance().getBssidMap().containsKey(wifiScanResultItem.BSSID)) {
+                        mapping = MainModel.getInstance().getBssidMap().get(wifiScanResultItem.BSSID);
+                    }
+                    Logger.log("scan result: " + wifiScanResultItem.toString() + ", mapping: " + mapping);
+                }
             }
         }
         WifiScanResult scanResult = new WifiScanResult(results, System.currentTimeMillis());
