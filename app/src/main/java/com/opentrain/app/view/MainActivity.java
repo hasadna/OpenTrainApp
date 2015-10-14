@@ -189,6 +189,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.action_test_trip) {
             onTestClick();
             return true;
+        }else if (id == R.id.action_test_trip_from_local) {
+            onLocalTestClick();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -387,28 +390,61 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onTestClick() {
 
-        if (mBoundService == null) {
-            Logger.log("cant simulate trip. service is null!!");
-            toast("Cant run test. service is down");
-            return;
-        }
+        onRequestStart();
+        NetowrkManager.getInstance().getTestTripFromServer(new NetowrkManager.RequestListener() {
+            @Override
+            public void onResponse(Object response) {
+                onRequestDone();
+                if (mBoundService == null) {
+                    Logger.log("cant simulate trip. service is null!!");
+                    toast("Cant run test. service is down");
+                    return;
+                }
+                if (MainModel.getInstance().getMockResultsList().size() == 0) {
+                    toast("Trip response is empty..!");
+                } else {
+                    toast("Test trip start");
+                    startTestTrip();
+                }
+            }
 
-        // Start the test trip:
+            @Override
+            public void onError() {
+                toast("Fail to get test trip from server");
+                onRequestDone();
+            }
+        });
+    }
 
-        // Mock wifi results:
-        ArrayList<ArrayList<WifiScanResultItem>> mockList = new ArrayList<>();
-        for (int var = 2; var < 17; var++) {
-            ArrayList<WifiScanResultItem> scanResultList = new ArrayList<>();
-            Integer bssid = var/2;
-            WifiScanResultItem wifiScanResultItem =
-                    new WifiScanResultItem((var%2 == 0) ? bssid.toString() : "-" + bssid.toString(),
-                            (var%2 == 0) ? "S-ISRAEL-RAILWAYS" : "ISRAEL-RAILWAYS");
-            scanResultList.add(wifiScanResultItem);
-            mockList.add(scanResultList);
-        }
-        MainModel.getInstance().setMockResultsList(mockList);
-        Logger.logList(mockList);
-        toast("Test trip start");
+    private void onLocalTestClick() {
+        ArrayList<ArrayList<WifiScanResultItem>> list = new ArrayList<>();
+
+        ArrayList<WifiScanResultItem> scanResultList1 = new ArrayList<>();
+        WifiScanResultItem wifiScanResultItem1 = new WifiScanResultItem("1", "S-ISRAEL-RAILWAYS");
+        scanResultList1.add(wifiScanResultItem1);
+
+        ArrayList<WifiScanResultItem> scanResultList2 = new ArrayList<>();
+        WifiScanResultItem wifiScanResultItem2 = new WifiScanResultItem("2", "S-ISRAEL-RAILWAYS");
+        scanResultList2.add(wifiScanResultItem2);
+
+        ArrayList<WifiScanResultItem> scanResultList3 = new ArrayList<>();
+        WifiScanResultItem wifiScanResultItem3 = new WifiScanResultItem("3", "S-ISRAEL-RAILWAYS");
+        scanResultList3.add(wifiScanResultItem3);
+
+        list.add(scanResultList1);
+        list.add(new ArrayList<WifiScanResultItem>());
+        list.add(scanResultList2);
+        list.add(new ArrayList<WifiScanResultItem>());
+        list.add(scanResultList3);
+        list.add(new ArrayList<WifiScanResultItem>());
+
+        MainModel.getInstance().setMockResultsList(list);
+
+        startTestTrip();
+
+    }
+
+    private void startTestTrip() {
 
         // Mock scan results
         HashMap<String, String> mockResult = new HashMap<>();
