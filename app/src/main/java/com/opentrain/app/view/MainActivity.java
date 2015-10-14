@@ -27,12 +27,14 @@ import com.opentrain.app.adapter.StationsListAdapter;
 import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.Settings;
 import com.opentrain.app.model.Station;
+import com.opentrain.app.model.WifiScanResultItem;
 import com.opentrain.app.network.NetowrkManager;
 import com.opentrain.app.service.ScannerService;
 import com.opentrain.app.service.ServiceBroadcastReceiver;
 import com.opentrain.app.testing.MockWifiScanner;
 import com.opentrain.app.utils.Logger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -385,34 +387,30 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onTestClick() {
 
-        onRequestStart();
-        NetowrkManager.getInstance().getTestTripFromServer(new NetowrkManager.RequestListener() {
-            @Override
-            public void onResponse(Object response) {
-                onRequestDone();
-                if (mBoundService == null) {
-                    Logger.log("cant simulate trip. service is null!!");
-                    toast("Cant run test. service is down");
-                    return;
-                }
-                if (MainModel.getInstance().getMockResultsList().size() == 0) {
-                    toast("Trip response is empty..!");
-                } else {
-                    toast("Test trip start");
-                    startTestTrip();
-                }
-            }
+        if (mBoundService == null) {
+            Logger.log("cant simulate trip. service is null!!");
+            toast("Cant run test. service is down");
+            return;
+        }
 
-            @Override
-            public void onError() {
-                toast("Fail to get test trip from server");
-                onRequestDone();
-            }
-        });
-    }
+        // Start the test trip:
 
-    private void startTestTrip() {
+        // Mock wifi results:
+        ArrayList<ArrayList<WifiScanResultItem>> mockList = new ArrayList<>();
+        for (int var = 2; var < 17; var++) {
+            ArrayList<WifiScanResultItem> scanResultList = new ArrayList<>();
+            Integer bssid = var/2;
+            WifiScanResultItem wifiScanResultItem =
+                    new WifiScanResultItem((var%2 == 0) ? bssid.toString() : "-" + bssid.toString(),
+                            (var%2 == 0) ? "S-ISRAEL-RAILWAYS" : "ISRAEL-RAILWAYS");
+            scanResultList.add(wifiScanResultItem);
+            mockList.add(scanResultList);
+        }
+        MainModel.getInstance().setMockResultsList(mockList);
+        Logger.logList(mockList);
+        toast("Test trip start");
 
+        // Mock scan results
         HashMap<String, String> mockResult = new HashMap<>();
         mockResult.put("1", "תחנה 1");
         mockResult.put("2", "תח2");
