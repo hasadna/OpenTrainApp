@@ -2,6 +2,7 @@ package com.opentrain.app.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -17,10 +18,18 @@ public class LogActivity extends AppCompatActivity {
 
     LogAdapter logAdapter;
 
+    private Toolbar toolbar;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log);
+
+        // Attaching the layout to the toolbar object
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar); // Setting toolbar as the ActionBar with setSupportActionBar() call
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Add the Up arrow
+
         ListView listView;
         listView = (ListView) findViewById(R.id.listView);
         listView.setEmptyView(findViewById(android.R.id.empty));
