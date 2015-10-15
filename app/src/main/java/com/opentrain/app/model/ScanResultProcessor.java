@@ -18,10 +18,9 @@ public class ScanResultProcessor {
         scanResult = cleanScanResult(scanResult, settings.ISRAEL_RAILWAYS_STATION_SSID);
         if (scanResult.wifiScanResultItems.isEmpty()) {
             if (model.getScannedStationList().isEmpty()) {
-
-                Logger.log("Station list is empty, not updating anything.");
+                Logger.log("Scan is empty and station list is empty, not updating anything.");
             } else {
-                Logger.log("Updating last station exit time to last seen time and setting inStation to false.");
+                Logger.log("Scan is empty. Updating last station exit time to last seen time and setting inStation to false.");
                 model.setLastStationExitTimeIfItExists();
                 model.setInStation(false);
             }
@@ -43,7 +42,6 @@ public class ScanResultProcessor {
                     lastStation.lastSeenUnixTimeMs = scanResult.unixTimeMs;
                     lastStation.exitUnixTimeMs = null;
                     model.setInStation(true);
-
                 }
             } else if (model.getStationLastSeenTimeUnixMs() != null &&
                     scanResult.unixTimeMs - model.getStationLastSeenTimeUnixMs() > settings.STATION_KEEPALIVE_MS) {

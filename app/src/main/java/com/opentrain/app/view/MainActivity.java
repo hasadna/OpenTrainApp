@@ -189,7 +189,8 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.action_test_trip) {
             onTestClick();
             return true;
-        }else if (id == R.id.action_test_trip_from_local) {
+            // TODO: remove not local test trip.
+        } else if (id == R.id.action_test_trip_from_local) {
             onLocalTestClick();
             return true;
         }
@@ -323,6 +324,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Object response) {
                 toast("Succes!");
                 // TODO: get updated map from server!
+                NetowrkManager.getInstance().getMapFromServer(null);
                 onRequestDone();
             }
 
@@ -416,19 +418,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onLocalTestClick() {
+        // TODO: We should probably be working with WifiScanResult (which holds a list of WifiScanResultItem) instead of ArrayList.
+        // TODO: Look in the github comments for more info.
         ArrayList<ArrayList<WifiScanResultItem>> list = new ArrayList<>();
 
         ArrayList<WifiScanResultItem> scanResultList1 = new ArrayList<>();
-        WifiScanResultItem wifiScanResultItem1 = new WifiScanResultItem("1", "S-ISRAEL-RAILWAYS");
-        scanResultList1.add(wifiScanResultItem1);
+        scanResultList1.add(new WifiScanResultItem("1", "S-ISRAEL-RAILWAYS"));
 
         ArrayList<WifiScanResultItem> scanResultList2 = new ArrayList<>();
-        WifiScanResultItem wifiScanResultItem2 = new WifiScanResultItem("2", "S-ISRAEL-RAILWAYS");
-        scanResultList2.add(wifiScanResultItem2);
+        scanResultList2.add(new WifiScanResultItem("2", "S-ISRAEL-RAILWAYS"));
 
         ArrayList<WifiScanResultItem> scanResultList3 = new ArrayList<>();
-        WifiScanResultItem wifiScanResultItem3 = new WifiScanResultItem("3", "S-ISRAEL-RAILWAYS");
-        scanResultList3.add(wifiScanResultItem3);
+        scanResultList3.add(new WifiScanResultItem("3", "S-ISRAEL-RAILWAYS"));
 
         list.add(scanResultList1);
         list.add(new ArrayList<WifiScanResultItem>());
@@ -445,6 +446,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startTestTrip() {
 
+        // Mock scan results
         HashMap<String, String> mockResult = new HashMap<>();
         mockResult.put("1", "תחנה 1");
         mockResult.put("2", "תח2");
