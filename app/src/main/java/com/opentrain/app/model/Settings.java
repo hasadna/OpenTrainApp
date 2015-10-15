@@ -11,8 +11,6 @@ public class Settings {
     public static final String STATION_SSID_TRAIN = "S-ISRAEL-RAILWAYS";
     public static final String url_get_map_from_server = "http://gtfs.otrain.org/data/ls";
     public static final String url_add_map_to_server = "http://gtfs.otrain.org/data/submit";
-    // TODO: Replace url_get_test_from_server usage with just a hard coded list (Ofer added this).
-    public static final String url_get_test_from_server = "https://etherpad.mozilla.org/ep/pad/export/hPjMFFUv1I/latest?format=txt";
     public static final String url_get_stops_from_server = "http://gtfs.otrain.org/api/gtfs/stops/?format=json";
 
     public static long SCAN_INTERVAL = SCAN_INTERVAL_TRAIN;

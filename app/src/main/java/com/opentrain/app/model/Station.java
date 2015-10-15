@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class Station {
 
-    public static final String UNKNOWN_STOP_ID = null;
+    public static final String UNKNOWN_STOP_ID = "UnknownId";
     public static final String UNKNOWN_STATION_NAME = "לא ידוע";
     // The bssids are from the first ScanResult that created the station.
     public Set<String> bssids = new HashSet<>();
@@ -109,23 +109,21 @@ public class Station {
         return jsonObject;
     }
 
-    // TODO: Review
     // This function should return UNKNOWN_STOP_ID if not isConsistent or hasUnmappedBssid.
     public String getId() {
 
-        boolean hasUnmappedBssid = BssidUtils.hasUnmappedBssid(MainModel.getInstance().getBssidMap(), bssids);
-        boolean scanResultConsistent = BssidUtils.isConsistent(MainModel.getInstance().getBssidMap(), bssids);
+        boolean hasUnmappedBssid = BssidUtils.hasUnmappedBssid(MainModel.getBssidMapping(), bssids);
+        boolean scanResultConsistent = BssidUtils.isConsistent(MainModel.getBssidMapping(), bssids);
         if ((!scanResultConsistent) || (hasUnmappedBssid)) {
             return UNKNOWN_STOP_ID;
         } else {
             for (String scanBssid : bssids) {
-                return MainModel.getInstance().getBssidMap().get(scanBssid);
+                return MainModel.getBssidMapping().get(scanBssid);
             }
             return UNKNOWN_STOP_ID;
         }
     }
 
-    // TODO: Review
     // Station name is UNKNOWN_STATION_NAME if getId() is UNKNOWN_STOP_ID, else it is getId();
     public String getName() {
         String id = getId();

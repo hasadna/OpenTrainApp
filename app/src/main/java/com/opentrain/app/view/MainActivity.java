@@ -189,10 +189,6 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.action_test_trip) {
             onTestClick();
             return true;
-            // TODO: remove not local test trip.
-        } else if (id == R.id.action_test_trip_from_local) {
-            onLocalTestClick();
-            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -390,34 +386,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void onTestClick() {
-
-        onRequestStart();
-        NetowrkManager.getInstance().getTestTripFromServer(new NetowrkManager.RequestListener() {
-            @Override
-            public void onResponse(Object response) {
-                onRequestDone();
-                if (mBoundService == null) {
-                    Logger.log("cant simulate trip. service is null!!");
-                    toast("Cant run test. service is down");
-                    return;
-                }
-                if (MainModel.getInstance().getMockResultsList().size() == 0) {
-                    toast("Trip response is empty..!");
-                } else {
-                    toast("Test trip start");
-                    startTestTrip();
-                }
-            }
-
-            @Override
-            public void onError() {
-                toast("Fail to get test trip from server");
-                onRequestDone();
-            }
-        });
-    }
-
-    private void onLocalTestClick() {
         // TODO: We should probably be working with WifiScanResult (which holds a list of WifiScanResultItem) instead of ArrayList.
         // TODO: Look in the github comments for more info.
         ArrayList<ArrayList<WifiScanResultItem>> list = new ArrayList<>();
@@ -441,7 +409,6 @@ public class MainActivity extends AppCompatActivity {
         MainModel.getInstance().setMockResultsList(list);
 
         startTestTrip();
-
     }
 
     private void startTestTrip() {
