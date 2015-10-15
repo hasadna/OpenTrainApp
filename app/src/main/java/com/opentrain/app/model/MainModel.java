@@ -126,14 +126,12 @@ public class MainModel {
     }
 
     // Aligns @scannedStations to @gtfsStations for display purposes in the UI
-    // Assume the order of gtfs stations as of scanned
+    // This method assumes the order of @gtfsStations is the same as @scannedStations.
     public List<MatchedStation> alignScannedTripToGtfsTrip(List<Station> scannedStations, List<GtfsStation> gtfsStations) {
-
         List<MatchedStation> result = new ArrayList<MatchedStation>();
-
         int gtfsIndex = 0;
         for (Station scanned : scannedStations) {
-            while ((gtfsIndex < gtfsStations.size()) && (scanned.getId() != gtfsStations.get(gtfsIndex).id)) {
+            while ((gtfsIndex < gtfsStations.size()) && (!scanned.getId().equals(gtfsStations.get(gtfsIndex).id))) {
                 gtfsIndex++;
             }
             if (gtfsIndex < gtfsStations.size()) {
@@ -141,11 +139,11 @@ public class MainModel {
                 result.add(new MatchedStation(scanned, gtfsStations.get(gtfsIndex)));
             } else {
                 // No match - but still display the scanned station data
+                // TODO - rewrite this section: Perhaps we should add another int lastMatchedGtfsIndex and set gtfsIndex to it in this case instead of 0.
                 result.add(new MatchedStation(scanned, null));
                 gtfsIndex = 0; // Start from the beginning - there is some problem.
             }
         }
-
         return result;
     }
 }
