@@ -20,9 +20,10 @@ import java.util.Set;
 
 
 /**
- * Created by Elina on 10/6/2015.
+ * Created by Elina on 06/10/2015.
  * This test handles different gtfs and scanned stations matches.
  */
+// TODO - handle all coments from pull request
 public class MatchStationsTest {
 
     private static final String BSSID_STATION_A = "bssid_station_a";
