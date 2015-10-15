@@ -1,7 +1,7 @@
 package com.opentrain.app.model;
 
 /**
- * Created by Elina on 10/6/2015.
+ * Created by Elina on 06/10/2015.
  */
 public class MatchedStation {
     public Station scannedStation;
