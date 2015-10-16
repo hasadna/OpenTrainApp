@@ -23,6 +23,9 @@ public class MainModel {
         mInstance = new MainModel();
     }
 
+    public static Map<String, String> getBssidMapping() {
+        return getInstance().getBssidMap();
+    }
     // Map of BSSIDs to station names (future: change to station_id):
     private Map<String, String> bssidMap;
     // List of all the scanned stations at this trip:
@@ -130,18 +133,19 @@ public class MainModel {
     public List<MatchedStation> alignScannedTripToGtfsTrip(List<Station> scannedStations, List<GtfsStation> gtfsStations) {
         List<MatchedStation> result = new ArrayList<MatchedStation>();
         int gtfsIndex = 0;
+        int lastMatchedGtfsIndex = 0;
         for (Station scanned : scannedStations) {
             while ((gtfsIndex < gtfsStations.size()) && (!scanned.getId().equals(gtfsStations.get(gtfsIndex).id))) {
                 gtfsIndex++;
             }
             if (gtfsIndex < gtfsStations.size()) {
                 // Found a match
+                lastMatchedGtfsIndex = gtfsIndex;
                 result.add(new MatchedStation(scanned, gtfsStations.get(gtfsIndex)));
             } else {
                 // No match - but still display the scanned station data
-                // TODO - rewrite this section: Perhaps we should add another int lastMatchedGtfsIndex and set gtfsIndex to it in this case instead of 0.
                 result.add(new MatchedStation(scanned, null));
-                gtfsIndex = 0; // Start from the beginning - there is some problem.
+                gtfsIndex = lastMatchedGtfsIndex; // Start from the the last matched station.
             }
         }
         return result;
