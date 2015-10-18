@@ -196,9 +196,6 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.action_test_trip) {
             onTestClick();
             return true;
-        }else if (id == R.id.action_test_trip_from_local) {
-            onLocalTestClick();
-            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -396,47 +393,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void onTestClick() {
-
-        onRequestStart();
-        NetowrkManager.getInstance().getTestTripFromServer(new NetowrkManager.RequestListener() {
-            @Override
-            public void onResponse(Object response) {
-                onRequestDone();
-                if (mBoundService == null) {
-                    Logger.log("cant simulate trip. service is null!!");
-                    toast("Cant run test. service is down");
-                    return;
-                }
-                if (MainModel.getInstance().getMockResultsList().size() == 0) {
-                    toast("Trip response is empty..!");
-                } else {
-                    toast("Test trip start");
-                    startTestTrip();
-                }
-            }
-
-            @Override
-            public void onError() {
-                toast("Fail to get test trip from server");
-                onRequestDone();
-            }
-        });
-    }
-
-    private void onLocalTestClick() {
+        // TODO: We should probably be working with WifiScanResult (which holds a list of WifiScanResultItem) instead of ArrayList.
+        // TODO: Look in the github comments for more info.
         ArrayList<ArrayList<WifiScanResultItem>> list = new ArrayList<>();
 
         ArrayList<WifiScanResultItem> scanResultList1 = new ArrayList<>();
-        WifiScanResultItem wifiScanResultItem1 = new WifiScanResultItem("1", "S-ISRAEL-RAILWAYS");
-        scanResultList1.add(wifiScanResultItem1);
+        scanResultList1.add(new WifiScanResultItem("1", "S-ISRAEL-RAILWAYS"));
 
         ArrayList<WifiScanResultItem> scanResultList2 = new ArrayList<>();
-        WifiScanResultItem wifiScanResultItem2 = new WifiScanResultItem("2", "S-ISRAEL-RAILWAYS");
-        scanResultList2.add(wifiScanResultItem2);
+        scanResultList2.add(new WifiScanResultItem("2", "S-ISRAEL-RAILWAYS"));
 
         ArrayList<WifiScanResultItem> scanResultList3 = new ArrayList<>();
-        WifiScanResultItem wifiScanResultItem3 = new WifiScanResultItem("3", "S-ISRAEL-RAILWAYS");
-        scanResultList3.add(wifiScanResultItem3);
+        scanResultList3.add(new WifiScanResultItem("3", "S-ISRAEL-RAILWAYS"));
 
         list.add(scanResultList1);
         list.add(new ArrayList<WifiScanResultItem>());
@@ -448,7 +416,6 @@ public class MainActivity extends AppCompatActivity {
         MainModel.getInstance().setMockResultsList(list);
 
         startTestTrip();
-
     }
 
     private void startTestTrip() {
