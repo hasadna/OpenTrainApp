@@ -26,6 +26,7 @@ public class MainModel {
     public static Map<String, String> getBssidMapping() {
         return getInstance().getBssidMap();
     }
+
     // Map of BSSIDs to station names (future: change to station_id):
     private Map<String, String> bssidMap;
     // List of all the scanned stations at this trip:
