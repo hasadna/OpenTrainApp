@@ -9,7 +9,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
     public StationsListAdapter stationsListAdapter;
     private ServiceBroadcastReceiver mReceiver;
 
-    private Toolbar toolbar;
-
     Button button;
     ListView listView;
     ProgressBar progressBarScannig, progressBarSyncSever;
@@ -60,10 +57,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Attaching the layout to the toolbar object
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar); // Setting toolbar as the ActionBar with setSupportActionBar() call
 
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
