@@ -16,7 +16,8 @@ public class BssidUtils {
             if (bssidMap.containsKey(scanBssid)) {
                 if (stationId == null) {
                     stationId = bssidMap.get(scanBssid);
-                } else if (stationId != bssidMap.get(scanBssid)) {
+                } else if (!stationId.equals(bssidMap.get(scanBssid))) {
+                    Logger.log(String.format("BSSIDs are not consistent. stationId1=%s, stationId2=%s.", stationId, bssidMap.get(scanBssid)));
                     return false;
                 }
             }
@@ -27,6 +28,7 @@ public class BssidUtils {
     public static boolean hasUnmappedBssid(Map<String, String> bssidMap, Set<String> scanResultBssids) {
         for (String scanBssid : scanResultBssids) {
             if (!bssidMap.containsKey(scanBssid)) {
+                Logger.log(String.format("BSSID is not mapped: scanBssid=%s", scanBssid));
                 return true;
             }
         }

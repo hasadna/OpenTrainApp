@@ -21,6 +21,10 @@ public class LogActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log);
+
+        // Add the Up arrow
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         ListView listView;
         listView = (ListView) findViewById(R.id.listView);
         listView.setEmptyView(findViewById(android.R.id.empty));

@@ -21,7 +21,10 @@ import java.util.Set;
  * Created by Elina on 06/10/2015.
  * This test handles different gtfs and scanned stations matches.
  */
+// TODO - handle all coments from pull request
 public class MatchStationsTest {
+
+    // The tests contain usage of stations A-G. Station G is not mapped in the server.
 
     private static final String BSSID_STATION_A = "bssid_station_a";
     private static final String BSSID_STATION_A_2 = "bssid_station_a2";
@@ -53,19 +56,19 @@ public class MatchStationsTest {
     private static final long OFFSET_30_SEC = 30 * 1000;
 
     // Initialize gtfs trips:
-    private static final List<GtfsStation> BASIC_STATION_LIST_AB = getBasicGtfsStationList1();
-    private static final List<GtfsStation> BASIC_STATION_LIST_ABCDE = getBasicGtfsStationList2();
-    private static final List<GtfsStation> BASIC_STATION_LIST_ABC = getBasicGtfsStationList3();
-    private static final List<GtfsStation> BASIC_STATION_LIST_ABCGE_UNMAPPED = getBasicGtfsStationList4();
+    private static final List<GtfsStation> BASIC_STATION_LIST_AB = getBasicGtfsStationListAB();
+    private static final List<GtfsStation> BASIC_STATION_LIST_ABCDE = getBasicGtfsStationListABCDE();
+    private static final List<GtfsStation> BASIC_STATION_LIST_ABC = getBasicGtfsStationListABC();
+    private static final List<GtfsStation> BASIC_STATION_LIST_ABCGE_UNMAPPED = getBasicGtfsStationListABCGEUNMAPPED();
 
-    private static List<GtfsStation> getBasicGtfsStationList1() {
+    private static List<GtfsStation> getBasicGtfsStationListAB() {
         List<GtfsStation> basicStationList = new ArrayList<>();
         addGtfsStation(basicStationList, STOP_ID_STATION_A, BASE_TIME);
         addGtfsStation(basicStationList, STOP_ID_STATION_B, BASE_TIME + BETWEEN_STOPS_OFFSET_LONG);
         return basicStationList;
     }
 
-    private static List<GtfsStation> getBasicGtfsStationList2() {
+    private static List<GtfsStation> getBasicGtfsStationListABCDE() {
         List<GtfsStation> basicStationList = new ArrayList<>();
         addGtfsStation(basicStationList, STOP_ID_STATION_A, BASE_TIME);
         addGtfsStation(basicStationList, STOP_ID_STATION_B, BASE_TIME + BETWEEN_STOPS_OFFSET_LONG);
@@ -75,7 +78,7 @@ public class MatchStationsTest {
         return basicStationList;
     }
 
-    private static List<GtfsStation> getBasicGtfsStationList3() {
+    private static List<GtfsStation> getBasicGtfsStationListABC() {
         List<GtfsStation> basicStationList = new ArrayList<>();
         addGtfsStation(basicStationList, STOP_ID_STATION_A, BASE_TIME);
         addGtfsStation(basicStationList, STOP_ID_STATION_B, BASE_TIME + BETWEEN_STOPS_OFFSET_LONG);
@@ -83,7 +86,8 @@ public class MatchStationsTest {
         return basicStationList;
     }
 
-    private static List<GtfsStation> getBasicGtfsStationList4() {
+    // Station G is unmapped.
+    private static List<GtfsStation> getBasicGtfsStationListABCGEUNMAPPED() {
         List<GtfsStation> basicStationList = new ArrayList<>();
         addGtfsStation(basicStationList, STOP_ID_STATION_A, BASE_TIME);
         addGtfsStation(basicStationList, STOP_ID_STATION_B, BASE_TIME + BETWEEN_STOPS_OFFSET_LONG);

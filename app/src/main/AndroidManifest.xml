@@ -21,7 +21,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.LogActivity" />
+        <activity
+            android:name=".view.LogActivity"
+            android:parentActivityName="com.opentrain.app.view.MainActivity" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.opentrain.app.view.MainActivity" />
+        </activity>
 
         <service android:name=".service.ScannerService" />
 
