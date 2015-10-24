@@ -1,6 +1,13 @@
 package com.opentrain.app.model;
 
 import com.opentrain.app.controller.Action;
+import com.opentrain.app.controller.NewWifiScanResultAction;
+import com.opentrain.app.controller.UpdateBssidMapAction;
+import com.opentrain.app.utils.Logger;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,5 +148,42 @@ public class MainModel {
 
     public void addToHistory(Action action) {
         mHistory.add(action);
+    }
+
+    public JSONObject historyToJson() {
+        JSONObject json = new JSONObject();
+        try {
+            JSONArray actionsJson = new JSONArray();
+            for (int i = 0; i < mHistory.size(); i++) {
+                JSONObject singleActionJson = new JSONObject();
+                singleActionJson.put(mHistory.get(i).getClass().getSimpleName(),
+                        mHistory.get(i).toJson());
+                actionsJson.put(singleActionJson);
+            }
+            json.put("actions", actionsJson);
+        } catch (JSONException exception) {
+            Logger.log("toJson failed for MainModel");
+        }
+        return json;
+    }
+
+    public static List<Action> historyFromJson(JSONObject json) {
+        List<Action> history = new ArrayList<>();
+        try {
+            JSONArray actionsJson = json.getJSONArray("actions");
+            for (int i = 0; i < actionsJson.length(); i++) {
+                JSONObject singleActionJson = actionsJson.getJSONObject(i);
+                if (singleActionJson.has("NewWifiScanResultAction")) {
+                    history.add(NewWifiScanResultAction.fromJson(singleActionJson));
+                } else if (singleActionJson.has("UpdateBssidMapAction")) {
+                    history.add(UpdateBssidMapAction.fromJson(singleActionJson));
+                } else {
+                    throw new IllegalArgumentException("Unknown action class");
+                }
+            }
+        } catch (JSONException exception) {
+            Logger.log("toJson failed for MainModel");
+        }
+        return history;
     }
 }

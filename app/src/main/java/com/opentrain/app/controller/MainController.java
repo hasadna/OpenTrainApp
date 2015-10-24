@@ -31,6 +31,10 @@ public class MainController {
             throw new UnsupportedOperationException("Unknown Action type");
         }
         MainModel.getInstance().addToHistory(action);
+//        // Save json to log:
+//        try {
+//            Logger.log(MainModel.getInstance().historyToJson().toString(2));
+//        } catch (Exception e) {}
     }
 
     public void init(Context context) {

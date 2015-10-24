@@ -5,7 +5,7 @@ package com.opentrain.app.model;
  */
 public class Settings {
 
-    public static final long SCAN_INTERVAL_TEST = 2000;
+    public static final long SCAN_INTERVAL_TEST = 300;
     public static final long SCAN_INTERVAL_TRAIN = 15000;
     public static final String STATION_SSID_SIMULATOR = "WiredSSID";
     public static final String STATION_SSID_TRAIN = "S-ISRAEL-RAILWAYS";

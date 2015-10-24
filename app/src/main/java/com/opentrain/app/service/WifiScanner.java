@@ -64,12 +64,15 @@ public class WifiScanner extends BroadcastReceiver {
                 wifiScanResultItems.add(wifiScanResultItem);
             }
         }
-        reportScanResult(new WifiScanResult(wifiScanResultItems, System.currentTimeMillis()));
+        reportScanResult(new WifiScanResult(System.currentTimeMillis(), wifiScanResultItems));
     }
 
     public void reportScanResult(WifiScanResult scanResult) {
-        NewWifiScanResultAction newWifiScanResultAction = new NewWifiScanResultAction(scanResult);
-        MainController.execute(newWifiScanResultAction);
+        reportScanResult(new NewWifiScanResultAction(scanResult));
+    }
+
+    public void reportScanResult(NewWifiScanResultAction action) {
+        MainController.execute(action);
         if (scanningListener != null) {
             scanningListener.onScanResult();
         }

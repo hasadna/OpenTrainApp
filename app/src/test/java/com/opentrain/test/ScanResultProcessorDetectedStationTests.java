@@ -123,7 +123,7 @@ public class ScanResultProcessorDetectedStationTests {
         } else {  // For both SAME and NONE PreviousStation
             scanResultItems.add(new WifiScanResultItem(BSSID_DIFFERENT_STATION, SSID));
         }
-        return new WifiScanResult(scanResultItems, timeUnixMs);
+        return new WifiScanResult(timeUnixMs, scanResultItems);
     }
 
     @Before

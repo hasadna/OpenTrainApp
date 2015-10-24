@@ -93,7 +93,8 @@ public class ScanResultProcessorNoDetectedStationTests {
         mainModel.setInStation(stationState == StationState.NOW_IN_INITIAL_STATION);
 
         // Set scan result
-        WifiScanResult scanResult = new WifiScanResult(new ArrayList<WifiScanResultItem>(), SCAN_RESULT_TIME_UNIX_MS);
+        WifiScanResult scanResult =
+                new WifiScanResult(SCAN_RESULT_TIME_UNIX_MS, new ArrayList<WifiScanResultItem>());
 
         // Run test
         ScanResultProcessor.process(mainModel, scanResult, settings);

@@ -24,7 +24,9 @@ import android.widget.Toast;
 
 import com.opentrain.app.R;
 import com.opentrain.app.adapter.StationsListAdapter;
+import com.opentrain.app.controller.Action;
 import com.opentrain.app.controller.MainController;
+import com.opentrain.app.controller.NewWifiScanResultAction;
 import com.opentrain.app.controller.UpdateBssidMapAction;
 import com.opentrain.app.model.BssidMap;
 import com.opentrain.app.model.MainModel;
@@ -390,12 +392,8 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, str, Toast.LENGTH_LONG).show();
     }
 
-    protected void onTestClick() {
-        List<WifiScanResult> mockWifiScanResults = new ArrayList<>();
-        // TODO: Set predetermined times.
-        mockWifiScanResults.add(new WifiScanResult(System.currentTimeMillis(), "1", "S-ISRAEL-RAILWAYS"));
-        mockWifiScanResults.add(new WifiScanResult(System.currentTimeMillis(), "2", "S-ISRAEL-RAILWAYS"));
-        mockWifiScanResults.add(new WifiScanResult(System.currentTimeMillis(), "3", "S-ISRAEL-RAILWAYS"));
+    private List<Action> getHardCodedTestActions() {
+        List<Action> actions = new ArrayList<>();
 
         BssidMap mockBssidMap = new BssidMap();
         mockBssidMap.put("1", "תחנה 1");
@@ -406,19 +404,34 @@ public class MainActivity extends AppCompatActivity {
         mockBssidMap.put("6", "תחנה שישיתשישית");
         mockBssidMap.put("7", "תחנה 7");
         mockBssidMap.put("8", "תחנה מספר8 מספר8");
+        actions.add(new UpdateBssidMapAction(mockBssidMap));
+
+        final long baseTimeUnixMs = 1445697120000L;
+        final long second = 1000;
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs, "1", "S-ISRAEL-RAILWAYS")));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 10, "1", "S-ISRAEL-RAILWAYS")));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 20)));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 60, "2", "S-ISRAEL-RAILWAYS")));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 80)));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 120, "3", "S-ISRAEL-RAILWAYS")));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 140)));
+
+        return actions;
+    }
+
+    protected void onTestClick() {
+        List<Action> actions = getHardCodedTestActions();
 
         // Save current state and replace with mock state
         final BssidMap prevBssidMap = MainModel.getInstance().getBssidMap();
         final WifiScanner prevWifiScanner = mBoundService.getWifiScanner();
-        MainController.execute(new UpdateBssidMapAction(mockBssidMap));
-        mBoundService.setWifiScanner(new MockWifiScanner(this, mockWifiScanResults));
+        mBoundService.setWifiScanner(new MockWifiScanner(this, actions));
 
         // TODO: Save this state as well and replace with mock state.
         MainModel.getInstance().clearScannedItems();
         stopScanning();
         Logger.clearItems();
         Settings.setTestSettings();
-
         MockWifiScanner.mockWifiScanListener = new MockWifiScanner.MockWifiScanListener() {
             @Override
             public void onScanDone() {
@@ -442,6 +455,6 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 startScanning();
             }
-        }, 1000);
+        }, 10);
     }
 }

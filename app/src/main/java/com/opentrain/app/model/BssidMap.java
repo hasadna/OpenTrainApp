@@ -3,27 +3,31 @@ package com.opentrain.app.model;
 import com.opentrain.app.utils.Logger;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.TreeMap;
 
 /**
- * Created by Elina_2 on 24 Oct 2015.
+ * Created by Elina on 24 Oct 2015.
  */
-public class BssidMap extends TreeMap<String, String> {
+public class BssidMap extends HashMap<String, String> {
 
     public BssidMap() {
+        super();
     }
 
     public BssidMap(Map<String,String> map) {
-        this.putAll(map);
+        super(map);
     }
 
     public BssidMap(JSONObject json) {
+        super();
         try {
             JSONArray jsonArray = json.getJSONArray("networks");
             for (int i = 0, j = jsonArray.length(); i < j; i++) {
@@ -64,5 +68,24 @@ public class BssidMap extends TreeMap<String, String> {
             }
         }
         return false;
+    }
+
+    public JSONObject toJson() {
+        return new JSONObject(this);
+    }
+
+    public static BssidMap fromJson(JSONObject json) {
+        BssidMap bssidMap = new BssidMap();
+        Iterator<String> keys = json.keys();
+        try {
+            while(keys.hasNext()) {
+                String key = (String)keys.next();
+                bssidMap.put(key, json.getString(key));
+            }
+        } catch (JSONException exception) {
+            Logger.log("fromJson failed for BssidMap");
+            return null;
+        }
+        return bssidMap;
     }
 }
