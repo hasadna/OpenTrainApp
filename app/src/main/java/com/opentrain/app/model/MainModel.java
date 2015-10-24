@@ -1,5 +1,7 @@
 package com.opentrain.app.model;
 
+import com.opentrain.app.controller.Action;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,39 +25,32 @@ public class MainModel {
         mInstance = new MainModel();
     }
 
-    public static Map<String, String> getBssidMapping() {
+    public static BssidMap getBssidMapping() {
         return getInstance().getBssidMap();
     }
 
     // Map of BSSIDs to station names (future: change to station_id):
-    private Map<String, String> bssidMap;
+    private BssidMap bssidMap;
     // List of all the scanned stations at this trip:
     private List<Station> scannedStationList;
     private boolean inStation;
-    // Test trip
-    private ArrayList<ArrayList<WifiScanResultItem>> mockResultsList;
     // List of all train stations:
-    private ArrayList<String> mStationList;
+    private List<String> mStationList;
+    private List<Action> mHistory;
 
     private MainModel() {
         scannedStationList = new ArrayList<>();
-        bssidMap = new HashMap<>();
-        mockResultsList = new ArrayList<>();
+        bssidMap = new BssidMap();
         mStationList = new ArrayList<>();
+        mHistory = new ArrayList<>();
     }
 
-    public Map<String, String> getBssidMap() {
+    public BssidMap getBssidMap() {
         return bssidMap;
     }
 
-    public void setBssidMap(Map<String, String> bssidMap) {
+    public void setBssidMap(BssidMap bssidMap) {
         this.bssidMap = bssidMap;
-    }
-
-    public void updateMap(Map<String, String> results) {
-        for (Map.Entry<String, String> serverEntry : results.entrySet()) {
-            bssidMap.put(serverEntry.getKey(), serverEntry.getValue());
-        }
     }
 
     public boolean isInStation() {
@@ -111,21 +106,13 @@ public class MainModel {
         scannedStationList.clear();
     }
 
-    public ArrayList<ArrayList<WifiScanResultItem>> getMockResultsList() {
-        return mockResultsList;
-    }
-
-    public void setMockResultsList(ArrayList<ArrayList<WifiScanResultItem>> mockResultsList) {
-        this.mockResultsList = mockResultsList;
-    }
-
     public void setStationList(ArrayList<String> stationList) {
         if (stationList != null && stationList.size() > 0) {
             this.mStationList = stationList;
         }
     }
 
-    public ArrayList<String> getStationList() {
+    public List<String> getStationList() {
         return mStationList;
     }
 
@@ -150,5 +137,9 @@ public class MainModel {
             }
         }
         return result;
+    }
+
+    public void addToHistory(Action action) {
+        mHistory.add(action);
     }
 }

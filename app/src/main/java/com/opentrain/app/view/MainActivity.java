@@ -24,13 +24,18 @@ import android.widget.Toast;
 
 import com.opentrain.app.R;
 import com.opentrain.app.adapter.StationsListAdapter;
+import com.opentrain.app.controller.MainController;
+import com.opentrain.app.controller.UpdateBssidMapAction;
+import com.opentrain.app.model.BssidMap;
 import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.Settings;
 import com.opentrain.app.model.Station;
+import com.opentrain.app.model.WifiScanResult;
 import com.opentrain.app.model.WifiScanResultItem;
 import com.opentrain.app.network.NetowrkManager;
 import com.opentrain.app.service.ScannerService;
 import com.opentrain.app.service.ServiceBroadcastReceiver;
+import com.opentrain.app.service.WifiScanner;
 import com.opentrain.app.testing.MockWifiScanner;
 import com.opentrain.app.utils.Logger;
 
@@ -386,51 +391,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void onTestClick() {
-        // TODO: We should probably be working with WifiScanResult (which holds a list of WifiScanResultItem) instead of ArrayList.
-        // TODO: Look in the github comments for more info.
-        ArrayList<ArrayList<WifiScanResultItem>> list = new ArrayList<>();
+        List<WifiScanResult> mockWifiScanResults = new ArrayList<>();
+        // TODO: Set predetermined times.
+        mockWifiScanResults.add(new WifiScanResult(System.currentTimeMillis(), "1", "S-ISRAEL-RAILWAYS"));
+        mockWifiScanResults.add(new WifiScanResult(System.currentTimeMillis(), "2", "S-ISRAEL-RAILWAYS"));
+        mockWifiScanResults.add(new WifiScanResult(System.currentTimeMillis(), "3", "S-ISRAEL-RAILWAYS"));
 
-        ArrayList<WifiScanResultItem> scanResultList1 = new ArrayList<>();
-        scanResultList1.add(new WifiScanResultItem("1", "S-ISRAEL-RAILWAYS"));
+        BssidMap mockBssidMap = new BssidMap();
+        mockBssidMap.put("1", "תחנה 1");
+        mockBssidMap.put("2", "תח2");
+        mockBssidMap.put("3", "תחנה 3 בעברית");
+        mockBssidMap.put("4", "תחנה רביעית עם שםארוךארוך");
+        mockBssidMap.put("5", "תחנהחמישית מס5");
+        mockBssidMap.put("6", "תחנה שישיתשישית");
+        mockBssidMap.put("7", "תחנה 7");
+        mockBssidMap.put("8", "תחנה מספר8 מספר8");
 
-        ArrayList<WifiScanResultItem> scanResultList2 = new ArrayList<>();
-        scanResultList2.add(new WifiScanResultItem("2", "S-ISRAEL-RAILWAYS"));
+        // Save current state and replace with mock state
+        final BssidMap prevBssidMap = MainModel.getInstance().getBssidMap();
+        final WifiScanner prevWifiScanner = mBoundService.getWifiScanner();
+        MainController.execute(new UpdateBssidMapAction(mockBssidMap));
+        mBoundService.setWifiScanner(new MockWifiScanner(this, mockWifiScanResults));
 
-        ArrayList<WifiScanResultItem> scanResultList3 = new ArrayList<>();
-        scanResultList3.add(new WifiScanResultItem("3", "S-ISRAEL-RAILWAYS"));
-
-        list.add(scanResultList1);
-        list.add(new ArrayList<WifiScanResultItem>());
-        list.add(scanResultList2);
-        list.add(new ArrayList<WifiScanResultItem>());
-        list.add(scanResultList3);
-        list.add(new ArrayList<WifiScanResultItem>());
-
-        MainModel.getInstance().setMockResultsList(list);
-
-        startTestTrip();
-    }
-
-    private void startTestTrip() {
-
-        // Mock scan results
-        HashMap<String, String> mockResult = new HashMap<>();
-        mockResult.put("1", "תחנה 1");
-        mockResult.put("2", "תח2");
-        mockResult.put("3", "תחנה 3 בעברית");
-        mockResult.put("4", "תחנה רביעית עם שםארוךארוך");
-        mockResult.put("5", "תחנהחמישית מס5");
-        mockResult.put("6", "תחנה שישיתשישית");
-        mockResult.put("7", "תחנה 7");
-        mockResult.put("8", "תחנה מספר8 מספר8");
-
-        MainModel.getInstance().updateMap(mockResult);
-
+        // TODO: Save this state as well and replace with mock state.
         MainModel.getInstance().clearScannedItems();
         stopScanning();
-        mBoundService.setTestWifiScanner();
-        Settings.setTestSettings();
         Logger.clearItems();
+        Settings.setTestSettings();
 
         MockWifiScanner.mockWifiScanListener = new MockWifiScanner.MockWifiScanListener() {
             @Override
@@ -439,7 +426,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         toast("Test trip done!");
-                        stopTestTrip();
+                        // Stop test trip and return to normal
+                        stopScanning();
+                        mBoundService.setWifiScanner(prevWifiScanner);
+                        MainController.execute(new UpdateBssidMapAction(prevBssidMap));
+                        Settings.setDefaultettings();
                     }
                 });
             }
@@ -452,11 +443,5 @@ public class MainActivity extends AppCompatActivity {
                 startScanning();
             }
         }, 1000);
-    }
-
-    private void stopTestTrip() {
-        stopScanning();
-        mBoundService.setTrainWifiScanner();
-        Settings.setDefaultettings();
     }
 }

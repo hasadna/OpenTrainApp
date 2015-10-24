@@ -1,6 +1,5 @@
 package com.opentrain.app.model;
 
-import com.opentrain.app.utils.BssidUtils;
 import com.opentrain.app.utils.Logger;
 
 import org.json.JSONArray;
@@ -112,8 +111,8 @@ public class Station {
     // This function should return UNKNOWN_STOP_ID if not isConsistent or hasUnmappedBssid.
     public String getId() {
 
-        boolean hasUnmappedBssid = BssidUtils.hasUnmappedBssid(MainModel.getBssidMapping(), bssids);
-        boolean scanResultConsistent = BssidUtils.isConsistent(MainModel.getBssidMapping(), bssids);
+        boolean hasUnmappedBssid = MainModel.getBssidMapping().hasUnmappedBssid(bssids);
+        boolean scanResultConsistent = MainModel.getBssidMapping().isConsistent(bssids);
         if ((!scanResultConsistent) || (hasUnmappedBssid)) {
             return UNKNOWN_STOP_ID;
         } else {

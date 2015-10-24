@@ -2,6 +2,9 @@ package com.opentrain.test;
 
 import static org.junit.Assert.*;
 
+import com.opentrain.app.controller.MainController;
+import com.opentrain.app.controller.UpdateBssidMapAction;
+import com.opentrain.app.model.BssidMap;
 import com.opentrain.app.model.GtfsStation;
 import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.MatchedStation;
@@ -129,7 +132,7 @@ public class MatchStationsTest {
         scannedStations = new ArrayList<Station>();
         expectedMatchedStations = new ArrayList<MatchedStation>();
 
-        HashMap<String, String> bssidMap = new HashMap<>();
+        BssidMap bssidMap = new BssidMap();
         bssidMap.put(BSSID_STATION_A, STOP_ID_STATION_A);
         bssidMap.put(BSSID_STATION_A_2, STOP_ID_STATION_A);
         bssidMap.put(BSSID_STATION_B, STOP_ID_STATION_B);
@@ -139,7 +142,7 @@ public class MatchStationsTest {
         bssidMap.put(BSSID_STATION_E, STOP_ID_STATION_E);
         MainModel.reset();
         mainModel = MainModel.getInstance();
-        mainModel.setBssidMap(bssidMap);
+        MainController.execute(new UpdateBssidMapAction(bssidMap));
     }
 
     /*

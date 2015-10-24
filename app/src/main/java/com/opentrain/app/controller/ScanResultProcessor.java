@@ -1,9 +1,12 @@
-package com.opentrain.app.model;
+package com.opentrain.app.controller;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.opentrain.app.utils.BssidUtils;
+import com.opentrain.app.model.MainModel;
+import com.opentrain.app.model.Station;
+import com.opentrain.app.model.WifiScanResult;
+import com.opentrain.app.model.WifiScanResultItem;
 import com.opentrain.app.utils.Logger;
 
 /**
@@ -25,8 +28,8 @@ public class ScanResultProcessor {
                 model.setInStation(false);
             }
         } else {
-            boolean hasUnmappedBssid = BssidUtils.hasUnmappedBssid(model.getBssidMap(), scanResult.getBssids());
-            boolean scanResultConsistent = BssidUtils.isConsistent(model.getBssidMap(), scanResult.getBssids());
+            boolean hasUnmappedBssid = model.getBssidMap().hasUnmappedBssid(scanResult.getBssids());
+            boolean scanResultConsistent = model.getBssidMap().isConsistent(scanResult.getBssids());
             if (hasUnmappedBssid || !scanResultConsistent) {
                 Station lastStation = (model.getScannedStationList().isEmpty()) ?
                         null : model.getScannedStationList().get(model.getScannedStationList().size() - 1);

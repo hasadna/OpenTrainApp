@@ -1,5 +1,6 @@
 package com.opentrain.app.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,23 @@ public class WifiScanResult {
     public WifiScanResult(List<WifiScanResultItem> wifiScanResultItems, long unixTimeMs) {
         this.wifiScanResultItems = wifiScanResultItems;
         this.unixTimeMs = unixTimeMs;
+    }
+
+    public WifiScanResult(long unixTimeMs) {
+        this.wifiScanResultItems = new ArrayList<>();
+        this.unixTimeMs = unixTimeMs;
+    }
+
+    public WifiScanResult(long unixTimeMs, String... bssidsSsidsArray) {
+        if (bssidsSsidsArray.length % 2 != 0) {
+            throw new IllegalArgumentException("BSSID and SSID array should have even length.");
+        }
+        this.unixTimeMs = unixTimeMs;
+        wifiScanResultItems = new ArrayList<>();
+        for (int i = 0; i < bssidsSsidsArray.length; i+=2) {
+            wifiScanResultItems.add(
+                    new WifiScanResultItem(bssidsSsidsArray[i], bssidsSsidsArray[i+1]));
+        }
     }
 
     public WifiScanResult buildWithItems(List<WifiScanResultItem> wifiScanResultItems) {

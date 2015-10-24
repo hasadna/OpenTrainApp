@@ -12,10 +12,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import com.opentrain.app.model.Settings;
-import com.opentrain.app.model.Station;
-import com.opentrain.app.testing.MockWifiScanner;
 
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -79,17 +76,16 @@ public class ScannerService extends Service {
         Looper mServiceLooper = thread.getLooper();
         mServiceHandler = new ServiceHandler(mServiceLooper);
 
-        setTrainWifiScanner();
+        setWifiScanner(new WifiScanner(this));
     }
 
-    public void setTrainWifiScanner() {
-        wifiScanner = new WifiScanner(this);
+    public void setWifiScanner(WifiScanner wifiScanner) {
         wifiScanner.setScanningListener(scannResultListener);
+        this.wifiScanner = wifiScanner;
     }
 
-    public void setTestWifiScanner() {
-        wifiScanner = new MockWifiScanner(this);
-        wifiScanner.setScanningListener(scannResultListener);
+    public WifiScanner getWifiScanner() {
+        return wifiScanner;
     }
 
     private WifiScanner.ScanningListener scannResultListener = new WifiScanner.ScanningListener() {
