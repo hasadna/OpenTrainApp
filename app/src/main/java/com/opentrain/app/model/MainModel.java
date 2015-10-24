@@ -174,9 +174,11 @@ public class MainModel {
             for (int i = 0; i < actionsJson.length(); i++) {
                 JSONObject singleActionJson = actionsJson.getJSONObject(i);
                 if (singleActionJson.has("NewWifiScanResultAction")) {
-                    history.add(NewWifiScanResultAction.fromJson(singleActionJson));
+                    history.add(NewWifiScanResultAction.fromJson(
+                            (JSONObject)singleActionJson.get("NewWifiScanResultAction")));
                 } else if (singleActionJson.has("UpdateBssidMapAction")) {
-                    history.add(UpdateBssidMapAction.fromJson(singleActionJson));
+                    history.add(UpdateBssidMapAction.fromJson(
+                            (JSONObject)singleActionJson.get("UpdateBssidMapAction")));
                 } else {
                     throw new IllegalArgumentException("Unknown action class");
                 }

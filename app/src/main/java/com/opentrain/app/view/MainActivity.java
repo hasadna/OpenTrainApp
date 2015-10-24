@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +42,12 @@ import com.opentrain.app.service.WifiScanner;
 import com.opentrain.app.testing.MockWifiScanner;
 import com.opentrain.app.utils.Logger;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -419,8 +426,30 @@ public class MainActivity extends AppCompatActivity {
         return actions;
     }
 
+    private List<Action> getFileActionHistory() {
+        AssetManager assetManager = getApplicationContext().getAssets();
+        try {
+            InputStream inputStream = assetManager.open("action_history.json");
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuilder stringBuilder = new StringBuilder();
+            String line = bufferedReader.readLine();
+            while(line != null) {
+                stringBuilder.append(line);
+                line = bufferedReader.readLine();
+            }
+            String jsonString = stringBuilder.toString();
+            JSONObject json = new JSONObject(jsonString);
+            return MainModel.historyFromJson(json);
+        } catch (Exception exception) {
+            Logger.log("Action history file failed to load.");
+            return null;
+        }
+    }
+
     protected void onTestClick() {
-        List<Action> actions = getHardCodedTestActions();
+        //List<Action> actions = getHardCodedTestActions();
+        List<Action> actions = getFileActionHistory();
 
         // Save current state and replace with mock state
         final BssidMap prevBssidMap = MainModel.getInstance().getBssidMap();

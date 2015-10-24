@@ -36,7 +36,7 @@ public class WifiScanResultItem {
 
     public static WifiScanResultItem fromJson(JSONObject json) {
         try {
-            return new WifiScanResultItem(json.getString("bssid"), json.getString("sssid"));
+            return new WifiScanResultItem(json.getString("bssid"), json.getString("ssid"));
         } catch (JSONException exception) {
             Logger.log("fromJson failed for WifiScanResultItem");
             return null;
