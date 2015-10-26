@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    card_view:cardCornerRadius="2dp"
+    android:layout_margin="5dp"
+    android:elevation="1dp"
+    android:clickable="true">
+
+    <android.support.percent.PercentRelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:selectableItemBackground">
+
+        <TextView
+            android:id="@+id/txtName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="תחנה"
+            android:gravity="center_vertical"
+            android:layout_gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="16dp"
+            card_view:layout_widthPercent="40%" />
+
+        <TextView
+            android:id="@+id/scannedEnterTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="הגעה"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_toLeftOf="@+id/txtName"
+            card_view:layout_widthPercent="30%" />
+
+        <TextView
+            android:id="@+id/scannedExitTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="יציאה"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_toLeftOf="@+id/scannedEnterTime"
+            card_view:layout_widthPercent="30%" />
+
+        <TextView
+            android:id="@+id/gtfsEnterTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="הגעה"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:layout_below="@+id/scannedEnterTime"
+            android:layout_toLeftOf="@+id/txtName"
+            card_view:layout_widthPercent="30%" />
+
+        <TextView
+            android:id="@+id/gtfsExitTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="יציאה"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:layout_below="@+id/scannedExitTime"
+            android:layout_toLeftOf="@+id/gtfsEnterTime"
+            card_view:layout_widthPercent="30%" />
+
+    </android.support.percent.PercentRelativeLayout>
+
+
+
+</android.support.v7.widget.CardView>

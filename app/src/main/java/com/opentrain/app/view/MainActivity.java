@@ -9,6 +9,8 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.opentrain.app.R;
-import com.opentrain.app.adapter.StationsListAdapter;
+import com.opentrain.app.adapter.StationsCardViewAdapter;
 import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.Settings;
 import com.opentrain.app.model.Station;
@@ -38,17 +40,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements StationsCardViewAdapter.OnItemClickListener {
 
     private ScannerService mBoundService;
-    public StationsListAdapter stationsListAdapter;
     private ServiceBroadcastReceiver mReceiver;
+    private StationsCardViewAdapter mAdapter;
+    private RecyclerView mRecycleView;
 
     Button button;
-    ListView listView;
     ProgressBar progressBarScannig, progressBarSyncSever;
 
     private boolean mIsBound;
@@ -69,28 +70,23 @@ public class MainActivity extends AppCompatActivity {
         progressBarScannig.setVisibility(View.INVISIBLE);
         progressBarSyncSever = (ProgressBar) findViewById(R.id.progressBarSyncServer);
         progressBarSyncSever.setVisibility(View.INVISIBLE);
-        listView = (ListView) findViewById(R.id.listView);
-        listView.setEmptyView(findViewById(android.R.id.empty));
 
-        // Add header to the listView
-        View header = getLayoutInflater().inflate(R.layout.station_list_raw, null);
-        listView.addHeaderView(header, null, false);
-
-        stationsListAdapter = new StationsListAdapter(this);
-        listView.setAdapter(stationsListAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Station station = (Station) parent.getAdapter().getItem(position);
-                onStationItemClick(station);
-            }
-        });
+        mRecycleView = (RecyclerView)findViewById(R.id.recyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecycleView.setLayoutManager(layoutManager);
+        mAdapter = new StationsCardViewAdapter(this);
+        mRecycleView.setAdapter(mAdapter);
 
         mReceiver = new ServiceBroadcastReceiver(this);
 
         startService(getServiceIntent());
         doBindService();
 
+    }
+
+    public void onItemClick(View itemView, int position) {
+        onStationItemClick(position);
     }
 
     protected Intent getServiceIntent() {
@@ -202,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
         onStationItemClick(null);
     }
 
-    private void onStationItemClick(final Station station) {
+    private void onStationItemClick(final Integer stationNum) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle("Edit Station:");
@@ -212,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
         final Spinner spinner = (Spinner) view.findViewById(R.id.stations_spinner);
         List<String> list = MainModel.getInstance().getStationList();
+        final Station station = (stationNum != null) ? MainModel.getInstance().getScannedStationList().get(stationNum) : null;
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, list);
@@ -378,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onScanResult() {
-        stationsListAdapter.setItems(MainModel.getInstance().getScannedStationList());
+        mAdapter.setItems(MainModel.getInstance().getScannedStationList());
     }
 
     private void toast(String str) {
