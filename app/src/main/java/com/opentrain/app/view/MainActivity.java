@@ -203,6 +203,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.action_test_trip) {
             onTestClick();
             return true;
+        } else if (id == R.id.action_send_logs_by_email) {
+            sendLogByEmail();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -301,6 +304,27 @@ public class MainActivity extends AppCompatActivity {
             stopScanning();
         } else {
             startScanning();
+        }
+    }
+
+    public void sendLogByEmail() {
+        toast("Share logs with email");
+
+        Intent email = new Intent(Intent.ACTION_SEND);
+        // prompts email clients only
+        email.setType("message/rfc822");
+        email.putExtra(Intent.EXTRA_EMAIL, new String[] {"ekleinerman@gmail.com"});
+        email.putExtra(Intent.EXTRA_SUBJECT, "OpenTrainApp - Log");
+        email.putExtra(Intent.EXTRA_TEXT, "OpenTrainApp Log Files attached");
+        // Get the actions history in JSON format from main model:
+        JSONObject historyJson = MainModel.getInstance().historyToJson();
+        email.putExtra(Intent.EXTRA_TEXT, historyJson.toString());
+
+        try {
+            // the user can choose the email client
+            startActivity(email);
+        } catch (android.content.ActivityNotFoundException ex) {
+            toast("No email client installed.");
         }
     }
 

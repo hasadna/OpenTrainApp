@@ -32,4 +32,9 @@
         android:orderInCategory="100"
         android:title="@string/action_test_trip"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_send_logs_by_email"
+        android:orderInCategory="100"
+        android:title="@string/action_send_logs_by_email"
+        app:showAsAction="never" />
 </menu>
