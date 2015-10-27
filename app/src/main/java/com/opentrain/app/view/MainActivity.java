@@ -14,11 +14,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -49,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
     private StationsCardViewAdapter mAdapter;
     private RecyclerView mRecycleView;
 
-    Button button;
+    private Menu menu;
     ProgressBar progressBarScannig, progressBarSyncSever;
 
     private boolean mIsBound;
@@ -59,13 +56,6 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onTrackingClick(v);
-            }
-        });
         progressBarScannig = (ProgressBar) findViewById(R.id.progressBarScannig);
         progressBarScannig.setVisibility(View.INVISIBLE);
         progressBarSyncSever = (ProgressBar) findViewById(R.id.progressBarSyncServer);
@@ -159,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        this.menu = menu;
         return true;
     }
 
@@ -167,7 +158,10 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
 
         int id = item.getItemId();
 
-        if (id == R.id.action_clear) {
+        if (id == R.id.action_start_scanning) {
+            onTrackingClick();
+            return true;
+        } else if (id == R.id.action_clear) {
             clearList();
             return true;
         } else if (id == R.id.action_load_from_server) {
@@ -188,6 +182,13 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateScanMenuTitle(String menuText) {
+        if (menu != null) {
+            MenuItem scanning = menu.findItem(R.id.action_start_scanning);
+            scanning.setTitle(menuText);
+        }
     }
 
     private void onViewLogsClick() {
@@ -276,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
         alert.show();
     }
 
-    public void onTrackingClick(View view) {
+    public void onTrackingClick() {
         if (mBoundService == null) {
             return;
         }
@@ -358,11 +359,11 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
     }
 
     public void onStartScanning() {
-        button.setText("Stop tracking");
+        updateScanMenuTitle(getString(R.string.action_stop_scanning));
     }
 
     public void onStopScanning() {
-        button.setText("Start tracking");
+        updateScanMenuTitle(getString(R.string.action_start_scanning));
         onStopScan();
     }
 
