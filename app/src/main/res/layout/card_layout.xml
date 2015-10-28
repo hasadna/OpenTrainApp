@@ -5,7 +5,7 @@
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    card_view:cardCornerRadius="2dp"
+    card_view:cardCornerRadius="1dp"
     android:layout_margin="5dp"
     android:elevation="1dp"
     android:clickable="true">
@@ -18,9 +18,8 @@
 
         <TextView
             android:id="@+id/txtName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:text="תחנה"
+            style="@style/CityFont"
             android:gravity="center_vertical"
             android:layout_gravity="center"
             android:layout_centerVertical="true"
@@ -28,59 +27,86 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginRight="16dp"
-            card_view:layout_widthPercent="40%" />
+            android:paddingRight="16dp"
+            android:paddingLeft="20dp"
+            card_view:layout_widthPercent="44%" />
+
+        <TextView
+            android:id="@+id/scannedEnterTimeHeader"
+            android:text="הגעה מתוכננת"
+            style="@style/TimeHeadersFont"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/txtName"
+            card_view:layout_widthPercent="28%" />
 
         <TextView
             android:id="@+id/scannedEnterTime"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:text="הגעה"
-            android:layout_alignParentTop="true"
-            android:gravity="center"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
+            style="@style/TimeFont"
+            android:layout_below="@+id/scannedEnterTimeHeader"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="7dp"
             android:layout_toLeftOf="@+id/txtName"
-            card_view:layout_widthPercent="30%" />
+            android:gravity="right"
+            card_view:layout_widthPercent="28%" />
+
+        <TextView
+            android:id="@+id/scannedExitTimeHeader"
+            style="@style/TimeHeadersFont"
+            android:text="יציאה מתוכננת"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/scannedEnterTime"
+            card_view:layout_widthPercent="28%" />
 
         <TextView
             android:id="@+id/scannedExitTime"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            style="@style/TimeFont"
             android:text="יציאה"
-            android:layout_alignParentTop="true"
-            android:gravity="center"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
+            android:layout_below="@+id/scannedExitTimeHeader"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="7dp"
             android:layout_toLeftOf="@+id/scannedEnterTime"
-            card_view:layout_widthPercent="30%" />
+            android:gravity="right"
+            card_view:layout_widthPercent="28%" />
+
+        <TextView
+            android:id="@+id/gtfsEnterTimeHeader"
+            style="@style/TimeHeadersFont"
+            android:text="הגעה בפועל"
+            android:layout_below="@+id/scannedEnterTime"
+            android:layout_toLeftOf="@+id/txtName"
+            card_view:layout_widthPercent="28%" />
 
         <TextView
             android:id="@+id/gtfsEnterTime"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            style="@style/TimeFont"
             android:text="הגעה"
-            android:gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            android:layout_below="@+id/scannedEnterTime"
+            android:layout_marginTop="3dp"
+            android:paddingBottom="20dp"
+            android:layout_below="@+id/gtfsEnterTimeHeader"
             android:layout_toLeftOf="@+id/txtName"
-            card_view:layout_widthPercent="30%" />
+            android:gravity="right"
+            card_view:layout_widthPercent="28%" />
+
+        <TextView
+            android:id="@+id/gtfsExitTimeHeader"
+            style="@style/TimeHeadersFont"
+            android:text="יציאה בפועל"
+            android:layout_below="@+id/scannedExitTime"
+            android:layout_toLeftOf="@+id/gtfsEnterTime"
+            card_view:layout_widthPercent="28%" />
 
         <TextView
             android:id="@+id/gtfsExitTime"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            style="@style/TimeFont"
             android:text="יציאה"
-            android:gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            android:layout_below="@+id/scannedExitTime"
+            android:layout_marginTop="3dp"
+            android:paddingBottom="20dp"
+            android:layout_below="@+id/gtfsExitTimeHeader"
             android:layout_toLeftOf="@+id/gtfsEnterTime"
-            card_view:layout_widthPercent="30%" />
+            android:gravity="right"
+            card_view:layout_widthPercent="28%" />
 
     </android.support.percent.PercentRelativeLayout>
-
-
 
 </android.support.v7.widget.CardView>

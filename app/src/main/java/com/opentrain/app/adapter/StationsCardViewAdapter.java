@@ -56,8 +56,9 @@ public class StationsCardViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             stationViewHolder.scanEnterTime.setText(TimeUtils.getFormattedTime(station.enterUnixTimeMs));
             stationViewHolder.scanExitTime.setText(station.exitUnixTimeMs != null ?
                     TimeUtils.getFormattedTime(station.exitUnixTimeMs) : "");
-            stationViewHolder.gtfsEnterTime.setText("לוז הגעה");
-            stationViewHolder.gtfsExitTime.setText("לוז יציאה");
+            stationViewHolder.gtfsEnterTime.setText(TimeUtils.getFormattedTime(station.enterUnixTimeMs));
+            stationViewHolder.gtfsExitTime.setText(station.exitUnixTimeMs != null ?
+                    TimeUtils.getFormattedTime(station.exitUnixTimeMs) : "");
         }
     }
 
