@@ -313,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
         Intent email = new Intent(Intent.ACTION_SEND);
         // prompts email clients only
         email.setType("message/rfc822");
-        email.putExtra(Intent.EXTRA_EMAIL, new String[] {"ekleinerman@gmail.com"});
+        email.putExtra(Intent.EXTRA_EMAIL, new String[] {"open.train.application@gmail.com"});
         email.putExtra(Intent.EXTRA_SUBJECT, "OpenTrainApp - Log");
         email.putExtra(Intent.EXTRA_TEXT, "OpenTrainApp Log Files attached");
         // Get the actions history in JSON format from main model:
@@ -472,8 +472,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void onTestClick() {
-        //List<Action> actions = getHardCodedTestActions();
-        List<Action> actions = getFileActionHistory();
+        // We can load a recorded ride into the test.
+        // To do it:
+        // 1.copy the recorded json into action_history.json
+        // 2. Use the following code and comment the currect actions:
+        //List<Action> actions = getFileActionHistory();
+        List<Action> actions = getHardCodedTestActions();
 
         // Save current state and replace with mock state
         final BssidMap prevBssidMap = MainModel.getInstance().getBssidMap();

@@ -6,8 +6,10 @@ package com.opentrain.app.model;
 public class LogItem {
 
     public String msg;
+    public long unixTimeMs;
 
     public LogItem(String str) {
-        msg = str;
+        this.msg = str;
+        this.unixTimeMs = System.currentTimeMillis();
     }
 }

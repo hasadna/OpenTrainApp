@@ -29,7 +29,7 @@ public class NewWifiScanResultAction implements Action {
                 if (MainModel.getBssidMapping().containsKey(wifiScanResultItem.BSSID)) {
                     mapping = MainModel.getBssidMapping().get(wifiScanResultItem.BSSID);
                 }
-                Logger.log("scan result: " + wifiScanResultItem.toString() + ", mapping: " + mapping);
+                Logger.log("scan result: BSSID: " + wifiScanResultItem.BSSID + ", mapping: " + mapping);
             }
         }
         // Execute

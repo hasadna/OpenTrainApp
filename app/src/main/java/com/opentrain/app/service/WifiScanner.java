@@ -61,7 +61,9 @@ public class WifiScanner extends BroadcastReceiver {
             for (ScanResult scanResult : results) {
                 WifiScanResultItem wifiScanResultItem =
                         new WifiScanResultItem(scanResult.BSSID, scanResult.SSID);
-                wifiScanResultItems.add(wifiScanResultItem);
+                // Add wifiScanResults iff SSID is "S-ISRAEL-RAILWAYS":
+                if (scanResult.SSID.equals(Settings.stationSSID))
+                    wifiScanResultItems.add(wifiScanResultItem);
             }
         }
         reportScanResult(new WifiScanResult(System.currentTimeMillis(), wifiScanResultItems));

@@ -22,6 +22,8 @@ public class ScanResultProcessor {
         if (scanResult.wifiScanResultItems.isEmpty()) {
             if (model.getScannedStationList().isEmpty()) {
                 Logger.log("Scan is empty and station list is empty, not updating anything.");
+            } else if (!model.isInStation() && (model.getLastStationExitTime() != null)) {
+                Logger.log("Scan is empty. Not updating anything.");
             } else {
                 Logger.log("Scan is empty. Updating last station exit time to last seen time and setting inStation to false.");
                 model.setLastStationExitTimeIfItExists();

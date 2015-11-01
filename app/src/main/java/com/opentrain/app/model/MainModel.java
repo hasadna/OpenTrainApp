@@ -101,6 +101,13 @@ public class MainModel {
         return scannedStationList.get(scannedStationList.size() - 1).lastSeenUnixTimeMs;
     }
 
+    public Long getLastStationExitTime() {
+        if (scannedStationList.isEmpty()) {
+            return null;
+        }
+        return scannedStationList.get(scannedStationList.size() - 1).lastSeenUnixTimeMs;
+    }
+
     // Set the last station exit time to the last seen time. If the station list is empty, do nothing.
     public void setLastStationExitTimeIfItExists() {
         if (!scannedStationList.isEmpty()) {

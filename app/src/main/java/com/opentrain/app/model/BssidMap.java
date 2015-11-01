@@ -52,7 +52,8 @@ public class BssidMap extends HashMap<String, String> {
                 if (stationId == null) {
                     stationId = get(scanBssid);
                 } else if (!stationId.equals(get(scanBssid))) {
-                    Logger.log(String.format("BSSIDs are not consistent. stationId1=%s, stationId2=%s.", stationId, get(scanBssid)));
+                    Logger.log("BSSIDs are not consistent:");
+                    Logger.logMap(this);
                     return false;
                 }
             }
