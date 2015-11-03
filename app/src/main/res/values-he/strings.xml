@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">רכבת פתוחה</string>
+    <string name="action_settings">הגדרות</string>
+    <string name="action_start_scanning">חפש תחנות</string>
+    <string name="action_stop_scanning">הפסק חיפוש תחנות</string>
+    <string name="action_clear">נקה רשימה</string>
+    <string name="action_load_from_server">טען רשימת BSSID מהשרת</string>
+    <string name="action_edit_server">שלח BSSID לשרת</string>
+    <string name="action_set_ssid_search_name">עדכן שם תחנה</string>
+    <string name="action_clear_log_list">נקה קובץ log</string>
+    <string name="action_refresh_log_list">עדכן קובץ log</string>
+    <string name="action_test_trip">הרץ נסיעת ניסוי</string>
+    <string name="action_view_logs">צפה ב-log</string>
+</resources>

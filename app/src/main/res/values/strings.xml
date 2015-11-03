@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">OpenTrain</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="action_start_scanning">Scan for stations</string>
+    <string name="action_stop_scanning">Stop scanning</string>
     <string name="action_clear">Clear list</string>
     <string name="action_load_from_server">Load BSSIDs from server</string>
     <string name="action_edit_server">Send BSSID to server</string>
