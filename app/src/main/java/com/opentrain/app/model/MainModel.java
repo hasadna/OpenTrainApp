@@ -38,6 +38,8 @@ public class MainModel {
     private ArrayList<String> mStationList;
     //map bssid to stop id
     private HashMap<String, String> bssidToStopMap;
+    // List of all today trips:
+    private ArrayList<Trip> mTrips;
 
     private MainModel() {
         scannedStationList = new ArrayList<>();
@@ -160,5 +162,13 @@ public class MainModel {
 
     public Map<String, String> getBssidToStopMap() {
         return bssidToStopMap;
+    }
+
+    public void setTrips(ArrayList<Trip> trips) {
+        this.mTrips = trips;
+    }
+
+    public ArrayList<Trip> getTrips() {
+        return mTrips;
     }
 }

@@ -2,6 +2,7 @@ package com.opentrain.app.network;
 
 import android.content.Context;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -10,6 +11,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.opentrain.app.model.Trip;
 import com.opentrain.app.model.WifiScanResultItem;
 import com.opentrain.app.utils.Logger;
 import com.opentrain.app.model.Settings;
@@ -174,6 +176,45 @@ public class NetowrkManager {
                 Logger.log("Error while getting stop list from server " + error.getMessage());
             }
         });
+        // Add the request to the RequestQueue.
+        requestQueue.add(jsonRequest);
+    }
+
+    public void getTripsFromServer(final RequestListener requestListener) {
+
+        Logger.log("get trips from server. server url:" + Settings.url_get_trips_from_server);
+        // Request a json array response from the provided URL.
+        JsonArrayRequest jsonRequest = new JsonArrayRequest(Settings.url_get_trips_from_server,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        ArrayList<Trip> trips = new ArrayList<>();
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject tripJson = (JSONObject) response.get(i);
+                                Trip trip = new Trip();
+                                trip.parse(tripJson);
+                                trips.add(trip);
+                            }
+                            Logger.log("Successfully get " + trips.size() + " trips from server");
+                        } catch (Exception e) {
+                            Logger.log("error while getting trips from server : " + e.toString());
+                        }
+                        MainModel.getInstance().setTrips(trips);
+                        if (requestListener != null) {
+                            requestListener.onResponse(response);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (requestListener != null) {
+                    requestListener.onError();
+                }
+                Logger.log("Error while getting trips list from server " + error.getMessage());
+            }
+        });
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(60000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         // Add the request to the RequestQueue.
         requestQueue.add(jsonRequest);
     }
