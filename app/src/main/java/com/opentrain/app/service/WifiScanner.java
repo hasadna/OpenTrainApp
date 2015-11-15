@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
+import com.opentrain.app.controller.TripMatcher;
 import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.Settings;
 import com.opentrain.app.model.WifiScanResultItem;
@@ -81,6 +82,7 @@ public class WifiScanner extends BroadcastReceiver {
         }
         WifiScanResult scanResult = new WifiScanResult(results, System.currentTimeMillis());
         ScanResultProcessor.process(MainModel.getInstance(), scanResult);
+        TripMatcher.matchTrip();
         if (scanningListener != null) {
             scanningListener.onScanResult();
         }

@@ -40,6 +40,8 @@ public class MainModel {
     private HashMap<String, String> bssidToStopMap;
     // List of all today trips:
     private ArrayList<Trip> mTrips;
+    // the current trip which matched by scanning and server data
+    private Trip matchedTrip;
 
     private MainModel() {
         scannedStationList = new ArrayList<>();
@@ -170,5 +172,13 @@ public class MainModel {
 
     public ArrayList<Trip> getTrips() {
         return mTrips;
+    }
+
+    public void setMatchedTrip(Trip matchedTrip) {
+        this.matchedTrip = matchedTrip;
+    }
+
+    public Trip getMatchedTrip() {
+        return matchedTrip;
     }
 }
