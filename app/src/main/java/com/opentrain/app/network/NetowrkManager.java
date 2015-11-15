@@ -59,17 +59,15 @@ public class NetowrkManager {
 
         Logger.log("get map from server. server url:" + Settings.url_get_map_from_server);
         // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, Settings.url_get_map_from_server,
-                new Response.Listener<String>() {
+        JsonArrayRequest stringRequest = new JsonArrayRequest(Settings.url_get_map_from_server,
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(JSONArray response) {
                         try {
-                            HashMap<String, String> mapFromString = getMapFromString(response);
-                            MainModel.getInstance().setBssidMap(mapFromString);
+                            parseBSSIDSResponse(response);
                             if (requestListener != null) {
-                                requestListener.onResponse(mapFromString);
+                                requestListener.onResponse(MainModel.getBssidMapping());
                             }
-                            Logger.logMap(mapFromString);
                         } catch (Exception e) {
                             e.printStackTrace();
                             Logger.log(e.toString());
@@ -114,25 +112,33 @@ public class NetowrkManager {
         requestQueue.add(stringRequest);
     }
 
-    private HashMap<String, String> getMapFromString(String response) throws Exception {
+    private void parseBSSIDSResponse(JSONArray jsonArray) throws Exception {
 
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> mapBSSIDToName = new HashMap<>();
+        HashMap<String, String> mapBSSIDSToStop = new HashMap<>();
         try {
-            JSONObject jsonObject = new JSONObject(response);
-            JSONArray jsonArray = jsonObject.getJSONArray("networks");
             for (int i = 0, j = jsonArray.length(); i < j; i++) {
                 try {
                     JSONObject station = jsonArray.getJSONObject(i);
-                    map.put(station.getString("bssid"), station.getString("name"));
+                    String bssid = station.getString("bssid");
+                    String name = new String(station.getString("name").getBytes("ISO-8859-1"), "UTF-8");
+                    mapBSSIDToName.put(bssid, name);
+
+                    JSONObject stopJson = station.getJSONObject("stop");
+                    String stopId = stopJson.getString("id");
+                    mapBSSIDSToStop.put(bssid, stopId);
                 } catch (Exception e) {
                     Logger.log(e.toString());
                 }
             }
+            MainModel.getInstance().setBssidMap(mapBSSIDToName);
+            MainModel.getInstance().setBssidToStopMap(mapBSSIDSToStop);
+            Logger.logMap(mapBSSIDToName);
+            Logger.logMap(mapBSSIDSToStop);
         } catch (Exception e) {
             e.printStackTrace();
             Logger.log(e.toString());
         }
-        return map;
     }
 
     public void getStopsFromServer(final RequestListener requestListener) {

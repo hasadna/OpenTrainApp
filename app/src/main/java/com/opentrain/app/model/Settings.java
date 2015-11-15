@@ -9,7 +9,7 @@ public class Settings {
     public static final long SCAN_INTERVAL_TRAIN = 15000;
     public static final String STATION_SSID_SIMULATOR = "WiredSSID";
     public static final String STATION_SSID_TRAIN = "S-ISRAEL-RAILWAYS";
-    public static final String url_get_map_from_server = "http://gtfs.otrain.org/data/ls";
+    public static final String url_get_map_from_server = "http://gtfs.otrain.org/api/data/bssids/";
     public static final String url_add_map_to_server = "http://gtfs.otrain.org/data/submit";
     public static final String url_get_stops_from_server = "http://gtfs.otrain.org/api/gtfs/stops/?format=json";
 

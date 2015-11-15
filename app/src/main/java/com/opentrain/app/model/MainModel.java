@@ -36,6 +36,8 @@ public class MainModel {
     private ArrayList<ArrayList<WifiScanResultItem>> mockResultsList;
     // List of all train stations:
     private ArrayList<String> mStationList;
+    //map bssid to stop id
+    private HashMap<String, String> bssidToStopMap;
 
     private MainModel() {
         scannedStationList = new ArrayList<>();
@@ -150,5 +152,13 @@ public class MainModel {
             }
         }
         return result;
+    }
+
+    public void setBssidToStopMap(HashMap<String, String> bssidToStopMap) {
+        this.bssidToStopMap = bssidToStopMap;
+    }
+
+    public Map<String, String> getBssidToStopMap() {
+        return bssidToStopMap;
     }
 }
