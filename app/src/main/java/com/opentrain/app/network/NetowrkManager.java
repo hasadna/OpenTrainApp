@@ -2,6 +2,7 @@ package com.opentrain.app.network;
 
 import android.content.Context;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -10,6 +11,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.opentrain.app.model.Trip;
 import com.opentrain.app.model.WifiScanResultItem;
 import com.opentrain.app.utils.Logger;
 import com.opentrain.app.model.Settings;
@@ -59,17 +61,15 @@ public class NetowrkManager {
 
         Logger.log("get map from server. server url:" + Settings.url_get_map_from_server);
         // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, Settings.url_get_map_from_server,
-                new Response.Listener<String>() {
+        JsonArrayRequest stringRequest = new JsonArrayRequest(Settings.url_get_map_from_server,
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(JSONArray response) {
                         try {
-                            HashMap<String, String> mapFromString = getMapFromString(response);
-                            MainModel.getInstance().setBssidMap(mapFromString);
+                            parseBSSIDSResponse(response);
                             if (requestListener != null) {
-                                requestListener.onResponse(mapFromString);
+                                requestListener.onResponse(MainModel.getBssidMapping());
                             }
-                            Logger.logMap(mapFromString);
                         } catch (Exception e) {
                             e.printStackTrace();
                             Logger.log(e.toString());
@@ -114,25 +114,33 @@ public class NetowrkManager {
         requestQueue.add(stringRequest);
     }
 
-    private HashMap<String, String> getMapFromString(String response) throws Exception {
+    private void parseBSSIDSResponse(JSONArray jsonArray) throws Exception {
 
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> mapBSSIDToName = new HashMap<>();
+        HashMap<String, String> mapBSSIDSToStop = new HashMap<>();
         try {
-            JSONObject jsonObject = new JSONObject(response);
-            JSONArray jsonArray = jsonObject.getJSONArray("networks");
             for (int i = 0, j = jsonArray.length(); i < j; i++) {
                 try {
                     JSONObject station = jsonArray.getJSONObject(i);
-                    map.put(station.getString("bssid"), station.getString("name"));
+                    String bssid = station.getString("bssid");
+                    String name = new String(station.getString("name").getBytes("ISO-8859-1"), "UTF-8");
+                    mapBSSIDToName.put(bssid, name);
+
+                    JSONObject stopJson = station.getJSONObject("stop");
+                    String stopId = stopJson.getString("id");
+                    mapBSSIDSToStop.put(bssid, stopId);
                 } catch (Exception e) {
                     Logger.log(e.toString());
                 }
             }
+            MainModel.getInstance().setBssidMap(mapBSSIDToName);
+            MainModel.getInstance().setBssidToStopMap(mapBSSIDSToStop);
+            Logger.logMap(mapBSSIDToName);
+            Logger.logMap(mapBSSIDSToStop);
         } catch (Exception e) {
             e.printStackTrace();
             Logger.log(e.toString());
         }
-        return map;
     }
 
     public void getStopsFromServer(final RequestListener requestListener) {
@@ -168,6 +176,45 @@ public class NetowrkManager {
                 Logger.log("Error while getting stop list from server " + error.getMessage());
             }
         });
+        // Add the request to the RequestQueue.
+        requestQueue.add(jsonRequest);
+    }
+
+    public void getTripsFromServer(final RequestListener requestListener) {
+
+        Logger.log("get trips from server. server url:" + Settings.url_get_trips_from_server);
+        // Request a json array response from the provided URL.
+        JsonArrayRequest jsonRequest = new JsonArrayRequest(Settings.url_get_trips_from_server,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        ArrayList<Trip> trips = new ArrayList<>();
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject tripJson = (JSONObject) response.get(i);
+                                Trip trip = new Trip();
+                                trip.parse(tripJson);
+                                trips.add(trip);
+                            }
+                            Logger.log("Successfully get " + trips.size() + " trips from server");
+                        } catch (Exception e) {
+                            Logger.log("error while getting trips from server : " + e.toString());
+                        }
+                        MainModel.getInstance().setTrips(trips);
+                        if (requestListener != null) {
+                            requestListener.onResponse(response);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (requestListener != null) {
+                    requestListener.onError();
+                }
+                Logger.log("Error while getting trips list from server " + error.getMessage());
+            }
+        });
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(60000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         // Add the request to the RequestQueue.
         requestQueue.add(jsonRequest);
     }

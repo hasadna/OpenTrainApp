@@ -1,5 +1,7 @@
 package com.opentrain.app.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -13,5 +15,10 @@ public class TimeUtils {
 
     public static String getFormattedTime(long unixTimeMs) {
         return new java.text.SimpleDateFormat("HH:mm:ss").format(new Date(unixTimeMs));
+    }
+
+    public static long getFormattedTime(String unixTimeMs) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        return format.parse(unixTimeMs).getTime();
     }
 }

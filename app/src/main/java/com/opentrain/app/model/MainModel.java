@@ -36,6 +36,12 @@ public class MainModel {
     private ArrayList<ArrayList<WifiScanResultItem>> mockResultsList;
     // List of all train stations:
     private ArrayList<String> mStationList;
+    //map bssid to stop id
+    private HashMap<String, String> bssidToStopMap;
+    // List of all today trips:
+    private ArrayList<Trip> mTrips;
+    // the current trip which matched by scanning and server data
+    private Trip matchedTrip;
 
     private MainModel() {
         scannedStationList = new ArrayList<>();
@@ -150,5 +156,29 @@ public class MainModel {
             }
         }
         return result;
+    }
+
+    public void setBssidToStopMap(HashMap<String, String> bssidToStopMap) {
+        this.bssidToStopMap = bssidToStopMap;
+    }
+
+    public Map<String, String> getBssidToStopMap() {
+        return bssidToStopMap;
+    }
+
+    public void setTrips(ArrayList<Trip> trips) {
+        this.mTrips = trips;
+    }
+
+    public ArrayList<Trip> getTrips() {
+        return mTrips;
+    }
+
+    public void setMatchedTrip(Trip matchedTrip) {
+        this.matchedTrip = matchedTrip;
+    }
+
+    public Trip getMatchedTrip() {
+        return matchedTrip;
     }
 }

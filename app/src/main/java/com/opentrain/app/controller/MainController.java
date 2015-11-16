@@ -22,5 +22,6 @@ public class MainController {
         NetowrkManager.getInstance().init(context);
         NetowrkManager.getInstance().getStopsFromServer(null);
         NetowrkManager.getInstance().getMapFromServer(null);
+        NetowrkManager.getInstance().getTripsFromServer(null);
     }
 }
