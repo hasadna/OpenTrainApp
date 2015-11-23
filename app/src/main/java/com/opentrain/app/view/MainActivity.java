@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
@@ -22,17 +23,31 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.opentrain.app.R;
+import com.opentrain.app.adapter.StationsListAdapter;
+import com.opentrain.app.controller.Action;
+import com.opentrain.app.controller.MainController;
+import com.opentrain.app.controller.NewWifiScanResultAction;
+import com.opentrain.app.controller.UpdateBssidMapAction;
+import com.opentrain.app.model.BssidMap;
 import com.opentrain.app.adapter.StationsCardViewAdapter;
 import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.Settings;
 import com.opentrain.app.model.Station;
+import com.opentrain.app.model.WifiScanResult;
 import com.opentrain.app.model.WifiScanResultItem;
 import com.opentrain.app.network.NetowrkManager;
 import com.opentrain.app.service.ScannerService;
 import com.opentrain.app.service.ServiceBroadcastReceiver;
+import com.opentrain.app.service.WifiScanner;
 import com.opentrain.app.testing.MockWifiScanner;
 import com.opentrain.app.utils.Logger;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -179,6 +194,9 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
         } else if (id == R.id.action_test_trip) {
             onTestClick();
             return true;
+        } else if (id == R.id.action_send_logs_by_email) {
+            sendLogByEmail();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -288,6 +306,27 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
         }
     }
 
+    public void sendLogByEmail() {
+        toast("Share logs with email");
+
+        Intent email = new Intent(Intent.ACTION_SEND);
+        // prompts email clients only
+        email.setType("message/rfc822");
+        email.putExtra(Intent.EXTRA_EMAIL, new String[] {"open.train.application@gmail.com"});
+        email.putExtra(Intent.EXTRA_SUBJECT, "OpenTrainApp - Log");
+        email.putExtra(Intent.EXTRA_TEXT, "OpenTrainApp Log Files attached");
+        // Get the actions history in JSON format from main model:
+        JSONObject historyJson = MainModel.getInstance().historyToJson();
+        email.putExtra(Intent.EXTRA_TEXT, historyJson.toString());
+
+        try {
+            // the user can choose the email client
+            startActivity(email);
+        } catch (android.content.ActivityNotFoundException ex) {
+            toast("No email client installed.");
+        }
+    }
+
     public void clearList() {
         MainModel.getInstance().clearScannedItems();
         onScanResult();
@@ -383,53 +422,72 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
         Toast.makeText(this, str, Toast.LENGTH_LONG).show();
     }
 
-    protected void onTestClick() {
-        // TODO: We should probably be working with WifiScanResult (which holds a list of WifiScanResultItem) instead of ArrayList.
-        // TODO: Look in the github comments for more info.
-        ArrayList<ArrayList<WifiScanResultItem>> list = new ArrayList<>();
+    private List<Action> getHardCodedTestActions() {
+        List<Action> actions = new ArrayList<>();
 
-        ArrayList<WifiScanResultItem> scanResultList1 = new ArrayList<>();
-        scanResultList1.add(new WifiScanResultItem("1", "S-ISRAEL-RAILWAYS"));
+        BssidMap mockBssidMap = new BssidMap();
+        mockBssidMap.put("1", "תחנה 1");
+        mockBssidMap.put("2", "תח2");
+        mockBssidMap.put("3", "תחנה 3 בעברית");
+        mockBssidMap.put("4", "תחנה רביעית עם שםארוךארוך");
+        mockBssidMap.put("5", "תחנהחמישית מס5");
+        mockBssidMap.put("6", "תחנה שישיתשישית");
+        mockBssidMap.put("7", "תחנה 7");
+        mockBssidMap.put("8", "תחנה מספר8 מספר8");
+        actions.add(new UpdateBssidMapAction(mockBssidMap));
 
-        ArrayList<WifiScanResultItem> scanResultList2 = new ArrayList<>();
-        scanResultList2.add(new WifiScanResultItem("2", "S-ISRAEL-RAILWAYS"));
+        final long baseTimeUnixMs = 1445697120000L;
+        final long second = 1000;
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs, "1", "S-ISRAEL-RAILWAYS")));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 10, "1", "S-ISRAEL-RAILWAYS")));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 20)));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 60, "2", "S-ISRAEL-RAILWAYS")));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 80)));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 120, "3", "S-ISRAEL-RAILWAYS")));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 140)));
 
-        ArrayList<WifiScanResultItem> scanResultList3 = new ArrayList<>();
-        scanResultList3.add(new WifiScanResultItem("3", "S-ISRAEL-RAILWAYS"));
-
-        list.add(scanResultList1);
-        list.add(new ArrayList<WifiScanResultItem>());
-        list.add(scanResultList2);
-        list.add(new ArrayList<WifiScanResultItem>());
-        list.add(scanResultList3);
-        list.add(new ArrayList<WifiScanResultItem>());
-
-        MainModel.getInstance().setMockResultsList(list);
-
-        startTestTrip();
+        return actions;
     }
 
-    private void startTestTrip() {
+    private List<Action> getFileActionHistory() {
+        AssetManager assetManager = getApplicationContext().getAssets();
+        try {
+            InputStream inputStream = assetManager.open("action_history.json");
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuilder stringBuilder = new StringBuilder();
+            String line = bufferedReader.readLine();
+            while(line != null) {
+                stringBuilder.append(line);
+                line = bufferedReader.readLine();
+            }
+            String jsonString = stringBuilder.toString();
+            JSONObject json = new JSONObject(jsonString);
+            return MainModel.historyFromJson(json);
+        } catch (Exception exception) {
+            Logger.log("Action history file failed to load.");
+            return null;
+        }
+    }
 
-        // Mock scan results
-        HashMap<String, String> mockResult = new HashMap<>();
-        mockResult.put("1", "תחנה 1");
-        mockResult.put("2", "תח2");
-        mockResult.put("3", "תחנה 3 בעברית");
-        mockResult.put("4", "תחנה רביעית עם שםארוךארוך");
-        mockResult.put("5", "תחנהחמישית מס5");
-        mockResult.put("6", "תחנה שישיתשישית");
-        mockResult.put("7", "תחנה 7");
-        mockResult.put("8", "תחנה מספר8 מספר8");
+    protected void onTestClick() {
+        // We can load a recorded ride into the test.
+        // To do it:
+        // 1.copy the recorded json into action_history.json
+        // 2. Use the following code and comment the currect actions:
+        //List<Action> actions = getFileActionHistory();
+        List<Action> actions = getHardCodedTestActions();
 
-        MainModel.getInstance().updateMap(mockResult);
+        // Save current state and replace with mock state
+        final BssidMap prevBssidMap = MainModel.getInstance().getBssidMap();
+        final WifiScanner prevWifiScanner = mBoundService.getWifiScanner();
+        mBoundService.setWifiScanner(new MockWifiScanner(this, actions));
 
+        // TODO: Save this state as well and replace with mock state.
         MainModel.getInstance().clearScannedItems();
         stopScanning();
-        mBoundService.setTestWifiScanner();
-        Settings.setTestSettings();
         Logger.clearItems();
-
+        Settings.setTestSettings();
         MockWifiScanner.mockWifiScanListener = new MockWifiScanner.MockWifiScanListener() {
             @Override
             public void onScanDone() {
@@ -437,7 +495,11 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
                     @Override
                     public void run() {
                         toast("Test trip done!");
-                        stopTestTrip();
+                        // Stop test trip and return to normal
+                        stopScanning();
+                        mBoundService.setWifiScanner(prevWifiScanner);
+                        MainController.execute(new UpdateBssidMapAction(prevBssidMap));
+                        Settings.setDefaultettings();
                     }
                 });
             }
@@ -449,12 +511,6 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
             public void run() {
                 startScanning();
             }
-        }, 1000);
-    }
-
-    private void stopTestTrip() {
-        stopScanning();
-        mBoundService.setTrainWifiScanner();
-        Settings.setDefaultettings();
+        }, 10);
     }
 }

@@ -12,6 +12,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.opentrain.app.model.Trip;
+import com.opentrain.app.controller.MainController;
+import com.opentrain.app.controller.UpdateBssidMapAction;
+import com.opentrain.app.model.BssidMap;
 import com.opentrain.app.model.WifiScanResultItem;
 import com.opentrain.app.utils.Logger;
 import com.opentrain.app.model.Settings;
@@ -67,9 +70,14 @@ public class NetowrkManager {
                     public void onResponse(JSONArray response) {
                         try {
                             parseBSSIDSResponse(response);
+                            BssidMap bssidMap = getMapFromString(response);
+                            UpdateBssidMapAction updateBssidMapAction = new UpdateBssidMapAction(bssidMap);
+                            MainController.execute(updateBssidMapAction);
                             if (requestListener != null) {
                                 requestListener.onResponse(MainModel.getBssidMapping());
+                                requestListener.onResponse(bssidMap);
                             }
+                            Logger.logMap(bssidMap);
                         } catch (Exception e) {
                             e.printStackTrace();
                             Logger.log(e.toString());
@@ -141,6 +149,9 @@ public class NetowrkManager {
             e.printStackTrace();
             Logger.log(e.toString());
         }
+    private BssidMap getMapFromString(String response) throws Exception {
+        JSONObject jsonObject = new JSONObject(response);
+        return new BssidMap(jsonObject);
     }
 
     public void getStopsFromServer(final RequestListener requestListener) {

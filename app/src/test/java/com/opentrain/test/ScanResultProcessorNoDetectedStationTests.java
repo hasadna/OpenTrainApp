@@ -16,9 +16,11 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.opentrain.app.controller.MainController;
+import com.opentrain.app.controller.UpdateBssidMapAction;
+import com.opentrain.app.model.BssidMap;
 import com.opentrain.app.model.MainModel;
-import com.opentrain.app.model.ScanResultProcessor;
-import com.opentrain.app.model.Settings;
+import com.opentrain.app.controller.ScanResultProcessor;
 import com.opentrain.app.model.Station;
 import com.opentrain.app.model.WifiScanResult;
 import com.opentrain.app.model.WifiScanResultItem;
@@ -79,9 +81,9 @@ public class ScanResultProcessorNoDetectedStationTests {
     @Test
     public void parametrizedTest() {
         // Set state
-        HashMap<String, String> bssidMap = new HashMap<>();
+        BssidMap bssidMap = new BssidMap();
         bssidMap.put(BSSID_INITIAL_STATION, STOP_ID_INITIAL_STATION);
-        mainModel.setBssidMap(bssidMap);
+        MainController.execute(new UpdateBssidMapAction(bssidMap));
         if (stationState != StationState.NO_PREVIOUS_STATION) {
             Station station = new Station(getSet(BSSID_INITIAL_STATION), /*STOP_ID_INITIAL_STATION,*/ START_TIME_UNIX_MS);
             station.enterUnixTimeMs = START_TIME_UNIX_MS;
@@ -91,7 +93,8 @@ public class ScanResultProcessorNoDetectedStationTests {
         mainModel.setInStation(stationState == StationState.NOW_IN_INITIAL_STATION);
 
         // Set scan result
-        WifiScanResult scanResult = new WifiScanResult(new ArrayList<WifiScanResultItem>(), SCAN_RESULT_TIME_UNIX_MS);
+        WifiScanResult scanResult =
+                new WifiScanResult(SCAN_RESULT_TIME_UNIX_MS, new ArrayList<WifiScanResultItem>());
 
         // Run test
         ScanResultProcessor.process(mainModel, scanResult, settings);

@@ -7,11 +7,12 @@ import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
-import com.opentrain.app.controller.TripMatcher;
+import com.opentrain.app.controller.MainController;
+import com.opentrain.app.controller.NewWifiScanResultAction;
 import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.Settings;
 import com.opentrain.app.model.WifiScanResultItem;
-import com.opentrain.app.model.ScanResultProcessor;
+import com.opentrain.app.controller.ScanResultProcessor;
 import com.opentrain.app.model.WifiScanResult;
 import com.opentrain.app.utils.Logger;
 
@@ -25,7 +26,6 @@ public class WifiScanner extends BroadcastReceiver {
 
     WifiManager mainWifi;
     boolean registered;
-    boolean wasStation;
     private ScanningListener scanningListener;
 
     public WifiScanner(Context context) {
@@ -55,50 +55,30 @@ public class WifiScanner extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
         List<ScanResult> results = mainWifi.getScanResults();
         ArrayList<WifiScanResultItem> wifiScanResultItems = new ArrayList<>();
         if (results != null && results.size() > 0) {
             for (ScanResult scanResult : results) {
                 WifiScanResultItem wifiScanResultItem =
                         new WifiScanResultItem(scanResult.BSSID, scanResult.SSID);
-                wifiScanResultItems.add(wifiScanResultItem);
+                // Add wifiScanResults iff SSID is "S-ISRAEL-RAILWAYS":
+                if (scanResult.SSID.equals(Settings.stationSSID))
+                    wifiScanResultItems.add(wifiScanResultItem);
             }
         }
-        reportScanResult(wifiScanResultItems);
+        reportScanResult(new WifiScanResult(System.currentTimeMillis(), wifiScanResultItems));
     }
 
-    public void reportScanResult(ArrayList<WifiScanResultItem> results) {
-        if (results != null && results.size() > 0) {
-            for (WifiScanResultItem wifiScanResultItem : results) {
-                if (wifiScanResultItem.SSID.equals(Settings.stationSSID)) {
-                    String mapping = "Unmapped";
-                    if (MainModel.getBssidMapping().containsKey(wifiScanResultItem.BSSID)) {
-                        mapping = MainModel.getBssidMapping().get(wifiScanResultItem.BSSID);
-                    }
-                    Logger.log("scan result: " + wifiScanResultItem.toString() + ", mapping: " + mapping);
-                }
-            }
-        }
-        WifiScanResult scanResult = new WifiScanResult(results, System.currentTimeMillis());
-        ScanResultProcessor.process(MainModel.getInstance(), scanResult);
-        TripMatcher.matchTrip();
+    public void reportScanResult(WifiScanResult scanResult) {
+        reportScanResult(new NewWifiScanResultAction(scanResult));
+    }
+
+    public void reportScanResult(NewWifiScanResultAction action) {
+        MainController.execute(action);
         if (scanningListener != null) {
             scanningListener.onScanResult();
         }
     }
-
-//    public void setName(Station station) {
-//
-//        for (Map.Entry<String, String> entry : station.bssids.entrySet()) {
-//            if (entry.getValue() != null) {
-//                station.stationName = entry.getValue();
-//                return;
-//            }
-//        }
-//
-//        station.stationName = "Not found for any BSSID";
-//    }
 
     public void setScanningListener(ScanningListener scanningListener) {
         this.scanningListener = scanningListener;

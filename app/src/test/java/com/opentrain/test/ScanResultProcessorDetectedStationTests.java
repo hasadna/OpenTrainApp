@@ -16,9 +16,11 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.opentrain.app.controller.MainController;
+import com.opentrain.app.controller.UpdateBssidMapAction;
+import com.opentrain.app.model.BssidMap;
 import com.opentrain.app.model.MainModel;
-import com.opentrain.app.model.ScanResultProcessor;
-import com.opentrain.app.model.Settings;
+import com.opentrain.app.controller.ScanResultProcessor;
 import com.opentrain.app.model.Station;
 import com.opentrain.app.model.WifiScanResult;
 import com.opentrain.app.model.WifiScanResultItem;
@@ -121,7 +123,7 @@ public class ScanResultProcessorDetectedStationTests {
         } else {  // For both SAME and NONE PreviousStation
             scanResultItems.add(new WifiScanResultItem(BSSID_DIFFERENT_STATION, SSID));
         }
-        return new WifiScanResult(scanResultItems, timeUnixMs);
+        return new WifiScanResult(timeUnixMs, scanResultItems);
     }
 
     @Before
@@ -138,10 +140,10 @@ public class ScanResultProcessorDetectedStationTests {
     @Test
     public void parametrizedTest() {
         // Set state
-        HashMap<String, String> bssidMap = new HashMap<>();
+        BssidMap bssidMap = new BssidMap();
         bssidMap.put(BSSID_INITIAL_STATION, STOP_ID_INITIAL_STATION);
         bssidMap.put(BSSID_DIFFERENT_STATION, STOP_ID_DIFFERENT_STATION);
-        mainModel.setBssidMap(bssidMap);
+        MainController.execute(new UpdateBssidMapAction(bssidMap));
         if (stationState != StationState.NO_PREVIOUS_STATION) {
             mainModel.getScannedStationList().add(new Station(getSet(BSSID_INITIAL_STATION), /*STOP_ID_INITIAL_STATION,*/ START_TIME_UNIX_MS));
         }
