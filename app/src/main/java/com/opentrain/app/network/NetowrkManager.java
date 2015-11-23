@@ -70,14 +70,9 @@ public class NetowrkManager {
                     public void onResponse(JSONArray response) {
                         try {
                             parseBSSIDSResponse(response);
-                            BssidMap bssidMap = getMapFromString(response);
-                            UpdateBssidMapAction updateBssidMapAction = new UpdateBssidMapAction(bssidMap);
-                            MainController.execute(updateBssidMapAction);
                             if (requestListener != null) {
                                 requestListener.onResponse(MainModel.getBssidMapping());
-                                requestListener.onResponse(bssidMap);
                             }
-                            Logger.logMap(bssidMap);
                         } catch (Exception e) {
                             e.printStackTrace();
                             Logger.log(e.toString());
@@ -141,17 +136,19 @@ public class NetowrkManager {
                     Logger.log(e.toString());
                 }
             }
-            MainModel.getInstance().setBssidMap(mapBSSIDToName);
+
+            BssidMap bssidMap = new BssidMap(mapBSSIDToName);
+            UpdateBssidMapAction updateBssidMapAction = new UpdateBssidMapAction(bssidMap);
+            MainController.execute(updateBssidMapAction);
+
             MainModel.getInstance().setBssidToStopMap(mapBSSIDSToStop);
+
             Logger.logMap(mapBSSIDToName);
             Logger.logMap(mapBSSIDSToStop);
         } catch (Exception e) {
             e.printStackTrace();
             Logger.log(e.toString());
         }
-    private BssidMap getMapFromString(String response) throws Exception {
-        JSONObject jsonObject = new JSONObject(response);
-        return new BssidMap(jsonObject);
     }
 
     public void getStopsFromServer(final RequestListener requestListener) {

@@ -26,24 +26,6 @@ public class BssidMap extends HashMap<String, String> {
         super(map);
     }
 
-    public BssidMap(JSONObject json) {
-        super();
-        try {
-            JSONArray jsonArray = json.getJSONArray("networks");
-            for (int i = 0, j = jsonArray.length(); i < j; i++) {
-                try {
-                    JSONObject station = jsonArray.getJSONObject(i);
-                    this.put(station.getString("bssid"), station.getString("name"));
-                } catch (Exception e) {
-                    Logger.log(e.toString());
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Logger.log(e.toString());
-        }
-    }
-
     // Returns false iff there are two bssids mapped to different stations.
     public boolean isConsistent(Set<String> scanResultBssids) {
         String stationId = null;

@@ -44,7 +44,6 @@ public class MainModel {
     // List of all train stations:
     private List<String> mStationList;
     private List<Action> mHistory;
-    private ArrayList<String> mStationList;
     //map bssid to stop id
     private HashMap<String, String> bssidToStopMap;
     // List of all today trips:
