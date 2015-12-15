@@ -11,4 +11,5 @@
     <string name="action_refresh_log_list">עדכן קובץ log</string>
     <string name="action_test_trip">הרץ נסיעת ניסוי</string>
     <string name="action_view_logs">צפה ב-log</string>
+    <string name="action_send_logs_by_email">שלח קבצי log באימייל</string>
 </resources>
