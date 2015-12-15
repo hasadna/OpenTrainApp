@@ -1,13 +1,13 @@
 package com.opentrain.test;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import com.opentrain.app.controller.MainController;
+import com.opentrain.app.controller.ScanResultProcessor;
+import com.opentrain.app.controller.UpdateBssidMapAction;
+import com.opentrain.app.model.BssidMap;
+import com.opentrain.app.model.MainModel;
+import com.opentrain.app.model.Station;
+import com.opentrain.app.model.WifiScanResult;
+import com.opentrain.app.model.WifiScanResultItem;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,14 +16,13 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.opentrain.app.controller.MainController;
-import com.opentrain.app.controller.UpdateBssidMapAction;
-import com.opentrain.app.model.BssidMap;
-import com.opentrain.app.model.MainModel;
-import com.opentrain.app.controller.ScanResultProcessor;
-import com.opentrain.app.model.Station;
-import com.opentrain.app.model.WifiScanResult;
-import com.opentrain.app.model.WifiScanResultItem;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Elina on 9/24/2015.

@@ -17,8 +17,10 @@ public class TimeUtils {
         return new java.text.SimpleDateFormat("HH:mm:ss").format(new Date(unixTimeMs));
     }
 
-    public static long getFormattedTime(String unixTimeMs) throws ParseException {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-        return format.parse(unixTimeMs).getTime();
+    // Into unix milliseconds - here we get only the time and add the date today
+    public static long getFormattedTime(String dateString) throws ParseException {
+        String fullDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + " " + dateString;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return format.parse(fullDate).getTime();
     }
 }

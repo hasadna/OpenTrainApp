@@ -9,12 +9,9 @@ import android.net.wifi.WifiManager;
 
 import com.opentrain.app.controller.MainController;
 import com.opentrain.app.controller.NewWifiScanResultAction;
-import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.Settings;
-import com.opentrain.app.model.WifiScanResultItem;
-import com.opentrain.app.controller.ScanResultProcessor;
 import com.opentrain.app.model.WifiScanResult;
-import com.opentrain.app.utils.Logger;
+import com.opentrain.app.model.WifiScanResultItem;
 
 import java.util.ArrayList;
 import java.util.List;

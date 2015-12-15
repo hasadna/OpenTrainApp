@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.opentrain.app.R;
-import com.opentrain.app.model.Station;
+import com.opentrain.app.model.MatchedStation;
 import com.opentrain.app.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -17,8 +17,11 @@ import java.util.List;
  * Created by Elina on 20/10/2015.
  */
 public class StationsCardViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    public static final String UNKNOWN_STATION = "לא בלו\"ז";
+
     // The stations displayed
-    private List<Station> stationsList;
+    private List<MatchedStation> stationsList;
     // Define listener member variable
     private final OnItemClickListener listener;
     // Define the listener interface
@@ -51,14 +54,13 @@ public class StationsCardViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int i) {
         if (viewHolder instanceof StationViewHolder) {
             StationViewHolder stationViewHolder = (StationViewHolder) viewHolder;
-            Station station = stationsList.get(i);
-            stationViewHolder.stationName.setText(station.getName());
-            stationViewHolder.scanEnterTime.setText(TimeUtils.getFormattedTime(station.enterUnixTimeMs));
-            stationViewHolder.scanExitTime.setText(station.exitUnixTimeMs != null ?
-                    TimeUtils.getFormattedTime(station.exitUnixTimeMs) : "");
-            stationViewHolder.gtfsEnterTime.setText(TimeUtils.getFormattedTime(station.enterUnixTimeMs));
-            stationViewHolder.gtfsExitTime.setText(station.exitUnixTimeMs != null ?
-                    TimeUtils.getFormattedTime(station.exitUnixTimeMs) : "");
+            MatchedStation station = stationsList.get(i);
+            stationViewHolder.stationName.setText(station.scannedStation.getName());
+            stationViewHolder.scanEnterTime.setText(TimeUtils.getFormattedTime(station.scannedStation.enterUnixTimeMs));
+            stationViewHolder.scanExitTime.setText(station.scannedStation.exitUnixTimeMs != null ?
+                    TimeUtils.getFormattedTime(station.scannedStation.exitUnixTimeMs) : "");
+            stationViewHolder.gtfsEnterTime.setText(station.stop != null ? TimeUtils.getFormattedTime(station.stop.arrival) : UNKNOWN_STATION);
+            stationViewHolder.gtfsExitTime.setText(station.stop != null ? TimeUtils.getFormattedTime(station.stop.departure) : UNKNOWN_STATION);
         }
     }
 
@@ -76,12 +78,12 @@ public class StationsCardViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         return new StationViewHolder(itemView);
     }
 
-    public void add(int position, Station item) {
+    public void add(int position, MatchedStation item) {
         stationsList.add(position, item);
         notifyItemInserted(position);
     }
 
-    public void setItems(List<Station> items) {
+    public void setItems(List<MatchedStation> items) {
         if (items == null) {
             return;
         }

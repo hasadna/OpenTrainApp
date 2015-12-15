@@ -42,12 +42,12 @@ public class MainModel {
     private List<Station> scannedStationList;
     private boolean inStation;
     // List of all train stations:
-    private List<String> mStationList;
+    private List<StationBasicInfo> mStationList;
     private List<Action> mHistory;
-    //map bssid to stop id
-    private HashMap<String, String> bssidToStopMap;
+    // map StopId to StopName
+    private HashMap<String, String> stopIdToStopMap;
     // List of all today trips:
-    private ArrayList<Trip> mTrips;
+    private List<Trip> mTrips;
     // the current trip which matched by scanning and server data
     private Trip matchedTrip;
 
@@ -56,6 +56,8 @@ public class MainModel {
         bssidMap = new BssidMap();
         mStationList = new ArrayList<>();
         mHistory = new ArrayList<>();
+        mTrips = new ArrayList<>();
+        stopIdToStopMap = new HashMap<>();
     }
 
     public BssidMap getBssidMap() {
@@ -126,30 +128,37 @@ public class MainModel {
         scannedStationList.clear();
     }
 
-    public void setStationList(ArrayList<String> stationList) {
+    public void setStationList(List<StationBasicInfo> stationList) {
         if (stationList != null && stationList.size() > 0) {
             this.mStationList = stationList;
         }
     }
 
-    public List<String> getStationList() {
+    public List<StationBasicInfo> getStationList() {
         return mStationList;
     }
 
     // Aligns @scannedStations to @gtfsStations for display purposes in the UI
     // This method assumes the order of @gtfsStations is the same as @scannedStations.
-    public List<MatchedStation> alignScannedTripToGtfsTrip(List<Station> scannedStations, List<GtfsStation> gtfsStations) {
+    public List<MatchedStation> alignScannedTripToGtfsTrip(List<Station> scannedStations, Trip trip) {
         List<MatchedStation> result = new ArrayList<MatchedStation>();
+        // If no trip is matched:
+        if (trip == null) {
+            for (Station scanned : scannedStations) {
+                result.add(new MatchedStation(scanned, null));
+            }
+            return result;
+        }
         int gtfsIndex = 0;
         int lastMatchedGtfsIndex = 0;
         for (Station scanned : scannedStations) {
-            while ((gtfsIndex < gtfsStations.size()) && (!scanned.getId().equals(gtfsStations.get(gtfsIndex).id))) {
+            while ((gtfsIndex < trip.stopTimes.size()) && (!scanned.getId().equals(Integer.toString(trip.stopTimes.get(gtfsIndex).s)))) { // was id -> index?
                 gtfsIndex++;
             }
-            if (gtfsIndex < gtfsStations.size()) {
+            if (gtfsIndex < trip.stopTimes.size()) {
                 // Found a match
                 lastMatchedGtfsIndex = gtfsIndex;
-                result.add(new MatchedStation(scanned, gtfsStations.get(gtfsIndex)));
+                result.add(new MatchedStation(scanned, trip.stopTimes.get(gtfsIndex)));
             } else {
                 // No match - but still display the scanned station data
                 result.add(new MatchedStation(scanned, null));
@@ -202,19 +211,19 @@ public class MainModel {
         return history;
     }
 
-    public void setBssidToStopMap(HashMap<String, String> bssidToStopMap) {
-        this.bssidToStopMap = bssidToStopMap;
+    public void setStopIdToStopMap(HashMap<String, String> stopIdToStopMap) {
+        this.stopIdToStopMap = stopIdToStopMap;
     }
 
-    public Map<String, String> getBssidToStopMap() {
-        return bssidToStopMap;
+    public Map<String, String> getStopIdToStopMap() {
+        return stopIdToStopMap;
     }
 
-    public void setTrips(ArrayList<Trip> trips) {
+    public void setTrips(List<Trip> trips) {
         this.mTrips = trips;
     }
 
-    public ArrayList<Trip> getTrips() {
+    public List<Trip> getTrips() {
         return mTrips;
     }
 
@@ -225,4 +234,5 @@ public class MainModel {
     public Trip getMatchedTrip() {
         return matchedTrip;
     }
+
 }

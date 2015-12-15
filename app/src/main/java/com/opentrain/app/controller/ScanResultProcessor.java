@@ -1,13 +1,13 @@
 package com.opentrain.app.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.Station;
 import com.opentrain.app.model.WifiScanResult;
 import com.opentrain.app.model.WifiScanResultItem;
 import com.opentrain.app.utils.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is never instantiated.
@@ -67,7 +67,7 @@ public class ScanResultProcessor {
                     model.addStationAndSetInStation(newStation);
                 } else {
                     Station lastStation = model.getScannedStationList().get(model.getScannedStationList().size() - 1);
-                    if (scanStationId.equals(lastStation.getName())) {
+                    if (scanStationId.equals(lastStation.getId())) {
                         // Extend current station.
                         Logger.log("Still in the same station, updating last seen time and setting exit time to null.");
                         lastStation.lastSeenUnixTimeMs = scanResult.unixTimeMs;

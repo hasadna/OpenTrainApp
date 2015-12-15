@@ -6,13 +6,9 @@ import com.opentrain.app.controller.Action;
 import com.opentrain.app.controller.MainController;
 import com.opentrain.app.controller.NewWifiScanResultAction;
 import com.opentrain.app.controller.UpdateBssidMapAction;
-import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.WifiScanResult;
-import com.opentrain.app.model.WifiScanResultItem;
 import com.opentrain.app.service.WifiScanner;
-import com.opentrain.app.utils.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
