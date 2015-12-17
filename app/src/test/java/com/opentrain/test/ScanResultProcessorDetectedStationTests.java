@@ -52,7 +52,6 @@ public class ScanResultProcessorDetectedStationTests {
     private static final long NOT_WITHIN_KEEPALIVE_UNIX_MS = START_TIME_UNIX_MS + KEEPALIVE_MS*2;
 
     private MainModel mainModel;
-    ScanResultProcessor.Settings settings;
 
     @Parameters(name = "{index}: StationState={0}, ScanResultStation={1}, WithUnmappedBssid={2}, ScanContradiction={3}, WithinKeepalive={4}")
     public static Collection<Object[]> data() {
@@ -127,7 +126,6 @@ public class ScanResultProcessorDetectedStationTests {
 
     @Before
     public void setUp() {
-        settings = new ScanResultProcessor.Settings(SSID, KEEPALIVE_MS);
         MainModel.reset();
         mainModel = MainModel.getInstance();
     }
@@ -153,7 +151,7 @@ public class ScanResultProcessorDetectedStationTests {
                 scanResultStation);
 
         // Run test
-        ScanResultProcessor.process(mainModel, scanResult, settings);
+        ScanResultProcessor.process(mainModel, scanResult, SSID, KEEPALIVE_MS);
 
         // Evaluate test result
         WifiScanResultItem firstScanItem = scanResult.wifiScanResultItems.get(0);

@@ -90,9 +90,14 @@ public class TripMatcher {
         }
 
         // Now we have our best match, and it should be significantly better than all the others:
-        if ((bestMatch.grade != Long.MAX_VALUE) && (bestMatch.grade*FACTOR_BETWEEN_MATCHED_TIMES <= secondBestMatch.grade)) {
-            Logger.log("Found match, trip id: " + bestMatch.id + ", grade: " + bestMatch.grade);
-            return todayTrips.get(bestMatch.tripIndex);
+        if (bestMatch.grade != Long.MAX_VALUE) {
+            if (bestMatch.grade*FACTOR_BETWEEN_MATCHED_TIMES <= secondBestMatch.grade) {
+                Logger.log("Found match, trip id: " + bestMatch.id + ", grade: " + bestMatch.grade);
+                return todayTrips.get(bestMatch.tripIndex);
+            } else {
+                Logger.log("Found match, trip id: " + bestMatch.id + ", but grade: " + bestMatch.grade + " is too close to second best grade: " + secondBestMatch.grade);
+                return null;
+            }
         } else {
             Logger.log("no trip match found");
             return null;

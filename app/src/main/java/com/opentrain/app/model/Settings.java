@@ -7,6 +7,8 @@ public class Settings {
 
     public static final long SCAN_INTERVAL_TEST = 300;
     public static final long SCAN_INTERVAL_TRAIN = 15000;
+    public static final long SCAN_KEEPALIVE_TRAIN = 60000;
+    public static final long SCAN_KEEPALIVE_BETWEEN_STATIONS = 5 * 60 * 1000;
     public static final String STATION_SSID_SIMULATOR = "WiredSSID";
     public static final String STATION_SSID_TRAIN = "S-ISRAEL-RAILWAYS";
     public static final String url_get_map_from_server = "http://gtfs.otrain.org/api/data/bssids/";
@@ -16,7 +18,7 @@ public class Settings {
 
     public static long SCAN_INTERVAL = SCAN_INTERVAL_TRAIN;
     public static String stationSSID = STATION_SSID_TRAIN;
-
+    public static long SCAN_KEEPALIVE = SCAN_KEEPALIVE_TRAIN;
 
     public static void setTestSettings() {
         SCAN_INTERVAL = SCAN_INTERVAL_TEST;
@@ -24,7 +26,13 @@ public class Settings {
 
     public static void setDefaultettings() {
         SCAN_INTERVAL = SCAN_INTERVAL_TRAIN;
+        SCAN_KEEPALIVE = SCAN_KEEPALIVE_TRAIN;
         stationSSID = STATION_SSID_TRAIN;
+    }
+
+    public static void setSettings(String israelRailwaysStationBssid, long stationKeepaliveMs) {
+        SCAN_KEEPALIVE = stationKeepaliveMs;
+        stationSSID = israelRailwaysStationBssid;
     }
 
 }
