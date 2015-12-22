@@ -231,10 +231,10 @@ public class MatchTripTest {
         // Set Scanned stations
         addScannedStation(SET_BSSIDS_A, BASE_TIME_MORNING_2 + OFFSET_30_SEC);
         addScannedStation(SET_BSSIDS_B, BASE_TIME_MORNING_2 + BETWEEN_STOPS_OFFSET_SHORT + (OFFSET_30_SEC*5));
-        addScannedStation(SET_BSSIDS_C, BASE_TIME_MORNING_2 + BETWEEN_STOPS_OFFSET_SHORT + BETWEEN_STOPS_OFFSET_LONG + (OFFSET_30_SEC*7));
+        addScannedStation(SET_BSSIDS_C, BASE_TIME_MORNING_2 + BETWEEN_STOPS_OFFSET_SHORT + BETWEEN_STOPS_OFFSET_LONG + (OFFSET_30_SEC*3));
         MainModel.getInstance().setScannedStationList(scannedStations);
         // Set the expected matched trip
-        expectedMatchedTrip = MatchTripTest.addTripStationsACEFMorning3();
+        expectedMatchedTrip = MatchTripTest.addTripStationsABCDEMorning2();
 
         // Run test and check equality
         runAndCheckResult();

@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
 
         startService(getServiceIntent());
         doBindService();
-
     }
 
     public void onItemClick(View itemView, int position) {
@@ -104,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             mBoundService = ((ScannerService.LocalBinder) service).getService();
+            // Start scaning for wifi stations when the service is up:
+            onTrackingClick();
             updateConnectionState();
         }
 
