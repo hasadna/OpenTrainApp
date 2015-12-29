@@ -5,6 +5,10 @@ import android.util.Log;
 import com.opentrain.app.model.LogItem;
 import com.opentrain.app.model.WifiScanResultItem;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -61,4 +65,19 @@ public class Logger {
             Logger.log("list is null");
         }
     }
+
+    public static JSONObject toJson() {
+        JSONArray jsonArray = new JSONArray();
+        for (int i = 0; i < logItems.size(); i++) {
+            jsonArray.put(logItems.get(i).toJson());
+        }
+        JSONObject json = new JSONObject();
+        try {
+            json.put("LogItems", jsonArray);
+        } catch (JSONException exception) {
+            Logger.log("toJson failed for Logger");
+        }
+        return json;
+    }
+
 }

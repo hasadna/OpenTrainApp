@@ -316,10 +316,10 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
         email.setType("message/rfc822");
         email.putExtra(Intent.EXTRA_EMAIL, new String[] {"open.train.application@gmail.com"});
         email.putExtra(Intent.EXTRA_SUBJECT, "OpenTrainApp - Log");
-        email.putExtra(Intent.EXTRA_TEXT, "OpenTrainApp Log Files attached");
-        // Get the actions history in JSON format from main model:
+        // Get the actions history in JSON format from main model + get all logs:
         JSONObject historyJson = MainModel.getInstance().historyToJson();
-        email.putExtra(Intent.EXTRA_TEXT, historyJson.toString());
+        JSONObject logJson = Logger.toJson();
+        email.putExtra(Intent.EXTRA_TEXT, historyJson.toString() + "\n\n" + logJson.toString());
 
         try {
             // the user can choose the email client
@@ -434,7 +434,6 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
     }
 
     public void onScanResult() {
-        Logger.log("Run matchTrip()");
         Trip matchedTrip = TripMatcher.matchTrip();
         MainModel.getInstance().setMatchedTrip(matchedTrip);
         updateAdapter();

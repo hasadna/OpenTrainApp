@@ -95,7 +95,7 @@ public class TripMatcher {
                 Logger.log("Found match, trip id: " + bestMatch.id + ", grade: " + bestMatch.grade);
                 return todayTrips.get(bestMatch.tripIndex);
             } else {
-                Logger.log("Found match, trip id: " + bestMatch.id + ", but grade: " + bestMatch.grade + " is too close to second best grade: " + secondBestMatch.grade);
+                Logger.log("Found match, trip id: " + bestMatch.id + ", but grade: " + bestMatch.grade + " is too close to second best grade: " + secondBestMatch.grade + " id: " + secondBestMatch.id);
                 return null;
             }
         } else {
@@ -111,7 +111,7 @@ public class TripMatcher {
 
         int idx=0;
         long msOffset = 0;
-        while (idx < stops.size()) {
+        while (idx < stations.size()) {
             if (idx == 0) {
                 // For first scanned station compare only exit time, as enter time might be long before the train arrives:
                 msOffset += Math.abs(stations.get(idx).exitUnixTimeMs - stops.get(idx).departure);

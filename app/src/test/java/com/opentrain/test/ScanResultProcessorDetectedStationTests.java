@@ -41,6 +41,7 @@ public class ScanResultProcessorDetectedStationTests {
     }
 
     private static final String SSID = "S-ISRAEL-RAILWAYS";
+    private static final int KEEPALIVE_BETWEEN_STATIONS_MS = 5 * 60 * 1000;
     private static final int KEEPALIVE_MS = 60 * 1000;
     private static final String BSSID_INITIAL_STATION = "bssid_initial_station";
     private static final String BSSID_DIFFERENT_STATION = "bssid_different_station";
@@ -174,18 +175,30 @@ public class ScanResultProcessorDetectedStationTests {
         } else if (!withinKeepalive) {
             // Create new station
             assertEquals(mainModel.isInStation(), true);
-            Station station;
-            if (stationState == StationState.NO_PREVIOUS_STATION) {
+            Station station = mainModel.getScannedStationList().get(0);
+            if ((stationState != StationState.NO_PREVIOUS_STATION) &&
+                    (scanResultStation == ScanResultStation.INITIAL_STATION) &&
+                    (scanResult.unixTimeMs - station.enterUnixTimeMs < KEEPALIVE_BETWEEN_STATIONS_MS)) {
+                // Staying in the same station with a longer keepalive:
                 assertEquals(mainModel.getScannedStationList().size(), 1);
-                station = mainModel.getScannedStationList().get(0);
+                assertEquals(bssidMap.get(firstScanItem.BSSID), station.getId());
+                assertEquals(START_TIME_UNIX_MS, station.enterUnixTimeMs);
+                assertEquals(scanResult.unixTimeMs, station.lastSeenUnixTimeMs);
+                assertEquals(null, station.exitUnixTimeMs);
+                assertEquals(scanResult.getBssids(), station.bssids);
             } else {
-                assertEquals(mainModel.getScannedStationList().size(), 2);
-                station = mainModel.getScannedStationList().get(1);
+                if (stationState == StationState.NO_PREVIOUS_STATION) {
+                    assertEquals(mainModel.getScannedStationList().size(), 1);
+                    station = mainModel.getScannedStationList().get(0);
+                } else {
+                    assertEquals(mainModel.getScannedStationList().size(), 2);
+                    station = mainModel.getScannedStationList().get(1);
+                }
+                assertEquals(bssidMap.get(firstScanItem.BSSID), station.getId());
+                assertEquals(NOT_WITHIN_KEEPALIVE_UNIX_MS, station.enterUnixTimeMs);
+                assertEquals(NOT_WITHIN_KEEPALIVE_UNIX_MS, station.lastSeenUnixTimeMs);
+                assertEquals(scanResult.getBssids(), station.bssids);
             }
-            assertEquals(bssidMap.get(firstScanItem.BSSID), station.getId());
-            assertEquals(NOT_WITHIN_KEEPALIVE_UNIX_MS, station.enterUnixTimeMs);
-            assertEquals(NOT_WITHIN_KEEPALIVE_UNIX_MS, station.lastSeenUnixTimeMs);
-            assertEquals(scanResult.getBssids(), station.bssids);
         } else {
             // At this point, withUnmappedBssid and scanContradiction are false and withinKeepalive
             // is true. That means that we have a consensus station and are within keepalive.
