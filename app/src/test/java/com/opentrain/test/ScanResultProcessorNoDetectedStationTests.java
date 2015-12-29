@@ -1,13 +1,13 @@
 package com.opentrain.test;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import com.opentrain.app.controller.MainController;
+import com.opentrain.app.controller.ScanResultProcessor;
+import com.opentrain.app.controller.UpdateBssidMapAction;
+import com.opentrain.app.model.BssidMap;
+import com.opentrain.app.model.MainModel;
+import com.opentrain.app.model.Station;
+import com.opentrain.app.model.WifiScanResult;
+import com.opentrain.app.model.WifiScanResultItem;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,14 +16,13 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.opentrain.app.controller.MainController;
-import com.opentrain.app.controller.UpdateBssidMapAction;
-import com.opentrain.app.model.BssidMap;
-import com.opentrain.app.model.MainModel;
-import com.opentrain.app.controller.ScanResultProcessor;
-import com.opentrain.app.model.Station;
-import com.opentrain.app.model.WifiScanResult;
-import com.opentrain.app.model.WifiScanResultItem;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Elina on 9/24/2015.
@@ -48,7 +47,6 @@ public class ScanResultProcessorNoDetectedStationTests {
     private static final long SCAN_RESULT_TIME_UNIX_MS = STATION_LAST_SEEN_TIME_UNIX_MS + 1000 * 15;
 
     private MainModel mainModel;
-    ScanResultProcessor.Settings settings;
 
     @Parameters(name = "{index}: StationState={0}")
     public static Collection<Object[]> data() {
@@ -69,7 +67,6 @@ public class ScanResultProcessorNoDetectedStationTests {
 
     @Before
     public void setUp() {
-        settings = new ScanResultProcessor.Settings(SSID, KEEPALIVE_MS);
         MainModel.reset();
         mainModel = MainModel.getInstance();
     }
@@ -85,7 +82,7 @@ public class ScanResultProcessorNoDetectedStationTests {
         bssidMap.put(BSSID_INITIAL_STATION, STOP_ID_INITIAL_STATION);
         MainController.execute(new UpdateBssidMapAction(bssidMap));
         if (stationState != StationState.NO_PREVIOUS_STATION) {
-            Station station = new Station(getSet(BSSID_INITIAL_STATION), /*STOP_ID_INITIAL_STATION,*/ START_TIME_UNIX_MS);
+            Station station = new Station(getSet(BSSID_INITIAL_STATION), START_TIME_UNIX_MS);
             station.enterUnixTimeMs = START_TIME_UNIX_MS;
             station.lastSeenUnixTimeMs = STATION_LAST_SEEN_TIME_UNIX_MS;
             mainModel.getScannedStationList().add(station);
@@ -97,7 +94,7 @@ public class ScanResultProcessorNoDetectedStationTests {
                 new WifiScanResult(SCAN_RESULT_TIME_UNIX_MS, new ArrayList<WifiScanResultItem>());
 
         // Run test
-        ScanResultProcessor.process(mainModel, scanResult, settings);
+        ScanResultProcessor.process(mainModel, scanResult, SSID, KEEPALIVE_MS);
 
         // Test result
         if (stationState != StationState.NO_PREVIOUS_STATION) {

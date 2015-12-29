@@ -1,13 +1,13 @@
 package com.opentrain.test;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import com.opentrain.app.controller.MainController;
+import com.opentrain.app.controller.ScanResultProcessor;
+import com.opentrain.app.controller.UpdateBssidMapAction;
+import com.opentrain.app.model.BssidMap;
+import com.opentrain.app.model.MainModel;
+import com.opentrain.app.model.Station;
+import com.opentrain.app.model.WifiScanResult;
+import com.opentrain.app.model.WifiScanResultItem;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,14 +16,13 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.opentrain.app.controller.MainController;
-import com.opentrain.app.controller.UpdateBssidMapAction;
-import com.opentrain.app.model.BssidMap;
-import com.opentrain.app.model.MainModel;
-import com.opentrain.app.controller.ScanResultProcessor;
-import com.opentrain.app.model.Station;
-import com.opentrain.app.model.WifiScanResult;
-import com.opentrain.app.model.WifiScanResultItem;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Elina on 9/24/2015.
@@ -42,6 +41,7 @@ public class ScanResultProcessorDetectedStationTests {
     }
 
     private static final String SSID = "S-ISRAEL-RAILWAYS";
+    private static final int KEEPALIVE_BETWEEN_STATIONS_MS = 5 * 60 * 1000;
     private static final int KEEPALIVE_MS = 60 * 1000;
     private static final String BSSID_INITIAL_STATION = "bssid_initial_station";
     private static final String BSSID_DIFFERENT_STATION = "bssid_different_station";
@@ -53,7 +53,6 @@ public class ScanResultProcessorDetectedStationTests {
     private static final long NOT_WITHIN_KEEPALIVE_UNIX_MS = START_TIME_UNIX_MS + KEEPALIVE_MS*2;
 
     private MainModel mainModel;
-    ScanResultProcessor.Settings settings;
 
     @Parameters(name = "{index}: StationState={0}, ScanResultStation={1}, WithUnmappedBssid={2}, ScanContradiction={3}, WithinKeepalive={4}")
     public static Collection<Object[]> data() {
@@ -128,7 +127,6 @@ public class ScanResultProcessorDetectedStationTests {
 
     @Before
     public void setUp() {
-        settings = new ScanResultProcessor.Settings(SSID, KEEPALIVE_MS);
         MainModel.reset();
         mainModel = MainModel.getInstance();
     }
@@ -154,7 +152,7 @@ public class ScanResultProcessorDetectedStationTests {
                 scanResultStation);
 
         // Run test
-        ScanResultProcessor.process(mainModel, scanResult, settings);
+        ScanResultProcessor.process(mainModel, scanResult, SSID, KEEPALIVE_MS);
 
         // Evaluate test result
         WifiScanResultItem firstScanItem = scanResult.wifiScanResultItems.get(0);
@@ -177,18 +175,30 @@ public class ScanResultProcessorDetectedStationTests {
         } else if (!withinKeepalive) {
             // Create new station
             assertEquals(mainModel.isInStation(), true);
-            Station station;
-            if (stationState == StationState.NO_PREVIOUS_STATION) {
+            Station station = mainModel.getScannedStationList().get(0);
+            if ((stationState != StationState.NO_PREVIOUS_STATION) &&
+                    (scanResultStation == ScanResultStation.INITIAL_STATION) &&
+                    (scanResult.unixTimeMs - station.enterUnixTimeMs < KEEPALIVE_BETWEEN_STATIONS_MS)) {
+                // Staying in the same station with a longer keepalive:
                 assertEquals(mainModel.getScannedStationList().size(), 1);
-                station = mainModel.getScannedStationList().get(0);
+                assertEquals(bssidMap.get(firstScanItem.BSSID), station.getId());
+                assertEquals(START_TIME_UNIX_MS, station.enterUnixTimeMs);
+                assertEquals(scanResult.unixTimeMs, station.lastSeenUnixTimeMs);
+                assertEquals(null, station.exitUnixTimeMs);
+                assertEquals(scanResult.getBssids(), station.bssids);
             } else {
-                assertEquals(mainModel.getScannedStationList().size(), 2);
-                station = mainModel.getScannedStationList().get(1);
+                if (stationState == StationState.NO_PREVIOUS_STATION) {
+                    assertEquals(mainModel.getScannedStationList().size(), 1);
+                    station = mainModel.getScannedStationList().get(0);
+                } else {
+                    assertEquals(mainModel.getScannedStationList().size(), 2);
+                    station = mainModel.getScannedStationList().get(1);
+                }
+                assertEquals(bssidMap.get(firstScanItem.BSSID), station.getId());
+                assertEquals(NOT_WITHIN_KEEPALIVE_UNIX_MS, station.enterUnixTimeMs);
+                assertEquals(NOT_WITHIN_KEEPALIVE_UNIX_MS, station.lastSeenUnixTimeMs);
+                assertEquals(scanResult.getBssids(), station.bssids);
             }
-            assertEquals(bssidMap.get(firstScanItem.BSSID), station.getId());
-            assertEquals(NOT_WITHIN_KEEPALIVE_UNIX_MS, station.enterUnixTimeMs);
-            assertEquals(NOT_WITHIN_KEEPALIVE_UNIX_MS, station.lastSeenUnixTimeMs);
-            assertEquals(scanResult.getBssids(), station.bssids);
         } else {
             // At this point, withUnmappedBssid and scanContradiction are false and withinKeepalive
             // is true. That means that we have a consensus station and are within keepalive.

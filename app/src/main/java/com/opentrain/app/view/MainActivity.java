@@ -23,33 +23,35 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.opentrain.app.R;
-import com.opentrain.app.adapter.StationsListAdapter;
+import com.opentrain.app.adapter.StationsCardViewAdapter;
 import com.opentrain.app.controller.Action;
 import com.opentrain.app.controller.MainController;
 import com.opentrain.app.controller.NewWifiScanResultAction;
+import com.opentrain.app.controller.TripMatcher;
 import com.opentrain.app.controller.UpdateBssidMapAction;
 import com.opentrain.app.model.BssidMap;
-import com.opentrain.app.adapter.StationsCardViewAdapter;
 import com.opentrain.app.model.MainModel;
+import com.opentrain.app.model.MatchedStation;
 import com.opentrain.app.model.Settings;
 import com.opentrain.app.model.Station;
+import com.opentrain.app.model.StationBasicInfo;
+import com.opentrain.app.model.Trip;
 import com.opentrain.app.model.WifiScanResult;
-import com.opentrain.app.model.WifiScanResultItem;
 import com.opentrain.app.network.NetowrkManager;
 import com.opentrain.app.service.ScannerService;
 import com.opentrain.app.service.ServiceBroadcastReceiver;
 import com.opentrain.app.service.WifiScanner;
 import com.opentrain.app.testing.MockWifiScanner;
 import com.opentrain.app.utils.Logger;
+import com.opentrain.app.utils.TimeUtils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -87,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
 
         startService(getServiceIntent());
         doBindService();
-
     }
 
     public void onItemClick(View itemView, int position) {
@@ -102,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             mBoundService = ((ScannerService.LocalBinder) service).getService();
+            // Start scaning for wifi stations when the service is up:
+            onTrackingClick();
             updateConnectionState();
         }
 
@@ -157,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
             mBoundService.onResume();
         }
         updateConnectionState();
-        onScanResult();
+        updateAdapter();
     }
 
     @Override
@@ -226,10 +229,10 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
 
 
         final Spinner spinner = (Spinner) view.findViewById(R.id.stations_spinner);
-        List<String> list = MainModel.getInstance().getStationList();
+        List<StationBasicInfo> list = MainModel.getInstance().getStationList();
         final Station station = (stationNum != null) ? MainModel.getInstance().getScannedStationList().get(stationNum) : null;
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this,
+        ArrayAdapter<StationBasicInfo> dataAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
@@ -242,17 +245,16 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
 
         alert.setPositiveButton("Edit server", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                String staionId = (String) spinner.getAdapter().getItem(spinner.getSelectedItemPosition());
-                if (staionId.length() > 0) {
+                StationBasicInfo stationInfo = (StationBasicInfo) spinner.getAdapter().getItem(spinner.getSelectedItemPosition());
+                if (stationInfo != null) {
                     if (station == null) {
                         String bssids = stationRouters.getText().toString();
-
                         Set<String> bssidsSet = new HashSet<>();
                         bssidsSet.add(bssids);
                         Station newStation = new Station(bssidsSet, System.currentTimeMillis());
-                        addMapToServer(newStation, staionId);
+                        addStationBssidToServer(newStation, stationInfo);
                     } else {
-                        addMapToServer(station, staionId);
+                        addStationBssidToServer(station, stationInfo);
                     }
                 }
             }
@@ -314,10 +316,10 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
         email.setType("message/rfc822");
         email.putExtra(Intent.EXTRA_EMAIL, new String[] {"open.train.application@gmail.com"});
         email.putExtra(Intent.EXTRA_SUBJECT, "OpenTrainApp - Log");
-        email.putExtra(Intent.EXTRA_TEXT, "OpenTrainApp Log Files attached");
-        // Get the actions history in JSON format from main model:
+        // Get the actions history in JSON format from main model + get all logs:
         JSONObject historyJson = MainModel.getInstance().historyToJson();
-        email.putExtra(Intent.EXTRA_TEXT, historyJson.toString());
+        JSONObject logJson = Logger.toJson();
+        email.putExtra(Intent.EXTRA_TEXT, historyJson.toString() + "\n\n" + logJson.toString());
 
         try {
             // the user can choose the email client
@@ -350,9 +352,26 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
         });
     }
 
-    public void addMapToServer(Station station, String stationId) {
+    public void addStationBssidToServer(Station station, StationBasicInfo stationInfo) {
         onRequestStart();
-        NetowrkManager.getInstance().addMappingToServer(station.getPostParam(stationId), new NetowrkManager.RequestListener() {
+        // Update all the bssids of this station:
+        List<JSONObject> jsonList = new ArrayList<>();
+        for (String bssid : station.bssids) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("name", stationInfo.name);
+                jsonObject.put("bssid", bssid);
+                jsonObject.put("stop_id", stationInfo.id);
+                addMapToServer(jsonObject);
+            } catch (JSONException e) {
+                Logger.log("addStationBssidToServer" + e.toString());
+            }
+            jsonList.add(jsonObject);
+        }
+    }
+
+    public void addMapToServer(JSONObject jsonObject/*Station station, String stationId*/) {
+        NetowrkManager.getInstance().addMappingToServer(jsonObject, new NetowrkManager.RequestListener() {
             @Override
             public void onResponse(Object response) {
                 toast("Succes!");
@@ -415,7 +434,16 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
     }
 
     public void onScanResult() {
-        mAdapter.setItems(MainModel.getInstance().getScannedStationList());
+        Trip matchedTrip = TripMatcher.matchTrip();
+        MainModel.getInstance().setMatchedTrip(matchedTrip);
+        updateAdapter();
+    }
+
+    private void updateAdapter() {
+        Trip trip = MainModel.getInstance().getMatchedTrip();
+        List<MatchedStation> matched = MainModel.getInstance().alignScannedTripToGtfsTrip(
+                MainModel.getInstance().getScannedStationList(), trip);
+        mAdapter.setItems(matched);
     }
 
     private void toast(String str) {
@@ -426,25 +454,32 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
         List<Action> actions = new ArrayList<>();
 
         BssidMap mockBssidMap = new BssidMap();
-        mockBssidMap.put("1", "תחנה 1");
-        mockBssidMap.put("2", "תח2");
-        mockBssidMap.put("3", "תחנה 3 בעברית");
-        mockBssidMap.put("4", "תחנה רביעית עם שםארוךארוך");
-        mockBssidMap.put("5", "תחנהחמישית מס5");
-        mockBssidMap.put("6", "תחנה שישיתשישית");
-        mockBssidMap.put("7", "תחנה 7");
-        mockBssidMap.put("8", "תחנה מספר8 מספר8");
+        mockBssidMap.put("1", "37332"); // Rehovot
+        mockBssidMap.put("2", "37338"); // Lod
+        mockBssidMap.put("3", "37292"); // Tel Aviv Hahagana
+        mockBssidMap.put("4", "37350");
+        mockBssidMap.put("5", "37358");
+        mockBssidMap.put("6", "37360");
+        mockBssidMap.put("7", "37318");
+        mockBssidMap.put("8", "37330"); // Beer Yaakov
         actions.add(new UpdateBssidMapAction(mockBssidMap));
 
-        final long baseTimeUnixMs = 1445697120000L;
+        long baseTimeUnixMs = 1449643135000L;
+        try { // get the date of today
+            baseTimeUnixMs = TimeUtils.getFormattedTime("08:38:55");
+        } catch (Exception e) {
+            Logger.log(e.toString());
+        }
         final long second = 1000;
         actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs, "1", "S-ISRAEL-RAILWAYS")));
         actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 10, "1", "S-ISRAEL-RAILWAYS")));
         actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 20)));
-        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 60, "2", "S-ISRAEL-RAILWAYS")));
-        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 80)));
-        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 120, "3", "S-ISRAEL-RAILWAYS")));
-        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 140)));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 300, "8", "S-ISRAEL-RAILWAYS")));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 310)));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 675, "2", "S-ISRAEL-RAILWAYS")));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 690)));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 1375, "3", "S-ISRAEL-RAILWAYS")));
+        actions.add(new NewWifiScanResultAction(new WifiScanResult(baseTimeUnixMs + second * 1400)));
 
         return actions;
     }

@@ -12,7 +12,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import com.opentrain.app.model.Settings;
-import com.opentrain.app.testing.MockWifiScanner;
 
 import java.util.Timer;
 import java.util.TimerTask;

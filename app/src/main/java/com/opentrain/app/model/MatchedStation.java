@@ -5,10 +5,10 @@ package com.opentrain.app.model;
  */
 public class MatchedStation {
     public Station scannedStation;
-    public GtfsStation gtfsStation;
+    public Stop stop;
 
-    public MatchedStation(Station scannedStation, GtfsStation gtfsStation) {
-        this.gtfsStation = gtfsStation;
+    public MatchedStation(Station scannedStation, Stop stop) {
+        this.stop = stop;
         this.scannedStation = scannedStation;
     }
 }

@@ -6,10 +6,7 @@ import com.opentrain.app.model.WifiScanResult;
 import com.opentrain.app.model.WifiScanResultItem;
 import com.opentrain.app.utils.Logger;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Iterator;
 
 /**
  * Created by Elina on 23 Oct 2015.

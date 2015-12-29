@@ -9,27 +9,22 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.opentrain.app.model.Trip;
 import com.opentrain.app.controller.MainController;
 import com.opentrain.app.controller.UpdateBssidMapAction;
 import com.opentrain.app.model.BssidMap;
-import com.opentrain.app.model.WifiScanResultItem;
-import com.opentrain.app.utils.Logger;
-import com.opentrain.app.model.Settings;
 import com.opentrain.app.model.MainModel;
+import com.opentrain.app.model.Settings;
+import com.opentrain.app.model.StationBasicInfo;
+import com.opentrain.app.model.Trip;
+import com.opentrain.app.utils.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by noam on 29/06/15.
@@ -119,32 +114,32 @@ public class NetowrkManager {
 
     private void parseBSSIDSResponse(JSONArray jsonArray) throws Exception {
 
-        HashMap<String, String> mapBSSIDToName = new HashMap<>();
-        HashMap<String, String> mapBSSIDSToStop = new HashMap<>();
+        HashMap<String, String> mapBSSIDToId = new HashMap<>();
+        HashMap<String, String> mapStopIdToName = new HashMap<>();
         try {
             for (int i = 0, j = jsonArray.length(); i < j; i++) {
                 try {
                     JSONObject station = jsonArray.getJSONObject(i);
                     String bssid = station.getString("bssid");
                     String name = new String(station.getString("name").getBytes("ISO-8859-1"), "UTF-8");
-                    mapBSSIDToName.put(bssid, name);
 
                     JSONObject stopJson = station.getJSONObject("stop");
                     String stopId = stopJson.getString("id");
-                    mapBSSIDSToStop.put(bssid, stopId);
+                    mapBSSIDToId.put(bssid, stopId);
+                    mapStopIdToName.put(stopId, name);
                 } catch (Exception e) {
                     Logger.log(e.toString());
                 }
             }
 
-            BssidMap bssidMap = new BssidMap(mapBSSIDToName);
+            BssidMap bssidMap = new BssidMap(mapBSSIDToId);
             UpdateBssidMapAction updateBssidMapAction = new UpdateBssidMapAction(bssidMap);
             MainController.execute(updateBssidMapAction);
 
-            MainModel.getInstance().setBssidToStopMap(mapBSSIDSToStop);
+            MainModel.getInstance().setStopIdToStopMap(mapStopIdToName);
 
-            Logger.logMap(mapBSSIDToName);
-            Logger.logMap(mapBSSIDSToStop);
+            Logger.logMap(mapBSSIDToId);
+            Logger.logMap(mapStopIdToName);
         } catch (Exception e) {
             e.printStackTrace();
             Logger.log(e.toString());
@@ -159,12 +154,13 @@ public class NetowrkManager {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        ArrayList<String> stations = new ArrayList<>();
+                        List<StationBasicInfo> stations = new ArrayList<>();
                         try {
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject stop = (JSONObject) response.get(i);
                                 String name = new String(stop.getString("name").getBytes("ISO-8859-1"), "UTF-8");
-                                stations.add(name);
+                                StationBasicInfo info = new StationBasicInfo(name, stop.getString("id"));
+                                stations.add(info);
 
                             }
                             MainModel.getInstance().setStationList(stations);
@@ -200,8 +196,7 @@ public class NetowrkManager {
                         try {
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject tripJson = (JSONObject) response.get(i);
-                                Trip trip = new Trip();
-                                trip.parse(tripJson);
+                                Trip trip = new Trip(tripJson);
                                 trips.add(trip);
                             }
                             Logger.log("Successfully get " + trips.size() + " trips from server");
