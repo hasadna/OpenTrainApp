@@ -31,7 +31,6 @@ public class MainActivityTest {
     public ActivityTestRule<MainActivity> mActivityRule =
             new ActivityTestRule<>(MainActivity.class);
 
-
     @Test
     public void openMenuAndClick() {
 
@@ -41,7 +40,6 @@ public class MainActivityTest {
         // perform a click on the option
         onView(withText(R.string.action_test_trip)).perform(click());
 
-
         // Now we wait for 10 sec
         IdlingResource idlingResource = new ElapsedTimeIdlingResource(10000);
         Espresso.registerIdlingResources(idlingResource);
@@ -50,7 +48,6 @@ public class MainActivityTest {
         onView(withId(R.id.recyclerView))
                 .check(matches(hasDescendant(withText(R.string.test_time))));
     }
-
 
     // class to wait the test runner
     public class ElapsedTimeIdlingResource implements IdlingResource {
@@ -84,9 +81,5 @@ public class MainActivityTest {
             this.resourceCallback = resourceCallback;
         }
     }
-
-
-
-
 
 }

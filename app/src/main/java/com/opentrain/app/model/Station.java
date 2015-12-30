@@ -1,11 +1,5 @@
 package com.opentrain.app.model;
 
-import com.opentrain.app.utils.Logger;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -81,23 +75,6 @@ public class Station {
     @Override
     public String toString() {
         return getName();
-    }
-
-    public JSONObject getPostParam(String stationId) {
-
-        JSONArray routerArray = new JSONArray();
-        for (String entry : bssids) {
-            routerArray.put(entry);
-        }
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("name", stationId);
-            jsonObject.put("bssid", routerArray.get(0));
-        } catch (JSONException e) {
-            Logger.log(e.toString());
-        }
-
-        return jsonObject;
     }
 
 }
