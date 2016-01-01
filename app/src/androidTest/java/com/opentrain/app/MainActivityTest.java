@@ -5,6 +5,7 @@ import android.support.test.espresso.IdlingResource;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.opentrain.app.model.Settings;
 import com.opentrain.app.view.MainActivity;
 
 import org.junit.Rule;
@@ -46,7 +47,7 @@ public class MainActivityTest {
 
         // check for string mentioned in the Descendant of Recycler View
         onView(withId(R.id.recyclerView))
-                .check(matches(hasDescendant(withText(R.string.test_time))));
+                .check(matches(hasDescendant(withText(Settings.TEST_TIME_BASE))));
     }
 
     // class to wait the test runner

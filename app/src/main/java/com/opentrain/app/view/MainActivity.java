@@ -466,7 +466,7 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
 
         long baseTimeUnixMs = 1449643135000L;
         try { // get the date of today
-            baseTimeUnixMs = TimeUtils.getFormattedTime("08:38:55");
+            baseTimeUnixMs = TimeUtils.getFormattedTime(Settings.TEST_TIME_BASE);
         } catch (Exception e) {
             Logger.log(e.toString());
         }
