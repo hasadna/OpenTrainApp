@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="il.org.hasadna.opentrain.test" tests="2" failures="0" errors="0" time="13.133" timestamp="2016-01-02T10:48:05" hostname="localhost">
+  <properties />
+  <testcase name="testOpenMenuAndClick" classname="com.opentrain.app.MainActivityTest" time="12.346" />
+  <testcase name="test1GetMapFromServer" classname="com.opentrain.app.ServerRequestsTest" time="0.78" />
+</testsuite>

@@ -1,0 +1,2025 @@
+{
+  "title": "Spoon Execution",
+  "started": 1451731668563,
+  "duration": 22,
+  "results": {
+    "192_168_56_101_5555": {
+      "installFailed": false,
+      "deviceDetails": {
+        "model": "Motorola Droid Razr - 4.1.1 - API 16 - 540x960",
+        "manufacturer": "Genymotion",
+        "version": "4.1.1",
+        "apiLevel": 16,
+        "language": "en",
+        "region": "US",
+        "isEmulator": false
+      },
+      "testResults": [
+        [
+          {
+            "className": "com.opentrain.app.MainActivityTest",
+            "methodName": "testOpenMenuAndClick"
+          },
+          {
+            "status": "PASS",
+            "duration": 12,
+            "screenshots": [
+              "/Users/rocks/Documents/Open_Train_Git_Repository/OpenTrainApp/app/spoon/spoon-output/image/192_168_56_101_5555/com.opentrain.app.MainActivityTest/testOpenMenuAndClick/1451731671417_Before_Menu_Click.png",
+              "/Users/rocks/Documents/Open_Train_Git_Repository/OpenTrainApp/app/spoon/spoon-output/image/192_168_56_101_5555/com.opentrain.app.MainActivityTest/testOpenMenuAndClick/1451731682115_After_RecyclerView_loads.png"
+            ],
+            "animatedGif": "/Users/rocks/Documents/Open_Train_Git_Repository/OpenTrainApp/app/spoon/spoon-output/image/192_168_56_101_5555/com.opentrain.app.MainActivityTest/testOpenMenuAndClick.gif",
+            "log": [
+              {
+                "mLogLevel": "INFO",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "TestRunner",
+                "mTime": "01-02 10:47:49.941",
+                "mMessage": "started: testOpenMenuAndClick(com.opentrain.app.MainActivityTest)"
+              },
+              {
+                "mLogLevel": "INFO",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "MonitoringInstrumentation",
+                "mTime": "01-02 10:47:49.945",
+                "mMessage": "Activities that are still in CREATED to STOPPED: 0"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "ActivityInstrumentationRule",
+                "mTime": "01-02 10:47:49.949",
+                "mMessage": "Launching activity com.opentrain.app.view.MainActivity"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25971",
+                "mAppName": "",
+                "mTag": "MonitoringInstrumentation",
+                "mTime": "01-02 10:47:49.949",
+                "mMessage": "execStartActivity(context, ibinder, ibinder, activity, intent, int, bundle"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "LifecycleMonitor",
+                "mTime": "01-02 10:47:50.061",
+                "mMessage": "Lifecycle status change: com.opentrain.app.view.MainActivity@535ac214 in: PRE_ON_CREATE"
+              },
+              {
+                "mLogLevel": "INFO",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:50.133",
+                "mMessage": "Could not find method android.view.ViewGroup.onRtlPropertiesChanged, referenced from method android.support.v7.widget.Toolbar.onRtlPropertiesChanged"
+              },
+              {
+                "mLogLevel": "WARN",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:50.137",
+                "mMessage": "VFY: unable to resolve virtual method 14880: Landroid/view/ViewGroup;.onRtlPropertiesChanged (I)V"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:50.137",
+                "mMessage": "VFY: replacing opcode 0x6f at 0x0007"
+              },
+              {
+                "mLogLevel": "INFO",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:50.145",
+                "mMessage": "Could not find method android.content.res.TypedArray.getChangingConfigurations, referenced from method android.support.v7.internal.widget.TintTypedArray.getChangingConfigurations"
+              },
+              {
+                "mLogLevel": "WARN",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:50.145",
+                "mMessage": "VFY: unable to resolve virtual method 430: Landroid/content/res/TypedArray;.getChangingConfigurations ()I"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:50.145",
+                "mMessage": "VFY: replacing opcode 0x6e at 0x0002"
+              },
+              {
+                "mLogLevel": "INFO",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:50.149",
+                "mMessage": "Could not find method android.content.res.TypedArray.getType, referenced from method android.support.v7.internal.widget.TintTypedArray.getType"
+              },
+              {
+                "mLogLevel": "WARN",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:50.153",
+                "mMessage": "VFY: unable to resolve virtual method 452: Landroid/content/res/TypedArray;.getType (I)I"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:50.153",
+                "mMessage": "VFY: replacing opcode 0x6e at 0x0002"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:50.213",
+                "mMessage": "GC_CONCURRENT freed 732K, 13% free 8610K/9863K, paused 11ms+0ms, total 18ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "LifecycleMonitor",
+                "mTime": "01-02 10:47:50.213",
+                "mMessage": "Lifecycle status change: com.opentrain.app.view.MainActivity@535ac214 in: CREATED"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "LifecycleMonitor",
+                "mTime": "01-02 10:47:50.217",
+                "mMessage": "Lifecycle status change: com.opentrain.app.view.MainActivity@535ac214 in: STARTED"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "LifecycleMonitor",
+                "mTime": "01-02 10:47:50.217",
+                "mMessage": "Lifecycle status change: com.opentrain.app.view.MainActivity@535ac214 in: RESUMED"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "libEGL",
+                "mTime": "01-02 10:47:50.281",
+                "mMessage": "loaded /system/lib/egl/libEGL_genymotion.so"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "",
+                "mTime": "01-02 10:47:50.289",
+                "mMessage": "HostConnection::get() New Host Connection established 0xb7ec7750, tid 25932"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "libEGL",
+                "mTime": "01-02 10:47:50.313",
+                "mMessage": "loaded /system/lib/egl/libGLESv1_CM_genymotion.so"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "libEGL",
+                "mTime": "01-02 10:47:50.313",
+                "mMessage": "loaded /system/lib/egl/libGLESv2_genymotion.so"
+              },
+              {
+                "mLogLevel": "WARN",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "EGL_genymotion",
+                "mTime": "01-02 10:47:50.345",
+                "mMessage": "eglSurfaceAttrib not implemented"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "OpenGLRenderer",
+                "mTime": "01-02 10:47:50.353",
+                "mMessage": "Enabling debug mode 0"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "OpenGLRenderer",
+                "mTime": "01-02 10:47:50.461",
+                "mMessage": "TextureCache::get: create texture(0xb7e94c08): name, size, mSize \u003d 2, 2304, 2304"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "OpenGLRenderer",
+                "mTime": "01-02 10:47:50.529",
+                "mMessage": "TextureCache::get: create texture(0xb7e78100): name, size, mSize \u003d 5, 2304, 4608"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "OpenGLRenderer",
+                "mTime": "01-02 10:47:50.529",
+                "mMessage": "TextureCache::get: create texture(0xb7e854d8): name, size, mSize \u003d 6, 2304, 6912"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25954",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:50.653",
+                "mMessage": "GC_FOR_ALLOC freed 176K, 12% free 8753K/9863K, paused 4ms, total 4ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "org.json.JSONException: Value null at stop of type org.json.JSONObject$1 cannot be converted to JSONObject"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "Executing UpdateBssidMapAction."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:82:89:20/37350"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "fc:0a:81:2e:1c:d0/37330"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:82:bd:50/37334"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:1f:f1:20/37332"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:82:bb:40/37338"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:82:ba:10/37350"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:a3:db:40/37364"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:82:b9:30/37374"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:82:bc:30/37376"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:a3:e1:70/37372"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:83:12:e0/37334"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "fc:0a:81:2e:1f:40/37358"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:a3:df:00/37316"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:9b:c0:20/37330"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:82:b7:c0/37292"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:82:b7:00/37292"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:82:ff:f0/37332"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:82:b9:60/37292"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "fc:0a:81:2e:26:70/37358"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:d1:58:00/37338"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:0b:d4:90/37360"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "84:24:8d:2e:cf:50/37358"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:82:80:10/37350"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:82:ba:b0/37338"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:82:b9:80/37376"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:83:08:50/37376"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:0b:aa:c1/37360"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:a3:dd:40/37370"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:0b:d7:c0/37360"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:1f:fd:00/37332"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:9b:c3:a0/37330"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:83:0e:80/37350"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:9b:c0:10/37338"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:82:bb:f0/37334"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "b4:c7:99:82:aa:a0/37376"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "fc:0a:81:57:ee:f0/37362"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "37292/תל אביב ההגנה"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "37372/בנימינה"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "37316/קרית גת"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "37334/לוד-גני אביב"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "37360/תא אוניברסיטה"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "37370/קיסריה פרדס חנה"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "37362/הרצליה"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "37376/חוף הכרמל"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "37350/השלום"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "37338/לוד"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "37364/בית יהושע"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "37374/עתלית"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "37358/תל אביב מרכז"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "37330/באר יעקב"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:50.677",
+                "mMessage": "37332/רחובות"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:51.377",
+                "mMessage": "Executing NewWifiScanResultAction."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:51.377",
+                "mMessage": "Scan is empty and station list is empty, not updating anything."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:51.393",
+                "mMessage": "no trip match found"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:51.429",
+                "mMessage": "GC_FOR_ALLOC freed 100K, 11% free 8825K/9863K, paused 17ms, total 17ms"
+              },
+              {
+                "mLogLevel": "INFO",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "dalvikvm-heap",
+                "mTime": "01-02 10:47:51.441",
+                "mMessage": "Grow heap (frag case) to 11.063MB for 2073612-byte allocation"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:51.445",
+                "mMessage": "GC_FOR_ALLOC freed \u003c1K, 9% free 10849K/11911K, paused 3ms, total 3ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:51.449",
+                "mMessage": "GC_CONCURRENT freed \u003c1K, 9% free 10850K/11911K, paused 1ms+0ms, total 4ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "Spoon",
+                "mTime": "01-02 10:47:51.517",
+                "mMessage": "Captured screenshot \u0027Before_Menu_Click\u0027."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "InputManagerEventInjectionStrategy",
+                "mTime": "01-02 10:47:51.521",
+                "mMessage": "Creating injection strategy with input manager."
+              },
+              {
+                "mLogLevel": "INFO",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "ViewInteraction",
+                "mTime": "01-02 10:47:51.521",
+                "mMessage": "Performing \u0027send keyCode: 82, metaState: 0 key event\u0027 action on view is a root view."
+              },
+              {
+                "mLogLevel": "VERBOSE",
+                "mPid": "25932",
+                "mTid": "25991",
+                "mAppName": "",
+                "mTag": "ESP_TRACE",
+                "mTime": "01-02 10:47:51.521",
+                "mMessage": "EventInjector:Injecting event for character (��) with key code (82) downtime: (7471533)"
+              },
+              {
+                "mLogLevel": "VERBOSE",
+                "mPid": "25932",
+                "mTid": "25991",
+                "mAppName": "",
+                "mTag": "ESP_TRACE",
+                "mTime": "01-02 10:47:51.529",
+                "mMessage": "EventInjector:Injecting event for character (��) with key code (82) downtime: (7471536)"
+              },
+              {
+                "mLogLevel": "WARN",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "EGL_genymotion",
+                "mTime": "01-02 10:47:51.581",
+                "mMessage": "eglSurfaceAttrib not implemented"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "OpenGLRenderer",
+                "mTime": "01-02 10:47:51.593",
+                "mMessage": "TextureCache::get: create texture(0xb7efef20): name, size, mSize \u003d 60, 13824, 20736"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "OpenGLRenderer",
+                "mTime": "01-02 10:47:51.601",
+                "mMessage": "TextureCache::get: create texture(0xb7e93d10): name, size, mSize \u003d 61, 4, 20740"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "OpenGLRenderer",
+                "mTime": "01-02 10:47:51.617",
+                "mMessage": "TextureCache::get: create texture(0xb7e999b0): name, size, mSize \u003d 62, 324, 21064"
+              },
+              {
+                "mLogLevel": "INFO",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "ViewInteraction",
+                "mTime": "01-02 10:47:51.657",
+                "mMessage": "Performing \u0027single click\u0027 action on view with string from resource id: \u003c2131099671\u003e[action_test_trip] value: Run Testing Trip"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "OpenGLRenderer",
+                "mTime": "01-02 10:47:51.761",
+                "mMessage": "TextureCache::get: create texture(0xb7f23e30): name, size, mSize \u003d 66, 324, 21388"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:51.861",
+                "mMessage": "Executing UpdateBssidMapAction."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:52.161",
+                "mMessage": "Executing NewWifiScanResultAction."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:52.161",
+                "mMessage": "scan result: BSSID: 1, mapping: 37332"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:52.161",
+                "mMessage": "Creating a new station because the station list is empty."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:52.165",
+                "mMessage": "no trip match found"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:52.461",
+                "mMessage": "Executing NewWifiScanResultAction."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:52.461",
+                "mMessage": "scan result: BSSID: 1, mapping: 37332"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:52.461",
+                "mMessage": "Still in the same station, updating last seen time and setting exit time to null."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:52.465",
+                "mMessage": "no trip match found"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:52.521",
+                "mMessage": "GC_CONCURRENT freed 2423K, 25% free 9329K/12295K, paused 11ms+1ms, total 16ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:52.549",
+                "mMessage": "GC_CONCURRENT freed 120K, 22% free 9592K/12295K, paused 11ms+0ms, total 16ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:52.609",
+                "mMessage": "GC_CONCURRENT freed 409K, 22% free 9615K/12295K, paused 12ms+1ms, total 18ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:52.665",
+                "mMessage": "GC_CONCURRENT freed 424K, 22% free 9631K/12295K, paused 12ms+0ms, total 17ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:52.721",
+                "mMessage": "GC_CONCURRENT freed 441K, 22% free 9635K/12295K, paused 11ms+0ms, total 17ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:52.773",
+                "mMessage": "Executing NewWifiScanResultAction."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:52.773",
+                "mMessage": "Scan is empty. Updating last station exit time to last seen time and setting inStation to false."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:52.777",
+                "mMessage": "GC_CONCURRENT freed 441K, 22% free 9641K/12295K, paused 12ms+2ms, total 20ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:52.837",
+                "mMessage": "GC_CONCURRENT freed 444K, 22% free 9645K/12295K, paused 11ms+1ms, total 17ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:52.889",
+                "mMessage": "GC_CONCURRENT freed 446K, 22% free 9650K/12295K, paused 11ms+0ms, total 17ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:52.949",
+                "mMessage": "GC_CONCURRENT freed 448K, 22% free 9654K/12295K, paused 11ms+1ms, total 18ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:53.017",
+                "mMessage": "GC_CONCURRENT freed 449K, 22% free 9659K/12295K, paused 12ms+1ms, total 20ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.073",
+                "mMessage": "Executing NewWifiScanResultAction."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.073",
+                "mMessage": "scan result: BSSID: 8, mapping: 37330"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.073",
+                "mMessage": "Creating a new station because we are out of keepalive (too much time has passed since last seen a station)."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:53.081",
+                "mMessage": "GC_CONCURRENT freed 451K, 22% free 9665K/12295K, paused 11ms+2ms, total 19ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.093",
+                "mMessage": "Successfully get 51 trips from server"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Volley",
+                "mTime": "01-02 10:47:53.093",
+                "mMessage": "[1] Request.finish: 3566 ms: [ ] http://gtfs.otrain.org/api/gtfs/trips/date/today/?format\u003djson 0xdf8f6e63 NORMAL 3"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.097",
+                "mMessage": "Found match, trip id: 18753634_020116, but grade: 33630000 is too close to second best grade: 35160000 id: 18753600_020116"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.101",
+                "mMessage": "Found match, trip id: 18753634_020116, but grade: 33630000 is too close to second best grade: 35160000 id: 18753600_020116"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.377",
+                "mMessage": "Executing NewWifiScanResultAction."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.377",
+                "mMessage": "Scan is empty. Updating last station exit time to last seen time and setting inStation to false."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:53.393",
+                "mMessage": "GC_CONCURRENT freed 493K, 22% free 9628K/12295K, paused 12ms+0ms, total 16ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.393",
+                "mMessage": "Found match, trip id: 18753634_020116, but grade: 33630000 is too close to second best grade: 35160000 id: 18753600_020116"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.673",
+                "mMessage": "Executing NewWifiScanResultAction."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.673",
+                "mMessage": "scan result: BSSID: 2, mapping: 37338"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.673",
+                "mMessage": "Creating a new station because we are out of keepalive (too much time has passed since last seen a station)."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.677",
+                "mMessage": "Found match, trip id: 18753634_020116, but grade: 33656666 is too close to second best grade: 33897500 id: 18752743_020116"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.977",
+                "mMessage": "Executing NewWifiScanResultAction."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.977",
+                "mMessage": "Scan is empty. Updating last station exit time to last seen time and setting inStation to false."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:53.977",
+                "mMessage": "Found match, trip id: 18753634_020116, but grade: 33656666 is too close to second best grade: 33897500 id: 18752743_020116"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:54.273",
+                "mMessage": "Executing NewWifiScanResultAction."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:54.273",
+                "mMessage": "scan result: BSSID: 3, mapping: 37292"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:54.273",
+                "mMessage": "Creating a new station because we are out of keepalive (too much time has passed since last seen a station)."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:54.305",
+                "mMessage": "GC_CONCURRENT freed 564K, 22% free 9637K/12295K, paused 17ms+1ms, total 27ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:47:54.305",
+                "mMessage": "WAIT_FOR_CONCURRENT_GC blocked 10ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:54.305",
+                "mMessage": "Found match, trip id: 18753634_020116, but grade: 33720000 is too close to second best grade: 33961666 id: 18752743_020116"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:54.573",
+                "mMessage": "Executing NewWifiScanResultAction."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25994",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:54.573",
+                "mMessage": "Scan is empty. Updating last station exit time to last seen time and setting inStation to false."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:54.577",
+                "mMessage": "Found match, trip id: 18753634_020116, but grade: 33720000 is too close to second best grade: 33961666 id: 18752743_020116"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:47:54.877",
+                "mMessage": "Executing UpdateBssidMapAction."
+              },
+              {
+                "mLogLevel": "WARN",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "IdlingPolicy",
+                "mTime": "01-02 10:47:57.105",
+                "mMessage": "These resources are not idle: [com.opentrain.app.MainActivityTest$ElapsedTimeIdlingResource:10000]"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:48:02.121",
+                "mMessage": "GC_FOR_ALLOC freed 312K, 22% free 9671K/12295K, paused 15ms, total 15ms"
+              },
+              {
+                "mLogLevel": "INFO",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "dalvikvm-heap",
+                "mTime": "01-02 10:48:02.137",
+                "mMessage": "Grow heap (frag case) to 11.889MB for 2073612-byte allocation"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25937",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:48:02.153",
+                "mMessage": "GC_CONCURRENT freed 15K, 19% free 11681K/14343K, paused 13ms+1ms, total 17ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:48:02.157",
+                "mMessage": "WAIT_FOR_CONCURRENT_GC blocked 3ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "Spoon",
+                "mTime": "01-02 10:48:02.221",
+                "mMessage": "Captured screenshot \u0027After_RecyclerView_loads\u0027."
+              },
+              {
+                "mLogLevel": "INFO",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "TestRunner",
+                "mTime": "01-02 10:48:02.293",
+                "mMessage": "finished: testOpenMenuAndClick(com.opentrain.app.MainActivityTest)"
+              }
+            ]
+          }
+        ],
+        [
+          {
+            "className": "com.opentrain.app.ServerRequestsTest",
+            "methodName": "test1GetMapFromServer"
+          },
+          {
+            "status": "PASS",
+            "duration": 0,
+            "screenshots": [],
+            "log": [
+              {
+                "mLogLevel": "INFO",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "TestRunner",
+                "mTime": "01-02 10:48:02.301",
+                "mMessage": "started: test1GetMapFromServer(com.opentrain.app.ServerRequestsTest)"
+              },
+              {
+                "mLogLevel": "INFO",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "MonitoringInstrumentation",
+                "mTime": "01-02 10:48:02.301",
+                "mMessage": "Activities that are still in CREATED to STOPPED: 1"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:02.301",
+                "mMessage": "get map from server. server url:http://gtfs.otrain.org/api/data/bssids/"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "LifecycleMonitor",
+                "mTime": "01-02 10:48:02.793",
+                "mMessage": "Lifecycle status change: com.opentrain.app.view.MainActivity@535ac214 in: STOPPED"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "LifecycleMonitor",
+                "mTime": "01-02 10:48:02.793",
+                "mMessage": "Lifecycle status change: com.opentrain.app.view.MainActivity@535ac214 in: DESTROYED"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "org.json.JSONException: Value null at stop of type org.json.JSONObject$1 cannot be converted to JSONObject"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "Executing UpdateBssidMapAction."
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:82:89:20/37350"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "fc:0a:81:2e:1c:d0/37330"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:82:bd:50/37334"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:1f:f1:20/37332"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:82:bb:40/37338"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:82:ba:10/37350"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:a3:db:40/37364"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:82:b9:30/37374"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:82:bc:30/37376"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:a3:e1:70/37372"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:83:12:e0/37334"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "fc:0a:81:2e:1f:40/37358"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:a3:df:00/37316"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:9b:c0:20/37330"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:82:b7:c0/37292"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:82:b7:00/37292"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:82:ff:f0/37332"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:82:b9:60/37292"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "fc:0a:81:2e:26:70/37358"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:d1:58:00/37338"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:0b:d4:90/37360"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "84:24:8d:2e:cf:50/37358"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:82:80:10/37350"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:82:ba:b0/37338"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:82:b9:80/37376"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:83:08:50/37376"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:0b:aa:c1/37360"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:a3:dd:40/37370"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:0b:d7:c0/37360"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:1f:fd:00/37332"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:9b:c3:a0/37330"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:83:0e:80/37350"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:9b:c0:10/37338"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:82:bb:f0/37334"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "b4:c7:99:82:aa:a0/37376"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "fc:0a:81:57:ee:f0/37362"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "37292/תל אביב ההגנה"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "37372/בנימינה"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "37316/קרית גת"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "37334/לוד-גני אביב"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "37360/תא אוניברסיטה"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "37370/קיסריה פרדס חנה"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "37362/הרצליה"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "37376/חוף הכרמל"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "37350/השלום"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "37338/לוד"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "37364/בית יהושע"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "37374/עתלית"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "37358/תל אביב מרכז"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "37330/באר יעקב"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25932",
+                "mAppName": "",
+                "mTag": "Logger",
+                "mTime": "01-02 10:48:03.041",
+                "mMessage": "37332/רחובות"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:48:03.045",
+                "mMessage": "WAIT_FOR_CONCURRENT_GC blocked 0ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:48:03.065",
+                "mMessage": "GC_EXPLICIT freed 2176K, 33% free 9733K/14343K, paused 11ms+0ms, total 20ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:48:03.065",
+                "mMessage": "WAIT_FOR_CONCURRENT_GC blocked 0ms"
+              },
+              {
+                "mLogLevel": "DEBUG",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "dalvikvm",
+                "mTime": "01-02 10:48:03.073",
+                "mMessage": "GC_EXPLICIT freed 26K, 33% free 9706K/14343K, paused 1ms+0ms, total 9ms"
+              },
+              {
+                "mLogLevel": "INFO",
+                "mPid": "25932",
+                "mTid": "25951",
+                "mAppName": "",
+                "mTag": "TestRunner",
+                "mTime": "01-02 10:48:03.073",
+                "mMessage": "finished: test1GetMapFromServer(com.opentrain.app.ServerRequestsTest)"
+              }
+            ]
+          }
+        ]
+      ],
+      "started": 1451731668569,
+      "duration": 13,
+      "exceptions": []
+    }
+  }
+}
