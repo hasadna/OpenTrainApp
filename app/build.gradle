@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'spoon'
+apply plugin: 'jacoco'
+
 
 android {
     compileSdkVersion 22
@@ -23,6 +26,32 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+
+    jacoco {
+        version "0.7.1.201405082137"
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+spoon {
+    debug = true;
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.stanfy.spoon:spoon-gradle-plugin:1.0.2'
+    }
 }
 
 dependencies {
@@ -33,7 +62,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.0.+'
     testCompile 'junit:junit:4.12'
 
-    /*For Espresso */
+    /*For Espresso and Spoon */
     androidTestCompile 'com.android.support.test:runner:0.3'
     androidTestCompile 'com.android.support.test:rules:0.3'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
@@ -46,4 +75,6 @@ dependencies {
         exclude module: 'support-annotations'
         exclude module: 'recyclerview-v7'
     }
+    androidTestCompile 'com.squareup.spoon:spoon-client:1.2.0'
+
 }
