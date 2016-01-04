@@ -16,6 +16,7 @@ public class Settings {
     public static final String url_get_stops_from_server = "http://gtfs.otrain.org/api/gtfs/stops/?format=json";
     public static final String url_get_trips_from_server = "http://gtfs.otrain.org/api/gtfs/trips/date/today/?format=json";
     public static final String TEST_TIME_BASE = "08:38:55";
+    public static final String TEST_TIME_BASE_FOR_FAILURE = "08:49:49";
 
     public static long SCAN_INTERVAL = SCAN_INTERVAL_TRAIN;
     public static String stationSSID = STATION_SSID_TRAIN;
