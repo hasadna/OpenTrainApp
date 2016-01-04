@@ -1,6 +1,5 @@
 package com.opentrain.app;
 
-import android.os.Environment;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.rule.ActivityTestRule;
@@ -8,9 +7,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.opentrain.app.model.Settings;
 import com.opentrain.app.view.MainActivity;
-import com.squareup.spoon.Spoon;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,20 +32,8 @@ public class MainActivityTest {
     public ActivityTestRule<MainActivity> mActivityRule =
             new ActivityTestRule<>(MainActivity.class);
 
-    private MainActivity mActivity;
-
-    @Before
-    public void setUp() {
-        mActivity = mActivityRule.getActivity();
-
-    }
-
-    // Test method should starts with test (Mandatory for spoon_dependencies file to execute )
     @Test
-    public void testOpenMenuAndClick() {
-
-        // initial screenshot
-        Spoon.screenshot(mActivity, "Before_Menu_Click");
+    public void openMenuAndClick() {
 
         //open menu
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
@@ -63,10 +48,6 @@ public class MainActivityTest {
         // check for string mentioned in the Descendant of Recycler View
         onView(withId(R.id.recyclerView))
                 .check(matches(hasDescendant(withText(Settings.TEST_TIME_BASE))));
-
-        // final screenshot
-        Spoon.screenshot(mActivity, "After_RecyclerView_loads");
-
     }
 
     // class to wait the test runner
