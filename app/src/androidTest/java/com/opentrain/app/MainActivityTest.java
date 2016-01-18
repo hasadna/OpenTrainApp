@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
@@ -45,10 +46,12 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 public class MainActivityTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityRule =
-            new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
     private MainActivity mActivity;
     private ImageComparator mComparator;
+    private static final String GOLDEN_DIR = "golden_dir";
+    private static final int COMPARE_VALUE = 1000;
+    private static final int SCREEN_WAIT_TIME = 10; //In sec.
 
     @Before
     public void setUp() {
@@ -60,74 +63,72 @@ public class MainActivityTest {
     @Test
     public void testOpenMenuAndClick() {
 
-        // initial screenshot
+        // Initial screenshot
         Spoon.screenshot(mActivity, "Before_Menu_Click");
 
-        //open menu
+        //Open menu
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
-        // perform a click on the option
+        // Perform a click on the option
         onView(withText(R.string.action_test_trip)).perform(click());
 
         // Now we wait for 10 sec
-        IdlingResource idlingResource = new ElapsedTimeIdlingResource(10000);
+        IdlingResource idlingResource = new ElapsedTimeIdlingResource(TimeUnit.SECONDS.toMillis(SCREEN_WAIT_TIME));
         Espresso.registerIdlingResources(idlingResource);
 
-        // check for string mentioned in the Descendant of Recycler View
+        // Check for string mentioned in the Descendant of Recycler View
         onView(withId(R.id.recyclerView))
                 .check(matches(hasDescendant(withText(Settings.TEST_TIME_BASE))));
 
-        // final screenshot
+        // Final screenshot
         Spoon.screenshot(mActivity, "After_RecyclerView_loads");
     }
 
     @Test
     public void testOpenMenuAndClickToCompareImages() {
 
-
-        Bitmap bitmap = null, bitmapAfter = null;
-
         Bitmap mCurrentBeforeLoadBitmap, mCurrentAfterLoadBitmap;
 
-        // initial screenshot
-        File beforeFile = Spoon.screenshot(mActivity, "Before_Menu_Click");
+        // Initial screenshot
+        File beforeMenuClickFile = Spoon.screenshot(mActivity, "Before_Menu_Click");
 
-        //open menu
+        //Open menu
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
-        // perform a click on the option
+        // Perform a click on the option
         onView(withText(R.string.action_test_trip)).perform(click());
 
         // Now we wait for 10 sec
-        IdlingResource idlingResource = new ElapsedTimeIdlingResource(10000);
+        IdlingResource idlingResource = new ElapsedTimeIdlingResource(TimeUnit.SECONDS.toMillis(SCREEN_WAIT_TIME));
         Espresso.registerIdlingResources(idlingResource);
 
-        // check for string mentioned in the Descendant of Recycler View
+        // Check for string mentioned in the Descendant of Recycler View
         onView(withId(R.id.recyclerView));
 
-        // final screenshot
-        File afterFile = Spoon.screenshot(mActivity, "After_RecyclerView_loads");
+        // Final screenshot
+        File afterRecyclerViewLoadFile = Spoon.screenshot(mActivity, "After_RecyclerView_loads");
 
-        mCurrentBeforeLoadBitmap = getBitmapFromAsset(mActivity, "golden_dir/1452171737275_Before_Menu_Click.png");
-        mCurrentAfterLoadBitmap = getBitmapFromAsset(mActivity, "golden_dir/1452171748544_After_RecyclerView_loads.png");
+        mCurrentBeforeLoadBitmap = getBitmapFromAsset(mActivity, "1452171737275_Before_Menu_Click.png");
+        mCurrentAfterLoadBitmap = getBitmapFromAsset(mActivity, "1452171748544_After_RecyclerView_loads.png");
 
         if (mCurrentAfterLoadBitmap != null && mCurrentBeforeLoadBitmap != null) {
+            Bitmap beforeMenuClickBitmap = null, afterRecyclerViewLoadsBitmap = null;
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             try {
-                bitmap = BitmapFactory.decodeStream(new FileInputStream(beforeFile), null, options);
+                beforeMenuClickBitmap = BitmapFactory.decodeStream(new FileInputStream(beforeMenuClickFile), null, options);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             try {
-                bitmapAfter = BitmapFactory.decodeStream(new FileInputStream(afterFile), null, options);
+                afterRecyclerViewLoadsBitmap = BitmapFactory.decodeStream(new FileInputStream(afterRecyclerViewLoadFile), null, options);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            double compare = mComparator.doCompare(bitmap, mCurrentBeforeLoadBitmap);
-            double compareAfter = mComparator.doCompare(bitmapAfter, mCurrentAfterLoadBitmap);
+            double compare = mComparator.doCompare(beforeMenuClickBitmap, mCurrentBeforeLoadBitmap);
+            double compareAfter = mComparator.doCompare(afterRecyclerViewLoadsBitmap, mCurrentAfterLoadBitmap);
 
-            if (compare > 0 && compare < 1000) {
+            if (compare > 0 && compare < COMPARE_VALUE) {
                 Log.d("diff ", "Images may be same");
             } else if (compare == 0) {
                 Log.d("diff ", "Images are same");
@@ -135,7 +136,7 @@ public class MainActivityTest {
                 Log.d("diff ", "Images are not duplicates");
             }
 
-            if (compareAfter > 0 && compareAfter < 1000) {
+            if (compareAfter > 0 && compareAfter < COMPARE_VALUE) {
                 Log.d("diff ", "After_Images may be same");
             } else if (compareAfter == 0) {
                 Log.d("diff ", "After_Images are same");
@@ -145,7 +146,6 @@ public class MainActivityTest {
         } else {
             Log.d("No bitmap found", "No bitmap found");
         }
-
     }
 
     /**
@@ -155,24 +155,22 @@ public class MainActivityTest {
      * @param filePath
      * @return Bitmap of the image.
      **/
-
     public static Bitmap getBitmapFromAsset(Activity context, String filePath) {
         AssetManager assetManager = context.getAssets();
 
         InputStream istr;
         Bitmap bitmap = null;
         try {
-            istr = assetManager.open(filePath);
+            istr = assetManager.open(GOLDEN_DIR + "/" + filePath);
             bitmap = BitmapFactory.decodeStream(istr);
         } catch (Exception e) {
-            // handle exception
+            // Handle exception
             e.printStackTrace();
         }
         return bitmap;
     }
 
-
-    // class to wait the test runner
+    // Class to wait the test runner
     public class ElapsedTimeIdlingResource implements IdlingResource {
         private final long startTime;
         private final long waitingTime;

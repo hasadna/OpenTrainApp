@@ -1,6 +1,5 @@
 package com.opentrain.app.utils;
 
-
 import java.util.ArrayList;
 
 
@@ -23,20 +22,15 @@ import android.graphics.Bitmap;
 
 import android.util.Log;
 
-
 public class ImageComparator {
 
-
     private Activity context;
-
-
+    private static final int SCALED_WIDTH = 100;
     public ImageComparator(Activity context) {
 
         this.context = context;
-
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_4, context,
                 mLoaderCallback);
-
     }
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(context) {
@@ -44,7 +38,6 @@ public class ImageComparator {
         public void onManagerConnected(int status) {
             switch (status) {
                 case LoaderCallbackInterface.SUCCESS: {
-
                 }
                 break;
                 default: {
@@ -55,45 +48,59 @@ public class ImageComparator {
         }
     };
 
-
     public double doCompare(Bitmap bmpimg1, Bitmap bmpimg2) {
 
-
-            bmpimg1 = Bitmap.createScaledBitmap(bmpimg1, 100, 100, true);
-            bmpimg2 = Bitmap.createScaledBitmap(bmpimg2, 100, 100, true);
-            Mat img1 = new Mat();
-            Utils.bitmapToMat(bmpimg1, img1);
-            Mat img2 = new Mat();
-            Utils.bitmapToMat(bmpimg2, img2);
-            Imgproc.cvtColor(img1, img1, Imgproc.COLOR_RGBA2GRAY);
-            Imgproc.cvtColor(img2, img2, Imgproc.COLOR_RGBA2GRAY);
-            img1.convertTo(img1, CvType.CV_32F);
-            img2.convertTo(img2, CvType.CV_32F);
-            Mat hist1 = new Mat();
-            Mat hist2 = new Mat();
-            MatOfInt histSize = new MatOfInt(180);
-            MatOfInt channels = new MatOfInt(0);
-            ArrayList<Mat> bgr_planes1 = new ArrayList<>();
-            ArrayList<Mat> bgr_planes2 = new ArrayList<>();
-            Core.split(img1, bgr_planes1);
-            Core.split(img2, bgr_planes2);
-            MatOfFloat histRanges = new MatOfFloat(0f, 180f);
-            boolean accumulate = false;
-            Imgproc.calcHist(bgr_planes1, channels, new Mat(), hist1, histSize, histRanges, accumulate);
-            Core.normalize(hist1, hist1, 0, hist1.rows(), Core.NORM_MINMAX, -1, new Mat());
-            Imgproc.calcHist(bgr_planes2, channels, new Mat(), hist2, histSize, histRanges, accumulate);
-            Core.normalize(hist2, hist2, 0, hist2.rows(), Core.NORM_MINMAX, -1, new Mat());
-            img1.convertTo(img1, CvType.CV_32F);
-            img2.convertTo(img2, CvType.CV_32F);
-            hist1.convertTo(hist1, CvType.CV_32F);
-            hist2.convertTo(hist2, CvType.CV_32F);
-            double compare = Imgproc.compareHist(hist1, hist2, Imgproc.CV_COMP_CHISQR);
-            Log.d("ImageComparator", "compare: " + compare);
-
-            return compare;
-
-
-
+        bmpimg1 = createScaledBitmap(bmpimg1, SCALED_WIDTH, SCALED_WIDTH);
+        bmpimg2 = createScaledBitmap(bmpimg2, SCALED_WIDTH, SCALED_WIDTH);
+        Mat img1 = new Mat();
+        Utils.bitmapToMat(bmpimg1, img1);
+        Mat img2 = new Mat();
+        Utils.bitmapToMat(bmpimg2, img2);
+        Imgproc.cvtColor(img1, img1, Imgproc.COLOR_RGBA2GRAY);
+        Imgproc.cvtColor(img2, img2, Imgproc.COLOR_RGBA2GRAY);
+        img1.convertTo(img1, CvType.CV_32F);
+        img2.convertTo(img2, CvType.CV_32F);
+        Mat hist1 = new Mat();
+        Mat hist2 = new Mat();
+        MatOfInt histSize = new MatOfInt(180);
+        MatOfInt channels = new MatOfInt(0);
+        ArrayList<Mat> bgr_planes1 = new ArrayList<>();
+        ArrayList<Mat> bgr_planes2 = new ArrayList<>();
+        Core.split(img1, bgr_planes1);
+        Core.split(img2, bgr_planes2);
+        MatOfFloat histRanges = new MatOfFloat(0f, 180f);
+        boolean accumulate = false;
+        Imgproc.calcHist(bgr_planes1, channels, new Mat(), hist1, histSize, histRanges, accumulate);
+        Core.normalize(hist1, hist1, 0, hist1.rows(), Core.NORM_MINMAX, -1, new Mat());
+        Imgproc.calcHist(bgr_planes2, channels, new Mat(), hist2, histSize, histRanges, accumulate);
+        Core.normalize(hist2, hist2, 0, hist2.rows(), Core.NORM_MINMAX, -1, new Mat());
+        img1.convertTo(img1, CvType.CV_32F);
+        img2.convertTo(img2, CvType.CV_32F);
+        hist1.convertTo(hist1, CvType.CV_32F);
+        hist2.convertTo(hist2, CvType.CV_32F);
+        double compare = Imgproc.compareHist(hist1, hist2, Imgproc.CV_COMP_CHISQR);
+        Log.d("ImageComparator", "compare: " + compare);
+        return compare;
     }
 
+    private Bitmap createScaledBitmap(Bitmap image, int maxWidth, int maxHeight) {
+        if (maxHeight > 0 && maxWidth > 0) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            float ratioBitmap = (float) width / (float) height;
+            float ratioMax = (float) maxWidth / (float) maxHeight;
+
+            int finalWidth = maxWidth;
+            int finalHeight = maxHeight;
+            if (ratioMax > 1) {
+                finalWidth = (int) ((float) maxHeight * ratioBitmap);
+            } else {
+                finalHeight = (int) ((float) maxWidth / ratioBitmap);
+            }
+            image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
+            return image;
+        } else {
+            return image;
+        }
+    }
 }
