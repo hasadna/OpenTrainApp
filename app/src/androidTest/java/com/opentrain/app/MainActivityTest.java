@@ -50,13 +50,14 @@ public class MainActivityTest {
     private MainActivity mActivity;
     private ImageComparator mComparator;
     private static final String GOLDEN_DIR = "golden_dir";
-    private static final int COMPARE_VALUE = 1000;
-    private static final int SCREEN_WAIT_TIME = 10; //In sec.
+    private static final int COMPARE_VALUE_MIN = 70; //percentage diff. value.
+    private static final int COMPARE_VALUE_MAX = 90;  //percentage diff. value.
+    private static final int SCREEN_WAIT_TIME = 10;  //In sec.
 
     @Before
     public void setUp() {
         mActivity = mActivityRule.getActivity();
-        mComparator = new ImageComparator(mActivity);
+        mComparator = new ImageComparator();
     }
 
     // Test method should starts with test (Mandatory for spoon_dependencies file to execute )
@@ -125,20 +126,20 @@ public class MainActivityTest {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            double compare = mComparator.doCompare(beforeMenuClickBitmap, mCurrentBeforeLoadBitmap);
-            double compareAfter = mComparator.doCompare(afterRecyclerViewLoadsBitmap, mCurrentAfterLoadBitmap);
+            double compare = mComparator.compareBitmap(beforeMenuClickBitmap, mCurrentBeforeLoadBitmap);
+            double compareAfter = mComparator.compareBitmap(afterRecyclerViewLoadsBitmap, mCurrentAfterLoadBitmap);
 
-            if (compare > 0 && compare < COMPARE_VALUE) {
+            if (compare > COMPARE_VALUE_MIN && compare < COMPARE_VALUE_MAX) {
                 Log.d("diff ", "Images may be same");
-            } else if (compare == 0) {
+            } else if (compare > COMPARE_VALUE_MAX) {
                 Log.d("diff ", "Images are same");
             } else {
                 Log.d("diff ", "Images are not duplicates");
             }
 
-            if (compareAfter > 0 && compareAfter < COMPARE_VALUE) {
+            if (compareAfter > COMPARE_VALUE_MIN && compareAfter < COMPARE_VALUE_MAX) {
                 Log.d("diff ", "After_Images may be same");
-            } else if (compareAfter == 0) {
+            } else if (compareAfter > COMPARE_VALUE_MAX) {
                 Log.d("diff ", "After_Images are same");
             } else {
                 Log.d("diff ", "After_Images are not duplicates");

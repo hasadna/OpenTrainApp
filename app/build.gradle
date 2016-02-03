@@ -74,5 +74,4 @@ dependencies {
         exclude module: 'recyclerview-v7'
     }
     androidTestCompile 'com.squareup.spoon:spoon-client:1.2.0'
-    compile project(':openCVLibrary310')
 }
