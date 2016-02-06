@@ -5,13 +5,11 @@ import android.app.Activity;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
-
 
 import com.opentrain.app.model.Settings;
 import com.opentrain.app.utils.ImageComparator;
@@ -42,6 +40,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
  * Created by Wide Vision on 28/12/15.
  */
 
+// Note: Test methods should start with test in order for Spoon to run the test.
 @RunWith(AndroidJUnit4.class)
 public class MainActivityTest {
 
@@ -50,9 +49,9 @@ public class MainActivityTest {
     private MainActivity mActivity;
     private ImageComparator mComparator;
     private static final String GOLDEN_DIR = "golden_dir";
-    private static final int COMPARE_VALUE_MIN = 70; //percentage diff. value.
-    private static final int COMPARE_VALUE_MAX = 90;  //percentage diff. value.
-    private static final int SCREEN_WAIT_TIME = 10;  //In sec.
+    private static final int IMAGE_PERCENTAGE_MATCH = 100;
+    private static final int SCREEN_WAIT_TIME_SECONDS = 10;
+    private static final BitmapFactory.Options BITMAP_OPTIONS = new BitmapFactory.Options();
 
     @Before
     public void setUp() {
@@ -60,21 +59,20 @@ public class MainActivityTest {
         mComparator = new ImageComparator();
     }
 
-    // Test method should starts with test (Mandatory for spoon_dependencies file to execute )
     @Test
     public void testOpenMenuAndClick() {
 
         // Initial screenshot
         Spoon.screenshot(mActivity, "Before_Menu_Click");
 
-        //Open menu
+        // Open menu
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
         // Perform a click on the option
         onView(withText(R.string.action_test_trip)).perform(click());
 
-        // Now we wait for 10 sec
-        IdlingResource idlingResource = new ElapsedTimeIdlingResource(TimeUnit.SECONDS.toMillis(SCREEN_WAIT_TIME));
+        // Now we wait for SCREEN_WAIT_TIME_SECONDS
+        IdlingResource idlingResource = new ElapsedTimeIdlingResource(TimeUnit.SECONDS.toMillis(SCREEN_WAIT_TIME_SECONDS));
         Espresso.registerIdlingResources(idlingResource);
 
         // Check for string mentioned in the Descendant of Recycler View
@@ -88,10 +86,10 @@ public class MainActivityTest {
     @Test
     public void testOpenMenuAndClickToCompareImages() {
 
-        Bitmap mCurrentBeforeLoadBitmap, mCurrentAfterLoadBitmap;
+        Bitmap mBeforeMenuClickGoldenBitmap, mAfterRecyclerViewLoadsGoldenBitmap;
 
         // Initial screenshot
-        File beforeMenuClickFile = Spoon.screenshot(mActivity, "Before_Menu_Click");
+        Bitmap mBeforeMenuClickBitmap = takeScreenshot("Before_Menu_Click");
 
         //Open menu
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
@@ -99,48 +97,33 @@ public class MainActivityTest {
         // Perform a click on the option
         onView(withText(R.string.action_test_trip)).perform(click());
 
-        // Now we wait for 10 sec
-        IdlingResource idlingResource = new ElapsedTimeIdlingResource(TimeUnit.SECONDS.toMillis(SCREEN_WAIT_TIME));
+        // Now we wait for SCREEN_WAIT_TIME_SECONDS
+        IdlingResource idlingResource = new ElapsedTimeIdlingResource(TimeUnit.SECONDS.toMillis(SCREEN_WAIT_TIME_SECONDS));
         Espresso.registerIdlingResources(idlingResource);
 
         // Check for string mentioned in the Descendant of Recycler View
         onView(withId(R.id.recyclerView));
 
         // Final screenshot
-        File afterRecyclerViewLoadFile = Spoon.screenshot(mActivity, "After_RecyclerView_loads");
+        Bitmap mAfterRecyclerViewLoadsBitmap = takeScreenshot("After_RecyclerView_loads");
 
-        mCurrentBeforeLoadBitmap = getBitmapFromAsset(mActivity, "1452171737275_Before_Menu_Click.png");
-        mCurrentAfterLoadBitmap = getBitmapFromAsset(mActivity, "1452171748544_After_RecyclerView_loads.png");
+        mBeforeMenuClickGoldenBitmap = getBitmapFromAsset(mActivity, "1452171737275_Before_Menu_Click.png");
+        mAfterRecyclerViewLoadsGoldenBitmap = getBitmapFromAsset(mActivity, "1452171748544_After_RecyclerView_loads.png");
 
-        if (mCurrentAfterLoadBitmap != null && mCurrentBeforeLoadBitmap != null) {
-            Bitmap beforeMenuClickBitmap = null, afterRecyclerViewLoadsBitmap = null;
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            try {
-                beforeMenuClickBitmap = BitmapFactory.decodeStream(new FileInputStream(beforeMenuClickFile), null, options);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                afterRecyclerViewLoadsBitmap = BitmapFactory.decodeStream(new FileInputStream(afterRecyclerViewLoadFile), null, options);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            double compare = mComparator.compareBitmap(beforeMenuClickBitmap, mCurrentBeforeLoadBitmap);
-            double compareAfter = mComparator.compareBitmap(afterRecyclerViewLoadsBitmap, mCurrentAfterLoadBitmap);
+        if (mAfterRecyclerViewLoadsGoldenBitmap != null && mBeforeMenuClickGoldenBitmap != null) {
+            BITMAP_OPTIONS.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
-            if (compare > COMPARE_VALUE_MIN && compare < COMPARE_VALUE_MAX) {
-                Log.d("diff ", "Images may be same");
-            } else if (compare > COMPARE_VALUE_MAX) {
-                Log.d("diff ", "Images are same");
+            double match = mComparator.percentageMatch(mBeforeMenuClickBitmap, mBeforeMenuClickGoldenBitmap);
+            double matchAfter = mComparator.percentageMatch(mAfterRecyclerViewLoadsBitmap, mAfterRecyclerViewLoadsGoldenBitmap);
+
+            if (match == IMAGE_PERCENTAGE_MATCH) {
+                Log.d("diff ", "Images same");
             } else {
                 Log.d("diff ", "Images are not duplicates");
             }
 
-            if (compareAfter > COMPARE_VALUE_MIN && compareAfter < COMPARE_VALUE_MAX) {
-                Log.d("diff ", "After_Images may be same");
-            } else if (compareAfter > COMPARE_VALUE_MAX) {
-                Log.d("diff ", "After_Images are same");
+            if (matchAfter == IMAGE_PERCENTAGE_MATCH) {
+                Log.d("diff ", "After_Images same");
             } else {
                 Log.d("diff ", "After_Images are not duplicates");
             }
@@ -149,21 +132,14 @@ public class MainActivityTest {
         }
     }
 
-    /**
-     * Get Bitmap from Assets.
-     *
-     * @param context
-     * @param filePath
-     * @return Bitmap of the image.
-     **/
     public static Bitmap getBitmapFromAsset(Activity context, String filePath) {
         AssetManager assetManager = context.getAssets();
 
-        InputStream istr;
+        InputStream inputStream;
         Bitmap bitmap = null;
         try {
-            istr = assetManager.open(GOLDEN_DIR + "/" + filePath);
-            bitmap = BitmapFactory.decodeStream(istr);
+            inputStream = assetManager.open(GOLDEN_DIR + "/" + filePath);
+            bitmap = BitmapFactory.decodeStream(inputStream);
         } catch (Exception e) {
             // Handle exception
             e.printStackTrace();
@@ -171,7 +147,18 @@ public class MainActivityTest {
         return bitmap;
     }
 
-    // Class to wait the test runner
+    private Bitmap takeScreenshot(String name) {
+        File file = Spoon.screenshot(mActivity, name);
+        Bitmap bitmap = null;
+        try {
+            bitmap = BitmapFactory.decodeStream(new FileInputStream(file), null, BITMAP_OPTIONS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+
+    // This class makes the test wait for a specified amount of time.
     public class ElapsedTimeIdlingResource implements IdlingResource {
         private final long startTime;
         private final long waitingTime;
@@ -198,8 +185,7 @@ public class MainActivityTest {
         }
 
         @Override
-        public void registerIdleTransitionCallback(
-                ResourceCallback resourceCallback) {
+        public void registerIdleTransitionCallback(ResourceCallback resourceCallback) {
             this.resourceCallback = resourceCallback;
         }
     }
