@@ -5,3 +5,7 @@
 /build
 /captures
 *.iml
+train_api_parser/.cache/*
+train_api_parser/venv/
+train_api_parser/result_*.json
+*.pyc
