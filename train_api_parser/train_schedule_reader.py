@@ -25,6 +25,8 @@ TRAIN_API_TIME_FORMAT = '%H:%M:%S'
 FILENAME_DATE_FORMAT = '%d%m%y'
 SLEEP_BETWEEN_REQUESTS_SECONDS = 2
 
+FIREBASE_ADMIN_EMAIL = ('firebase-adminsdk-f8787@opentrain-eca68.iam'
+                        '.gserviceaccount.com')
 
 class Station(object):
     """A class that represents a physical station"""
@@ -265,7 +267,7 @@ if __name__ == "__main__":
     print('Authenticating in Firebase...')
     auth = firebase.FirebaseAuthentication(
         environ['FIREBASE_SECRET'],
-        environ['FIREBASE_ADMIN_EMAIL'])
+        FIREBASE_ADMIN_EMAIL)
     app = firebase.FirebaseApplication(
         'https://opentrain-eca68.firebaseio.com/', authentication=auth)
 
