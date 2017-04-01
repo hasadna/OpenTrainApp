@@ -10,6 +10,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.opentrain.app.controller.MainController;
 import com.opentrain.app.controller.UpdateBssidMapAction;
 import com.opentrain.app.model.BssidMap;
@@ -24,7 +29,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by noam on 29/06/15.
@@ -146,42 +150,28 @@ public class NetowrkManager {
         }
     }
 
-    public void getStopsFromServer(final RequestListener requestListener) {
+    public void getStopsFromServer() {
+        Logger.log("Get stops from Firebase. Endpoint: " + Settings.firebase_stops);
 
-        Logger.log("get stops from server. server url:" + Settings.url_get_stops_from_server);
-        // Request a json array response from the provided URL.
-        JsonArrayRequest jsonRequest = new JsonArrayRequest(Settings.url_get_stops_from_server,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        List<StationBasicInfo> stations = new ArrayList<>();
-                        try {
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject stop = (JSONObject) response.get(i);
-                                String name = new String(stop.getString("name").getBytes("ISO-8859-1"), "UTF-8");
-                                StationBasicInfo info = new StationBasicInfo(name, stop.getString("id"));
-                                stations.add(info);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference stopsRef = database.getReference(Settings.firebase_stops);
 
-                            }
-                            MainModel.getInstance().setStationList(stations);
-                            if (requestListener != null) {
-                                requestListener.onResponse(response);
-                            }
-                        } catch (Exception e) {
-                            Logger.log(e.toString());
-                        }
-                    }
-                }, new Response.ErrorListener() {
+        final ArrayList<StationBasicInfo> stations = new ArrayList<>();
+        stopsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                if (requestListener != null) {
-                    requestListener.onError();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot oneStationDataSnapshot : dataSnapshot.getChildren()) {
+                    StationBasicInfo station = oneStationDataSnapshot.getValue(StationBasicInfo.class);
+                    stations.add(station);
                 }
-                Logger.log("Error while getting stop list from server " + error.getMessage());
+                MainModel.getInstance().setStationList(stations);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Logger.log(databaseError.toString());
             }
         });
-        // Add the request to the RequestQueue.
-        requestQueue.add(jsonRequest);
     }
 
     public void getTripsFromServer(final RequestListener requestListener) {

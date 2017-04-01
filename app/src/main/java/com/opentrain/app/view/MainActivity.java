@@ -359,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
         for (String bssid : station.bssids) {
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("name", stationInfo.name);
+                jsonObject.put("name", stationInfo.stop_name);
                 jsonObject.put("bssid", bssid);
                 jsonObject.put("stop_id", stationInfo.id);
                 addMapToServer(jsonObject);

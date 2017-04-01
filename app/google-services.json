@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "684244104041",
+    "firebase_url": "https://opentrain-eca68.firebaseio.com",
+    "project_id": "opentrain-eca68",
+    "storage_bucket": "opentrain-eca68.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:684244104041:android:db0019a7873eb1e3",
+        "android_client_info": {
+          "package_name": "il.org.hasadna.opentrain"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "684244104041-29o1p17124uivdm0dd5hp3feqh74ebnv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "il.org.hasadna.opentrain",
+            "certificate_hash": "23c17381f3361da4dd11bcb1bbe0bffe36042d65"
+          }
+        },
+        {
+          "client_id": "684244104041-069smf686mek8nti0psgj279ol1m9oih.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4W_obhlwBkdAqQPZqDGBGVEBNmvmbGkY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "684244104041-069smf686mek8nti0psgj279ol1m9oih.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

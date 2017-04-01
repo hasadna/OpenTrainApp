@@ -1,19 +1,27 @@
 package com.opentrain.app.model;
 
-/**
- * Created by Elina on 15 Dec 2015.
- */
-public class StationBasicInfo {
-    public String name;
-    public String id;
+import com.google.firebase.database.IgnoreExtraProperties;
 
-    public StationBasicInfo(String name, String id) {
-        this.name = name;
+@IgnoreExtraProperties
+public class StationBasicInfo {
+    public Long id;
+    public Long stop_id;
+    public String stop_name;
+    public String stop_short_name;
+
+    public StationBasicInfo() {
+        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    }
+
+    public StationBasicInfo(Long id, Long stop_id, String stop_name, String stop_short_name) {
         this.id = id;
+        this.stop_id = stop_id;
+        this.stop_name = stop_name;
+        this.stop_short_name = stop_short_name;
     }
 
     @Override
     public String toString() {
-        return this.name;
+        return stop_name;
     }
 }
