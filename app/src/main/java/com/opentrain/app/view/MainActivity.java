@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.AssetManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
@@ -61,10 +62,10 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
     private ScannerService mBoundService;
     private ServiceBroadcastReceiver mReceiver;
     private StationsCardViewAdapter mAdapter;
-    private RecyclerView mRecycleView;
+    private RecyclerView mRecyclerView;
 
     private Menu menu;
-    ProgressBar progressBarScannig, progressBarSyncSever;
+    ProgressBar progressBarScanning, progressBarSyncSever;
 
     private boolean mIsBound;
 
@@ -73,17 +74,17 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        progressBarScannig = (ProgressBar) findViewById(R.id.progressBarScannig);
-        progressBarScannig.setVisibility(View.INVISIBLE);
+        progressBarScanning = (ProgressBar) findViewById(R.id.progressBarScannig);
+        progressBarScanning.setVisibility(View.INVISIBLE);
         progressBarSyncSever = (ProgressBar) findViewById(R.id.progressBarSyncServer);
         progressBarSyncSever.setVisibility(View.INVISIBLE);
 
-        mRecycleView = (RecyclerView)findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView)findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecycleView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new StationsCardViewAdapter(this);
-        mRecycleView.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mAdapter);
 
         mReceiver = new ServiceBroadcastReceiver(this);
 
@@ -311,21 +312,21 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
     public void sendLogByEmail() {
         toast("Share logs with email");
 
-        Intent email = new Intent(Intent.ACTION_SEND);
         // prompts email clients only
-        email.setType("message/rfc822");
-        email.putExtra(Intent.EXTRA_EMAIL, new String[] {"open.train.application@gmail.com"});
-        email.putExtra(Intent.EXTRA_SUBJECT, "OpenTrainApp - Log");
+
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+        emailIntent.setData(Uri.parse("mailto:open.train.application@gmail.com"));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "OpenTrainApp - Log");
+
         // Get the actions history in JSON format from main model + get all logs:
         JSONObject historyJson = MainModel.getInstance().historyToJson();
         JSONObject logJson = Logger.toJson();
-        email.putExtra(Intent.EXTRA_TEXT, historyJson.toString() + "\n\n" + logJson.toString());
+        emailIntent.putExtra(Intent.EXTRA_TEXT, historyJson.toString() + "\n\n" + logJson.toString());
 
-        try {
-            // the user can choose the email client
-            startActivity(email);
-        } catch (android.content.ActivityNotFoundException ex) {
-            toast("No email client installed.");
+        if (emailIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(emailIntent);
+        } else {
+            toast("No email client installed");
         }
     }
 
@@ -426,11 +427,11 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
     }
 
     public void onStopScan() {
-        progressBarScannig.setVisibility(View.INVISIBLE);
+        progressBarScanning.setVisibility(View.INVISIBLE);
     }
 
     public void onStartScan() {
-        progressBarScannig.setVisibility(View.VISIBLE);
+        progressBarScanning.setVisibility(View.VISIBLE);
     }
 
     public void onScanResult() {
