@@ -3,7 +3,7 @@ package com.opentrain.app.controller;
 import android.content.Context;
 
 import com.opentrain.app.model.MainModel;
-import com.opentrain.app.network.NetowrkManager;
+import com.opentrain.app.network.NetworkManager;
 import com.opentrain.app.utils.Logger;
 
 /**
@@ -38,10 +38,10 @@ public class MainController {
     }
 
     public void init(Context context) {
-        NetowrkManager.getInstance().init(context);
-        NetowrkManager.getInstance().getStopsFromServer();
-        NetowrkManager.getInstance().getMapFromServer();
-        NetowrkManager.getInstance().getTripsFromServer(null);
+        NetworkManager.getInstance().init(context);
+        NetworkManager.getInstance().getStopsFromServer();
+        NetworkManager.getInstance().getMapFromServer();
+        NetworkManager.getInstance().getTripsFromServer(null);
     }
 
 }

@@ -15,10 +15,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.opentrain.app.controller.MainController;
-import com.opentrain.app.controller.UpdateBssidMapAction;
 import com.opentrain.app.model.BssidBasicInfo;
-import com.opentrain.app.model.BssidMap;
 import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.Settings;
 import com.opentrain.app.model.StationBasicInfo;
@@ -34,10 +31,10 @@ import java.util.HashMap;
 /**
  * Created by noam on 29/06/15.
  */
-public class NetowrkManager {
+public class NetworkManager {
 
     private static RequestQueue requestQueue;
-    private static NetowrkManager mInstance;
+    private static NetworkManager mInstance;
 
     public interface RequestListener {
         void onResponse(Object response);
@@ -49,48 +46,16 @@ public class NetowrkManager {
         requestQueue = Volley.newRequestQueue(context);
     }
 
-    private NetowrkManager() {
+    private NetworkManager() {
 
     }
 
-    public static NetowrkManager getInstance() {
+    public static NetworkManager getInstance() {
         if (mInstance == null) {
-            mInstance = new NetowrkManager();
+            mInstance = new NetworkManager();
         }
         return mInstance;
     }
-/*
-    public void getMapFromServer(final RequestListener requestListener) {
-
-        Logger.log("get map from server. server url:" + Settings.url_get_map_from_server);
-        // Request a string response from the provided URL.
-        JsonArrayRequest stringRequest = new JsonArrayRequest(Settings.url_get_map_from_server,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            parseBSSIDSResponse(response);
-                            if (requestListener != null) {
-                                requestListener.onResponse(MainModel.getBssidMapping());
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Logger.log(e.toString());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (requestListener != null) {
-                    requestListener.onError();
-                }
-                Logger.log("Error while getting map from server " + error.getMessage());
-            }
-        });
-        // Add the request to the RequestQueue.
-        requestQueue.add(stringRequest);
-    }
-*/
 
     public void getMapFromServer() {
         Logger.log("Get map from Firebase. Endpoint: " + Settings.firebase_bssids);
@@ -98,16 +63,16 @@ public class NetowrkManager {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference stopsRef = database.getReference(Settings.firebase_bssids);
 
-        final HashMap<String, String> mapStopIdToName = new HashMap<>();
+        final HashMap<String, String> stopIdToNameMap = new HashMap<>();
         stopsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot hotspotDataSnapshot : dataSnapshot.getChildren()) {
-                    BssidBasicInfo hotspot = hotspotDataSnapshot.getValue(BssidBasicInfo.class);
-                    mapStopIdToName.put(hotspot.stop_id, hotspot.name);
+                for (DataSnapshot bssidDataSnapshot : dataSnapshot.getChildren()) {
+                    BssidBasicInfo bssidBasicInfo = bssidDataSnapshot.getValue(BssidBasicInfo.class);
+                    stopIdToNameMap.put(bssidBasicInfo.stop_id, bssidBasicInfo.name);
                 }
-                MainModel.getInstance().setStopIdToStopMap(mapStopIdToName);
-                Logger.logMap(mapStopIdToName);
+                MainModel.getInstance().setStopIdToStopMap(stopIdToNameMap);
+                Logger.logMap(stopIdToNameMap);
             }
 
             @Override
@@ -141,40 +106,6 @@ public class NetowrkManager {
         });
         // Add the request to the RequestQueue.
         requestQueue.add(stringRequest);
-    }
-
-    private void parseBSSIDSResponse(JSONArray jsonArray) throws Exception {
-
-        HashMap<String, String> mapBSSIDToId = new HashMap<>();
-        HashMap<String, String> mapStopIdToName = new HashMap<>();
-        try {
-            for (int i = 0, j = jsonArray.length(); i < j; i++) {
-                try {
-                    JSONObject station = jsonArray.getJSONObject(i);
-                    String bssid = station.getString("bssid");
-                    String name = new String(station.getString("name").getBytes("ISO-8859-1"), "UTF-8");
-
-                    JSONObject stopJson = station.getJSONObject("stop");
-                    String stopId = stopJson.getString("id");
-                    mapBSSIDToId.put(bssid, stopId);
-                    mapStopIdToName.put(stopId, name);
-                } catch (Exception e) {
-                    Logger.log(e.toString());
-                }
-            }
-
-            BssidMap bssidMap = new BssidMap(mapBSSIDToId);
-            UpdateBssidMapAction updateBssidMapAction = new UpdateBssidMapAction(bssidMap);
-            MainController.execute(updateBssidMapAction);
-
-            MainModel.getInstance().setStopIdToStopMap(mapStopIdToName);
-
-            Logger.logMap(mapBSSIDToId);
-            Logger.logMap(mapStopIdToName);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Logger.log(e.toString());
-        }
     }
 
     public void getStopsFromServer() {

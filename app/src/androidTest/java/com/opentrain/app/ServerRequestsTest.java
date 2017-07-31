@@ -2,7 +2,7 @@ package com.opentrain.app;
 
 import android.test.InstrumentationTestCase;
 
-import com.opentrain.app.network.NetowrkManager;
+import com.opentrain.app.network.NetworkManager;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -15,7 +15,7 @@ public class ServerRequestsTest extends InstrumentationTestCase {
 
     public void test1GetMapFromServer() throws Throwable {
 
-        NetowrkManager.getInstance().getMapFromServer(new NetowrkManager.RequestListener() {
+        NetworkManager.getInstance().getMapFromServer(new NetworkManager.RequestListener() {
             @Override
             public void onResponse(Object response) {
 
@@ -42,7 +42,7 @@ public class ServerRequestsTest extends InstrumentationTestCase {
 //
 //        Station station = new Station(bssids, System.currentTimeMillis());
 //
-//        NetowrkManager.getInstance().addMappingToServer(station.getPostParam(stationName), new NetowrkManager.RequestListener() {
+//        NetworkManager.getInstance().addMappingToServer(station.getPostParam(stationName), new NetworkManager.RequestListener() {
 //            @Override
 //            public void onResponse(Object response) {
 //

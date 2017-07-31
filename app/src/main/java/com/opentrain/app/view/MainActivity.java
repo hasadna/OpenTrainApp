@@ -38,7 +38,7 @@ import com.opentrain.app.model.Station;
 import com.opentrain.app.model.StationBasicInfo;
 import com.opentrain.app.model.Trip;
 import com.opentrain.app.model.WifiScanResult;
-import com.opentrain.app.network.NetowrkManager;
+import com.opentrain.app.network.NetworkManager;
 import com.opentrain.app.service.ScannerService;
 import com.opentrain.app.service.ServiceBroadcastReceiver;
 import com.opentrain.app.service.WifiScanner;
@@ -336,24 +336,7 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
     }
 
     public void getMapFromServer() {
-        onRequestStart();
-/*
-        NetowrkManager.getInstance().getMapFromServer(new NetowrkManager.RequestListener() {
-            @Override
-            public void onResponse(Object response) {
-                toast("Succes!");
-                onRequestDone();
-            }
-
-            @Override
-            public void onError() {
-                toast("Fail to get map from server");
-                onRequestDone();
-
-            }
-        });
-*/
-        NetowrkManager.getInstance().getMapFromServer();
+        NetworkManager.getInstance().getMapFromServer();
     }
 
     public void addStationBssidToServer(Station station, StationBasicInfo stationInfo) {
@@ -375,12 +358,12 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
     }
 
     public void addMapToServer(JSONObject jsonObject/*Station station, String stationId*/) {
-        NetowrkManager.getInstance().addMappingToServer(jsonObject, new NetowrkManager.RequestListener() {
+        NetworkManager.getInstance().addMappingToServer(jsonObject, new NetworkManager.RequestListener() {
             @Override
             public void onResponse(Object response) {
                 toast("Succes!");
                 // TODO: get updated map from server!
-                NetowrkManager.getInstance().getMapFromServer();
+                NetworkManager.getInstance().getMapFromServer();
                 onRequestDone();
             }
 
