@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.opentrain.app.controller.MainController;
 import com.opentrain.app.controller.UpdateBssidMapAction;
+import com.opentrain.app.model.BssidBasicInfo;
 import com.opentrain.app.model.BssidMap;
 import com.opentrain.app.model.MainModel;
 import com.opentrain.app.model.Settings;
@@ -58,7 +59,7 @@ public class NetowrkManager {
         }
         return mInstance;
     }
-
+/*
     public void getMapFromServer(final RequestListener requestListener) {
 
         Logger.log("get map from server. server url:" + Settings.url_get_map_from_server);
@@ -88,6 +89,32 @@ public class NetowrkManager {
         });
         // Add the request to the RequestQueue.
         requestQueue.add(stringRequest);
+    }
+*/
+
+    public void getMapFromServer() {
+        Logger.log("Get map from Firebase. Endpoint: " + Settings.firebase_bssids);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference stopsRef = database.getReference(Settings.firebase_bssids);
+
+        final HashMap<String, String> mapStopIdToName = new HashMap<>();
+        stopsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot hotspotDataSnapshot : dataSnapshot.getChildren()) {
+                    BssidBasicInfo hotspot = hotspotDataSnapshot.getValue(BssidBasicInfo.class);
+                    mapStopIdToName.put(hotspot.stop_id, hotspot.name);
+                }
+                MainModel.getInstance().setStopIdToStopMap(mapStopIdToName);
+                Logger.logMap(mapStopIdToName);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Logger.log(databaseError.toString());
+            }
+        });
     }
 
     public void addMappingToServer(JSONObject jsonObject, final RequestListener requestListener) {

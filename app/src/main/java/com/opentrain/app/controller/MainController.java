@@ -40,7 +40,7 @@ public class MainController {
     public void init(Context context) {
         NetowrkManager.getInstance().init(context);
         NetowrkManager.getInstance().getStopsFromServer();
-        NetowrkManager.getInstance().getMapFromServer(null);
+        NetowrkManager.getInstance().getMapFromServer();
         NetowrkManager.getInstance().getTripsFromServer(null);
     }
 

@@ -337,6 +337,7 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
 
     public void getMapFromServer() {
         onRequestStart();
+/*
         NetowrkManager.getInstance().getMapFromServer(new NetowrkManager.RequestListener() {
             @Override
             public void onResponse(Object response) {
@@ -351,6 +352,8 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
 
             }
         });
+*/
+        NetowrkManager.getInstance().getMapFromServer();
     }
 
     public void addStationBssidToServer(Station station, StationBasicInfo stationInfo) {
@@ -377,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements StationsCardViewA
             public void onResponse(Object response) {
                 toast("Succes!");
                 // TODO: get updated map from server!
-                NetowrkManager.getInstance().getMapFromServer(null);
+                NetowrkManager.getInstance().getMapFromServer();
                 onRequestDone();
             }
 
